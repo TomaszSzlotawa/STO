@@ -37,15 +37,15 @@ class Equipment(models.Model):
     #drużyna, która jest "właścicielem" sprzętu, może być sprzęt nie przypisany do drużyny
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
 
-class Players(models.Model):
+class Player(models.Model):
     name = models.CharField(max_length = 60, null = True, blank = True, help_text='Imię',unique=False)
     surname = models.CharField(max_length = 60, null = True, blank = True, help_text='Nazwisko',unique=False)
     club = models.ManyToManyField(Club)
     equipment = models.ManyToManyField(Equipment,through="Rented_equipment")
-    #players_data
+
 
 class Rented_equipment(models.Model):
-    player = models.ForeignKey(Players, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość pożyczonego sprzętu")
     date_of_rental = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data wypożyczenia')
@@ -53,7 +53,7 @@ class Rented_equipment(models.Model):
 
 
 class Player_data(models.Model):
-    player = models.OneToOneField(Players, on_delete=models.CASCADE, primary_key=True)
+    player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
     pesel = models.CharField(max_length = 11, null = True, blank = True, help_text='Pesel',unique=True)
     extranet = models.CharField(max_length = 7, null = True, blank = True, help_text='nr extranet',unique=True)
     date_of_birth = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data urodzenia')
@@ -62,15 +62,43 @@ class Player_data(models.Model):
 
 class Place(models.Model):
     surfaces = [
-    ("1","murawa naturalna"),
-    ("2","murawa sztuczna"),
-    ("3","parkiet")
+    ("nt","murawa naturalna"),
+    ("at","murawa sztuczna"),
+    ("fs","płaska powierzchnia")
     ]
     club = models.ManyToManyField(Club)
     name = models.CharField(max_length = 60, null = True, blank = False, help_text='Nazwa Obiektu',unique=False)
     addres = models.CharField(max_length = 60, null = True, blank = True, help_text='Adres obiektu',unique=False)
     lights = models.BooleanField(null=True,blank=True, help_text='Oświetlenie')
-    surface = models.CharField(choices=surfaces, default="1")
+    surface = models.CharField(choices=surfaces, default="nt")
     description = models.TextField(null=True, blank=True, help_text='Specyfikacja obiektu')
-    
 
+class Team(models.Model):
+    name = models.CharField(max_length = 40, null = True, blank = False, help_text='Nazwa drużyny',unique=False)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+
+
+#treningi zaplanowane do kalendarza
+class Training(models.Model):
+    topic = models.CharField(max_length = 100, null = True, blank = False, help_text='Temat treningu',unique=False)
+    goals = models.CharField(max_length = 100, null = True, blank = True, help_text='Cele',unique=False)
+    rules = models.CharField(max_length = 100, null = True, blank = True, help_text='Zasady ',unique=False)
+    actions = models.CharField(max_length = 100, null = True, blank = True, help_text='Działania',unique=False)
+    start_datatime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data i godzina rozpoczęcia')
+    end_datatime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data i godzina zakończenia')
+    place = models.ForeignKey(Place, on_delete=models.SET_NULL,blank=False, null=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    player = models.ManyToManyField(Player, through="Attendance")
+    
+class Attendance(models.Model):
+    player = models.OneToOneField(Player, on_delete=models.CASCADE)
+    training = models.OneToOneField(Training, on_delete=models.CASCADE)
+    present = models.BooleanField(blank=True,null=True,help_text="Obecny na zajęciach")
+    class Meta:
+            constraints = [
+                models.UniqueConstraint(
+                    fields=['player', 'training'], name='unique_player_training_attendence'
+                )
+            ]
+
+    
