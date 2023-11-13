@@ -43,6 +43,8 @@ class Player(models.Model):
     surname = models.CharField(max_length = 60, null = True, blank = True, help_text='Nazwisko',unique=False)
     club = models.ForeignKey(Club, on_delete=models.CASCADE,blank=False,null=True)
     equipment = models.ManyToManyField(Equipment,through="Rented_equipment")
+    joining_date = models.DateField(auto_now=True, auto_now_add=False, null=True, blank=False, help_text='Data dołącznia do klubu')
+
 
 
 class Rented_equipment(models.Model):
@@ -112,4 +114,58 @@ class Season(models.Model):
 
 class UsersClub(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Coach(models.Model):
+    licenses = [
+    ("D","UEFA D"),
+    ("C_F","UEFA FUTSAL C"),
+    ("C","UEFA C"),
+    ("B_F","UEFA FUTSAL B"),
+    ("B_GK","UEFA GOALKEEPER B"),
+    ("B","UEFA B"),
+    ("B_EY","UEFA B ELITE YOUTH"),
+    ("A_GK","UEFA GOALKEEPER A"),
+    ("A","UEFA A"),
+    ("A_EY","UEFA A ELITE YOUTH"),
+    ("PRO","UEFA PRO"),
+    ]
+    license = models.CharField(choices=licenses,null=True,blank=False,default="null", help_text="Uprawnienia")
+    license_expiry_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data wygaśnięcia uprawnień')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class TeamsCoach(models.Model):
+    roles = [
+        ("I","PIERWSZY TRENER"),
+        ("II","DRUGI TRENER"),
+        ("AS","ASYSTENT TRENERA"),
+        ("AN","TRENER ANALITYK"),
+        ("GK","TRENER BRAMKARZY"),
+        ("PM","TRENER PRZYGOTOWANIA MOTORYCZNEGO"),
+        ("TM","TRENER MENTALNY"),
+        ("TR","TRENER "),
+    ]
+    coach = models.ForeignKey(Coach,on_delete=models.CASCADE)
+    team = models.ForeignKey(Team,on_delete=models.CASCADE)
+    takeover_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data przejęcia druzyny')
+    leaving_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data odejścia z druzyny')
+    role_in_team = models.CharField(choices=roles,null=True,blank=False,default="null",help_text="Funkcja w drużynie")
+
+
+class Grant(models.Model):
+    name = models.CharField(max_length=100,null=False,blank=False,help_text="Nazwa dofinansowania")
+    link = models.URLField(blank=True,null=True,help_text="Link do oferty")
+    founder = models.CharField(max_length=100,null=True,blank=False,help_text="Nazwa fundacji/organizacji")
+    max_amount = models.DecimalField(null=True,blank=True, max_digits=15,decimal_places=2, help_text='Maksymalna kwota dofinansowania')
+    start_of_application = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Początek przyjmowania zgłoszeń')
+    end_of_application = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Koniec przyjmowania zgłoszeń')
+    date_of_application = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data wysłania zgłoszenia')
+    end_of_processing = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Koniec przyjmowania zgłoszeń')
+    description = models.TextField(null=True, blank=True, help_text='Opis o co wnioskowano w zadaniu i na jaką kwotę')
+    grant_awarded = models.BooleanField(null=True,blank=True, help_text="Dofinansowanie przyznane")
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    
+
+class UsersGrant(models.Model):
+    grant = models.ForeignKey(Grant, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

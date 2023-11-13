@@ -17,4 +17,8 @@ admin.site.register(Sponsorship)
 admin.site.register(Sponsorship_package)
 admin.site.register(Player_data)
 admin.site.register(UsersClub)
+admin.site.register(Coach)
+admin.site.register(TeamsCoach)
+admin.site.register(Grant)
+admin.site.register(UsersGrant)
 
