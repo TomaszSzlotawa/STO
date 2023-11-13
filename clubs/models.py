@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User 
 
 # Create your models here.
 class Club(models.Model):
@@ -40,7 +41,7 @@ class Equipment(models.Model):
 class Player(models.Model):
     name = models.CharField(max_length = 60, null = True, blank = True, help_text='Imię',unique=False)
     surname = models.CharField(max_length = 60, null = True, blank = True, help_text='Nazwisko',unique=False)
-    club = models.ManyToManyField(Club)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE,blank=False,null=True)
     equipment = models.ManyToManyField(Equipment,through="Rented_equipment")
 
 
@@ -50,6 +51,8 @@ class Rented_equipment(models.Model):
     quantity = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość pożyczonego sprzętu")
     date_of_rental = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data wypożyczenia')
     date_of_return = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data zwrócenia')
+    #description = models.TextField(null=True, blank=True, help_text='Specyfikacja sprzętu')
+
 
 
 class Player_data(models.Model):
@@ -101,4 +104,12 @@ class Attendance(models.Model):
                 )
             ]
 
-    
+class Season(models.Model):
+    name = models.CharField(max_length = 9, null = True, blank = False, help_text='Nazwa sezonu',unique=False)
+    active = models.BooleanField(blank=False,null=False,default=True,help_text="Obecny sezon")
+    player = models.ManyToManyField(Player,blank=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE,blank=False, null = True)
+
+class UsersClub(models.Model):
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
