@@ -1,9 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User 
+import datetime
+
 
 # Create your models here.
 class Club(models.Model):
+    def current_year():
+        return datetime.date.today().year
+
     name = models.CharField(max_length = 50, null = True, blank = False, help_text='Nazwa klubu',unique=True)
+    addres = models.CharField(max_length=100,null = True, blank=True,help_text="Adres klubu")
+    regon = models.CharField(max_length=14,null = True, blank=True,help_text="REGON klubu")
+    nip = models.CharField(max_length=10,null = True, blank=True,help_text="REGON klubu")
+    legal_form = models.CharField(max_length=40,null=True,blank=True,help_text="Forma prawna")
+    yeor_of_foundation = models.PositiveSmallIntegerField(null = True, blank=True,help_text="Rok założenia klubu")
     
     def __str__(self):
         return f"{self.name}"
@@ -55,7 +65,7 @@ class Player(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE,blank=False,null=True)
     equipment = models.ManyToManyField(Equipment,through="Rented_equipment")
     joining_date = models.DateField(auto_now=True, auto_now_add=False, null=True, blank=False, help_text='Data dołącznia do klubu')
-
+    hidden = models.BooleanField(null=False,blank=False, default=False)
     def __str__(self):
         return f"{self.surname} {self.name} [{self.club.name}]"
 
@@ -66,7 +76,7 @@ class Rented_equipment(models.Model):
     quantity = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość pożyczonego sprzętu")
     date_of_rental = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data wypożyczenia')
     date_of_return = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data zwrócenia')
-    #description = models.TextField(null=True, blank=True, help_text='Specyfikacja sprzętu')
+    description = models.TextField(null=True, blank=True, help_text='Opis do wypożyczonego sprzętu - np. nr, rozmiar')
 
     def __str__(self):
         return f"{self.player.surname} {self.player.name} - {self.equipment.name}({self.quantity}) [{self.player.club.name}]"
@@ -181,7 +191,7 @@ class UsersClub(models.Model):
     def __str__(self):
         return f"{self.user} - {self.club}"
     
-class Coach(models.Model):
+class Coaching_Staff(models.Model):
     licenses = [
     ("UEFA D","UEFA D"),
     ("UEFA FUTSAL C","UEFA FUTSAL C"),
@@ -209,7 +219,7 @@ class Coach(models.Model):
     def __str__(self):
         return f"{self.user} - trener {self.license}"
 
-class TeamsCoach(models.Model):
+class TeamsCoaching_Staff(models.Model):
     roles = [
         ("PIERWSZY TRENER","PIERWSZY TRENER"),
         ("DRUGI TRENER","DRUGI TRENER"),
@@ -220,14 +230,14 @@ class TeamsCoach(models.Model):
         ("TRENER MENTALNY","TRENER MENTALNY"),
         ("TRENER","TRENER "),
     ]
-    coach = models.ForeignKey(Coach,on_delete=models.CASCADE)
+    coaching_Staff = models.ForeignKey(Coaching_Staff,on_delete=models.CASCADE)
     team = models.ForeignKey(Team,on_delete=models.CASCADE)
     takeover_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data przejęcia druzyny')
     leaving_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data odejścia z druzyny')
     role_in_team = models.CharField(choices=roles,null=True,blank=False,default="null",help_text="Funkcja w drużynie")
 
     def __str__(self):
-        return f"{self.team} - {self.coach.user}({self.role_in_team})"
+        return f"{self.team} - {self.coaching_Staff.user}({self.role_in_team})"
 
 
 class Grant(models.Model):
