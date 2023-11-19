@@ -160,6 +160,10 @@ class Season(models.Model):
     active = models.BooleanField(blank=False,null=False,default=True,help_text="Obecny sezon")
     player = models.ManyToManyField(Player,blank=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE,blank=False, null = True)
+    date_of_start = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data rozpoczęcia sezonu')
+    date_of_end = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data zakończenia sezonu')
+
+
 
     class Meta:
             constraints = [
