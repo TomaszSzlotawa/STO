@@ -1,19 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User 
 import datetime
+from django.core.validators import MaxValueValidator, MinValueValidator
 
+def current_year():
+    return datetime.date.today().year
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
 
 # Create your models here.
 class Club(models.Model):
-    def current_year():
-        return datetime.date.today().year
+
 
     name = models.CharField(max_length = 50, null = True, blank = False, help_text='Nazwa klubu',unique=True)
     addres = models.CharField(max_length=100,null = True, blank=True,help_text="Adres klubu")
     regon = models.CharField(max_length=14,null = True, blank=True,help_text="REGON klubu")
     nip = models.CharField(max_length=10,null = True, blank=True,help_text="REGON klubu")
     legal_form = models.CharField(max_length=40,null=True,blank=True,help_text="Forma prawna")
-    yeor_of_foundation = models.PositiveSmallIntegerField(null = True, blank=True,help_text="Rok założenia klubu")
+    yeor_of_foundation = models.PositiveSmallIntegerField(null = True, blank=True, help_text="Rok założenia klubu" , validators=[MinValueValidator(1800), max_value_current_year])
     
     def __str__(self):
         return f"{self.name}"
