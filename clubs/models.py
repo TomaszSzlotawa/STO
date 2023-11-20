@@ -21,6 +21,9 @@ class Club(models.Model):
     
     def __str__(self):
         return f"{self.name}"
+    def name_without_spaces(self):
+        return f"{self.name.replace(' ','_').replace('-','_')}"
+
 
 class Sponsor(models.Model):
     name = models.CharField(max_length = 50, null = True, blank = False, help_text='Nazwa Sponsora')
@@ -119,8 +122,8 @@ class Team(models.Model):
 
     def __str__(self):
         return f"{self.name} [{self.club.name}]"
-
-
+    def name_without_spaces(self):
+        return f"{self.name.replace(' ','_')}"
 #treningi zaplanowane do kalendarza
 class Training(models.Model):
     topic = models.CharField(max_length = 100, null = True, blank = False, help_text='Temat treningu',unique=False)
