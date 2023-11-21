@@ -86,7 +86,7 @@
                 <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
                     <li><a class="dropdown-item" href="#">Dodaj klub...</a></li>
                     <li><a class="dropdown-item" href="#">Ustawienia</a></li>
-                    <li><a class="dropdown-item" href="#">Profil</a></li>
+                    <li><a class="dropdown-item" href="{% url 'user_profile' 1 %}">Profil</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
                 </ul>

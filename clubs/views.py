@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .models import UsersClub, Club, Team
+from django.contrib.auth.models import User
+from .models import UsersClub, Club, Team, Profile
 from .forms import SignUpForm
 from django.contrib.auth import login, authenticate
 
@@ -27,3 +28,7 @@ def index(request):
     teams = Team.objects.all()
     return render(request,'clubs\main.html',{'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
 
+def user_profile(request,user_id):
+    user = get_object_or_404(User, pk = user_id)
+    #profile = get_object_or_404(Profile.user == user_id)
+    return render(request, 'clubs\\user_profile.html',{'user':user})
