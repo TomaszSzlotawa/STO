@@ -1,4 +1,37 @@
-body{
-    background-color: aqua;
+body {
+    overflow: hidden; /* Prevent page scrolling */
+    padding-top: 56px; /* Adjusted padding for the fixed top navbar */
+
 }
-li{}
+
+#sidebar {
+    overflow-y: auto; /* Add vertical scrollbar for sidebar */
+    height: 100vh;
+    max-height: calc(100vh - 96px); /* Set max height, subtracting the height of the dropdown */
+    background-color: antiquewhite;
+}
+#bottomsidebar {
+    width: 220px;
+    height: 40px;
+    background-color: inherit; /* Możesz dostosować kolor tła według swoich preferencji */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #000; /* Dodaj czarną ramkę na górze */
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1001; /* Ensure the navbar is above the dropdown */
+}
+
+.navbar-toggler {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+.dropdown{
+    background-color: inherit;
+}

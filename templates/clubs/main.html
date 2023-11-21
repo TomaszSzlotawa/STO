@@ -10,11 +10,21 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://img.freepik.com/darmowe-wektory/ptak-kolorowe-logo-wektor-gradientu_343694-1365.jpg" alt="Logo" height="30" class="d-inline-block align-top">
+            </a>
+            <span class="navbar-brand mb-0 h1">Sport Training Organizer</span>
+        </div>
+    </nav>
         {% if user.is_authenticated %}
-        <div class="flex-shrink-0 p-3 bg-white"  style="width: 220px; height: 100vh;">
-            <a href="#" class="d-flex align-items-left pb-1 mb-1 link-dark text-decoration-none border-bottom">
+        <div id="sidebar" class="flex-shrink-0 p-3"  style="width: 220px;">
+            <a href="#" class="d-flex align-items-left pb-1 mb-1 link-dark text-decoration-none">
                 Panel użytkownika
             </a>
+            <hr>
         {% for club in usersClubs  %}
             {% if club.user == user %}
                 <ul class="list-unstyled p-0 align-items-left">
@@ -67,23 +77,26 @@
 
             {% endif %}
         {% endfor %}
-        <div class="dropdown" style="position: fixed; bottom: 5px; left: 5px;">
-            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
-                <span>{{user.username}}</span>
-            </a>
-            <ul class="dropdown-menu text-small shadow show" aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="#">Dodaj klub...</a></li>
-                <li><a class="dropdown-item" href="#">Ustawienia</a></li>
-                <li><a class="dropdown-item" href="#">Profil</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
-            </ul>
+
+        <div id="bottomsidebar">
+            <div class="dropdown" style="position: fixed; bottom: 10px; left: 10px;">
+                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle " id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
+                    <span>{{user.username}}</span>
+                </a>
+                <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
+                    <li><a class="dropdown-item" href="#">Dodaj klub...</a></li>
+                    <li><a class="dropdown-item" href="#">Ustawienia</a></li>
+                    <li><a class="dropdown-item" href="#">Profil</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
+                </ul>
+            </div>
         </div>
-      </div>
+    </div>
         {% else %}
         <h1 class="display-4">zaloguj się</h1>
         {% endif %}
 
-    {% block page %}{% endblock %}
+    {% block content %}{% endblock %}
 </body>
 </html>
