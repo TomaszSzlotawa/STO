@@ -24,6 +24,7 @@ admin.site.register(UsersGrant)
 admin.site.register(Task)
 admin.site.register(Mezocycle)
 admin.site.register(Training_in_mezocycle)
+admin.site.register(Profile)
 
 
 

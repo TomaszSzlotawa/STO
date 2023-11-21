@@ -2,11 +2,37 @@ from django.db import models
 from django.contrib.auth.models import User 
 import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 def current_year():
     return datetime.date.today().year
 def max_value_current_year(value):
     return MaxValueValidator(current_year())(value)
+
+class Profile(models.Model):
+    licenses = [
+    ("UEFA D","UEFA D"),
+    ("UEFA FUTSAL C","UEFA FUTSAL C"),
+    ("UEFA C","UEFA C"),
+    ("UEFA FUTSAL B","UEFA FUTSAL B"),
+    ("UEFA GOALKEEPER B","UEFA GOALKEEPER B"),
+    ("UEFA B","UEFA B"),
+    ("UEFA B ELITE YOUTH","UEFA B ELITE YOUTH"),
+    ("UEFA GOALKEEPER A","UEFA GOALKEEPER A"),
+    ("UEFA A","UEFA A"),
+    ("UEFA A ELITE YOUTH","UEFA A ELITE YOUTH"),
+    ("UEFA PRO","UEFA PRO"),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    license = models.CharField(choices=licenses,null=True,blank=True, default="null", help_text="Uprawnienia")
+    license_expiry_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data wygaśnięcia uprawnień')
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
 
 # Create your models here.
 class Club(models.Model):
