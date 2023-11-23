@@ -7,18 +7,19 @@
 </head>
 <body>
     <form method="post">
-        {{ user.id }}
     {% csrf_token %}
     {{ user_form }}
     {{ profile_form }}
     <button type="submit">Zapisz</button>
     </form>
+    <hr>
     <form method="post">
     {% csrf_token %}
     {{ password_form }}
     <button type="submit">Zmień hasło</button>
     </form>
     <a href="{% url 'delete_profile' user.id %}" class="btn btn-secondary">Usuń swoje konto</a>
+    <a href="{% url 'index' %}" class="btn btn-secondary">Wróć</a>
 
 </body>
 </html>

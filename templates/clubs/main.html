@@ -94,7 +94,7 @@
         </div>
     </div>
         {% else %}
-        <h1 class="display-4">zaloguj się</h1>
+        <a href="{% url 'login' %}"><h1 class="display-4">zaloguj się</h1></a>
         {% endif %}
 
     {% block content %}{% endblock %}
