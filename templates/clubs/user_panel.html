@@ -1,0 +1,11 @@
+{% extends 'clubs//main.html' %}
+
+{% block title %}Panel użytkownika{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+Witaj {{ user.first_name }}
+{% else %}
+<a href="{% url 'login' %}"><h1 class="display-4">zaloguj się</h1></a>
+{% endif %}
+{% endblock %}

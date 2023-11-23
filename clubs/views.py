@@ -29,7 +29,7 @@ def index(request):
     clubs = Club.objects.all()
     usersClubs = UsersClub.objects.all()
     teams = Team.objects.all()
-    return render(request,'clubs\main.html',{'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
+    return render(request,'clubs\\user_panel.html',{'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
 
 def user_profile(request,user_id):
     user = get_object_or_404(User, pk = user_id)

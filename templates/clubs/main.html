@@ -10,7 +10,6 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
@@ -19,84 +18,91 @@
             <span class="navbar-brand mb-0 h1">Sport Training Organizer</span>
         </div>
     </nav>
-        {% if user.is_authenticated %}
-        <div id="sidebar" class="flex-shrink-0 p-3"  style="width: 220px;">
-            <a href="#" class="d-flex align-items-left pb-1 mb-1 link-dark text-decoration-none">
-                Panel użytkownika
-            </a>
-            <hr>
-        {% for club in usersClubs  %}
-            {% if club.user == user %}
-                <ul class="list-unstyled p-0 align-items-left">
-                    <li class="mb-10 align-items-left">
-                        <button class="btn btn-toggle align-items-left  rounded collapsed p-0" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}-collapse" aria-expanded="true">
-                            {{club.club}}
-                        </button>
-                        <div class="collapse" id="{{club.club.name_without_spaces}}-collapse">
-                          <ul class="list-unstyled ps-2 ">
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz klubowy</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Kadra</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
-                            <li></li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}_teams-collapse" aria-expanded="true">
-                               Drużyny
-                            </button></li>
-                            <div class="collapse" id="{{club.club.name_without_spaces}}_teams-collapse">
-                                <ul class="list-unstyled ps-2 ">
-                                    {% for team in teams  %}
-                                        {% if team.club == club.club %}
-                                    <li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{team.name_without_spaces}}-collapse" aria-expanded="true">
-                                    {{team.name}}
-                                    </button></li>
-                                    <div class="collapse" id="{{team.name_without_spaces}}-collapse">
-                                        <ul class="list-unstyled ps-2 ">
-                                            <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz {{team.name}}</a></li>
-                                            <li><a href="#" class="link-dark rounded text-decoration-none">Obecność</a></li>
-                                            <li><a href="#" class="link-dark rounded text-decoration-none">Kadra</a></li>
-                                            <li><a href="#" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
-                                            <li><a href="#" class="link-dark rounded text-decoration-none">Plan treningowy</a></li>
-                                            <li><a href="#" class="link-dark rounded text-decoration-none">Sprzęt drużyny</a></li>
-                                        </ul>
-                                      </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Sprzęt</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Obiekty</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Zadania</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Dofinansowania</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Sponsorzy</a></li>
-                            <li><a href="#" class="link-dark rounded text-decoration-none">Ustawienia klubu</a></li>
 
-                          </ul>
-                        </div>
-                    </li>
-                </ul>
-            
-            {% else %}
-
-            {% endif %}
-        {% endfor %}
-
-        <div id="bottomsidebar">
-            <div class="dropdown" style="position: fixed; bottom: 10px; left: 10px;">
-                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle " id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
-                    <span>{{user.username}}</span>
+    {% if user.is_authenticated %}
+    <div class="container-fluid">
+        <div class="row">
+            <div id="sidebar" class="flex-shrink-0 p-3"  style="width: 220px;">
+                <a href="#" class="d-flex align-items-left pb-1 mb-1 link-dark text-decoration-none">
+                    Panel użytkownika
                 </a>
-                <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
-                    <li><a class="dropdown-item" href="#">Dodaj klub...</a></li>
-                    <li><a class="dropdown-item" href="#">Ustawienia</a></li>
-                    <li><a class="dropdown-item" href="{% url 'user_profile' user.id %}">Profil</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
-                </ul>
+                <hr>
+                {% for club in usersClubs  %}
+                    {% if club.user == user %}
+                    <ul class="list-unstyled p-0 align-items-left">
+                        <li class="mb-10 align-items-left">
+                            <button class="btn btn-toggle align-items-left  rounded collapsed p-0" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}-collapse" aria-expanded="true">
+                                {{club.club}}
+                            </button>
+                            <div class="collapse" id="{{club.club.name_without_spaces}}-collapse">
+                              <ul class="list-unstyled ps-2 ">
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz klubowy</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Kadra</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
+                                <li></li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}_teams-collapse" aria-expanded="true">
+                                   Drużyny
+                                </button></li>
+                                <div class="collapse" id="{{club.club.name_without_spaces}}_teams-collapse">
+                                    <ul class="list-unstyled ps-2 ">
+                                        {% for team in teams  %}
+                                            {% if team.club == club.club %}
+                                        <li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{team.name_without_spaces}}-collapse" aria-expanded="true">
+                                        {{team.name}}
+                                        </button></li>
+                                        <div class="collapse" id="{{team.name_without_spaces}}-collapse">
+                                            <ul class="list-unstyled ps-2 ">
+                                                <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz {{team.name}}</a></li>
+                                                <li><a href="#" class="link-dark rounded text-decoration-none">Obecność</a></li>
+                                                <li><a href="#" class="link-dark rounded text-decoration-none">Kadra</a></li>
+                                                <li><a href="#" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
+                                                <li><a href="#" class="link-dark rounded text-decoration-none">Plan treningowy</a></li>
+                                                <li><a href="#" class="link-dark rounded text-decoration-none">Sprzęt drużyny</a></li>
+                                            </ul>
+                                        </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Sprzęt</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Obiekty</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Zadania</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Dofinansowania</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Sponsorzy</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Ustawienia klubu</a></li>
+    
+                              </ul>
+                            </div>
+                        </li>
+                    </ul>
+                
+                {% else %}
+    
+                {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="main-content">
+                {% block content %}{% endblock %}
             </div>
         </div>
     </div>
-        {% else %}
-        <a href="{% url 'login' %}"><h1 class="display-4">zaloguj się</h1></a>
-        {% endif %}
 
-    {% block content %}{% endblock %}
+    <div id="bottomsidebar">
+        <div class="dropdown" style="position: fixed; bottom: 10px; left: 10px;">
+            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle " id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
+                <span>{{user.username}}</span>
+            </a>
+            <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
+                <li><a class="dropdown-item" href="#">Dodaj klub...</a></li>
+                <li><a class="dropdown-item" href="#">Ustawienia</a></li>
+                <li><a class="dropdown-item" href="{% url 'user_profile' user.id %}">Profil</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
+            </ul>
+        </div>
+    </div>
+
+    {% endif %}
+
 </body>
 </html>
