@@ -93,6 +93,7 @@ def create_club(request):
 def club_settings(request, club_id):
     usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
+    users = UsersClub.objects.filter(club = club)
     form = ClubCreationForm(request.POST or None, instance = club)
     if request.method == 'POST':
         if form.is_valid():
@@ -100,7 +101,7 @@ def club_settings(request, club_id):
             return redirect(club_settings, club.id)
         else:
             messages.error(request, 'Błąd')
-    return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club})
+    return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users})
 
 def delete_club(request,club_id):
     usersClubs, teams = data_for_menu(request)
@@ -109,3 +110,23 @@ def delete_club(request,club_id):
         club.delete()
         return redirect(user_panel)
     return render(request,'clubs\\confirm_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams})
+
+def roles_in_club(request,club_id):
+    usersClubs, teams = data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    users = UsersClub.objects.filter(club = club)
+    if request.method == 'POST':
+        for user in users: 
+            admin = request.POST.get(f'admin_{user.id}') == 'on'
+            coach = request.POST.get(f'coach__{user.id}') == 'on'
+            employee = request.POST.get(f'employee_{user.id}') == 'on'
+            training_coordinator = request.POST.get(f'training_coordinator_{user.id}') == 'on'
+            # Zapisz wartości w bazie danych
+            user.admin = admin
+            user.coach = coach
+            user.employee = employee
+            user.training_coordinator = training_coordinator
+            user.save()
+
+        return redirect(club_settings, club.id)
+    return render(request,'clubs\\roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})

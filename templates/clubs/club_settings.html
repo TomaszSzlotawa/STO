@@ -12,4 +12,28 @@
   </form>
 <a href="{% url 'delete_club' club.id %}">Usuń klub</a><br>
 <a href="{% url 'user_panel' %}">Wróć</a>
+
+<hr>
+
+<h3>Role w klubie</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Imię i nazwisko</th>
+          <th>Role</th>
+      </tr>
+  </thead>
+{% for user in users %}
+  <tbody>
+      <tr>
+          <td>{{user.user.first_name}} {{user.user.last_name}}</td>
+          <td>
+            {{user.roles}}
+          </td>
+      </tr>
+  </tbody>
+{% endfor %}
+</table>
+<a href="{% url 'roles_in_club' club.id %}">Zarządzaj rolami</a>
+
 {% endblock %}

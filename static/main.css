@@ -41,3 +41,12 @@ body {
     margin-left: 220px; /* Szerokość sidebar */
     padding: 15px; /* Dodatkowy padding dla main-content */
 }
+
+td {
+    border-bottom: 1px solid #dddddd;
+}
+table {
+    border-collapse: separate;
+    border-spacing: 5px; /* Dodaj odstęp 5px między kolumnami */
+    width: 100%;
+}

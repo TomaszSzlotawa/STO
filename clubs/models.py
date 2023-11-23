@@ -232,6 +232,20 @@ class UsersClub(models.Model):
             ]
     def __str__(self):
         return f"{self.user} - {self.club}"
+    def roles(self):
+        text =''
+        if(self.admin == True):
+            text += 'Administrator klubu, '
+        if(self.coach == True):
+            text += 'Trener, '
+        if(self.employee == True):
+            text += 'Pracownik klubu, '
+        if(self.training_coordinator == True):
+            text += 'Koordynator szkolenia, '
+
+        if len(text)>0:
+            return text[:len(text)-2]
+
     
 class Coaching_Staff(models.Model):
     licenses = [

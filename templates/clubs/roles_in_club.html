@@ -1,0 +1,42 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Stwórz klub{% endblock %}
+
+{% block content %}
+
+<form action="#" method="post">
+    {% csrf_token %}
+    <table>
+        <thead>
+            <tr>
+                <th>Imię i Nazwisko</th>
+                <th>Admin</th>
+                <th>Trener</th>
+                <th>Pracownik</th>
+                <th>Koordynator szkolenia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{user.user.first_name}} {{user.user.last_name}}</td>
+                    <td>
+                        <input type="checkbox" id="admin_{{user.id}}" name="admin_{{user.id}}" {% if user.admin %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="coach_{{user.id}}" name="coach_{{user.id}}" {% if user.coach %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="employee_{{user.id}}" name="employee_{{user.id}}" {% if user.employee %}checked{% endif %}>
+                    </td>
+                    <td>
+                        <input type="checkbox" id="training_coordinator_{{user.id}}" name="training_coordinator_{{user.id}}" {% if user.training_coordinator %}checked{% endif %}>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
