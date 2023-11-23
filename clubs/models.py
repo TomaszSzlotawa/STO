@@ -43,7 +43,7 @@ class Club(models.Model):
     regon = models.CharField(max_length=14,null = True, blank=True,help_text="REGON klubu")
     nip = models.CharField(max_length=10,null = True, blank=True,help_text="REGON klubu")
     legal_form = models.CharField(max_length=40,null=True,blank=True,help_text="Forma prawna")
-    yeor_of_foundation = models.PositiveSmallIntegerField(null = True, blank=True, help_text="Rok założenia klubu" , validators=[MinValueValidator(1800), max_value_current_year])
+    year_of_foundation = models.PositiveSmallIntegerField(null = True, blank=True, help_text="Rok założenia klubu" , validators=[MinValueValidator(1800), max_value_current_year])
     
     def __str__(self):
         return f"{self.name}"
@@ -219,6 +219,11 @@ class Season(models.Model):
 class UsersClub(models.Model):
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    admin = models.BooleanField(default=False, help_text="Czy jest administratorem klubu")
+    coach = models.BooleanField(default=False, help_text="Czy jest trenerem w klubie")
+    employee = models.BooleanField(default=False, help_text="Czy jest pracownikiem w klubie")
+    training_coordinator = models.BooleanField(default=False, help_text="Czy jest koordynatorem szkolenia w klubie")
+    
     class Meta:
             constraints = [
                 models.UniqueConstraint(

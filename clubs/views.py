@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile
-from .forms import SignUpForm, ProfileForm, UserForm
+from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
@@ -20,12 +20,12 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect(index)
+            return redirect(user_panel)
     else:
         form = SignUpForm()
     return render(request, 'clubs\signup.html', {'form': form})
 
-def index(request):
+def user_panel(request):
     clubs = Club.objects.all()
     usersClubs = UsersClub.objects.all()
     teams = Team.objects.all()
@@ -59,5 +59,17 @@ def delete_profile(request,user_id):
     user = get_object_or_404(User, pk = user_id)
     if request.method == 'POST':
         user.delete()
-        return redirect(index)
+        return redirect(user_panel)
     return render(request,'clubs\\confirm.html',{'user':user})
+
+def create_club(request,user_id):
+    form = ClubCreationForm(request.POST or None)
+    if form.is_valid():
+        user = get_object_or_404(User, pk = user_id)
+        club = form.save()
+        users_club = UsersClub(club = club,user = user, admin = True)
+        users_club.save()
+        return redirect(user_panel)
+
+
+    return render(request,'clubs\\create_club.html',{'form':form})

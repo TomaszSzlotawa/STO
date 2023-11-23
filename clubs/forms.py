@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Club
 
 
 
@@ -32,3 +32,7 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('license','license_expiry_date')
 
+class ClubCreationForm(forms.ModelForm):
+    class Meta:
+        model = Club
+        fields = ('name', 'addres', 'regon', 'nip', 'legal_form', 'year_of_foundation')
