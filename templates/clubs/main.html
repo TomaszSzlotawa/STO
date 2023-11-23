@@ -29,7 +29,6 @@
                 </a>
                 <hr>
                 {% for club in usersClubs  %}
-                    {% if club.user == user %}
                     <ul class="list-unstyled p-0 align-items-left">
                         <li class="mb-10 align-items-left">
                             <button class="btn btn-toggle align-items-left  rounded collapsed p-0" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}-collapse" aria-expanded="true">
@@ -75,10 +74,6 @@
                             </div>
                         </li>
                     </ul>
-                
-                {% else %}
-    
-                {% endif %}
                 {% endfor %}
             </div>
 

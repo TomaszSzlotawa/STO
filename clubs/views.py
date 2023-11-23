@@ -8,6 +8,16 @@ from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
+
+def data_for_menu(request):
+    user = request.user
+    usersClubs = UsersClub.objects.filter(user = user)
+    teams = []
+    for club in usersClubs:
+        club_team = Team.objects.filter(club=club.club)
+        teams.extend(club_team)
+    return usersClubs, teams
+
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -26,11 +36,9 @@ def signup(request):
     return render(request, 'clubs\signup.html', {'form': form})
 
 def user_panel(request):
-    current_user = request.user
-    clubs = Club.objects.all()
-    usersClubs = UsersClub.objects.all()
-    teams = Team.objects.all()
-    return render(request,'clubs\\user_panel.html',{'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
+    usersClubs, teams = data_for_menu(request)
+
+    return render(request,'clubs\\user_panel.html',{'usersClubs':usersClubs,'teams':teams})
 
 def user_profile(request):
     user = request.user
@@ -76,8 +84,7 @@ def create_club(request,user_id):
 def club_settings(request, club_id):
     club = get_object_or_404(Club,pk=club_id)
     form = ClubCreationForm(request.POST or None, instance = club)
-    clubs = Club.objects.all()
-    usersClubs = UsersClub.objects.all()
-    teams = Team.objects.all()
-    return render(request,'clubs\\club_settings.html',{'form':form,'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
+    usersClubs, teams = data_for_menu(request)
+
+    return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
     
