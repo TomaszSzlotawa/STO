@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile
 from .forms import SignUpForm, ProfileForm, UserForm
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import PasswordChangeForm
 
 def signup(request):
     if request.method == 'POST':
@@ -36,10 +39,21 @@ def user_profile(request,user_id):
     if all((user_form.is_valid(),profile_form.is_valid())):
         user = user_form.save()
         profile = profile_form.save()
-        return redirect(index)
+        return redirect(user_profile, user.id)
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect(user_profile, user.id)
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        password_form = PasswordChangeForm(request.user)
 
     #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
-    return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form})
+    return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form})
 
 def delete_profile(request,user_id):
     user = get_object_or_404(User, pk = user_id)
