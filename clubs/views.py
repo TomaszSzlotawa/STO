@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile
-from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm
+from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
@@ -118,7 +118,7 @@ def roles_in_club(request,club_id):
     if request.method == 'POST':
         for user in users: 
             admin = request.POST.get(f'admin_{user.id}') == 'on'
-            coach = request.POST.get(f'coach__{user.id}') == 'on'
+            coach = request.POST.get(f'coach_{user.id}') == 'on'
             employee = request.POST.get(f'employee_{user.id}') == 'on'
             training_coordinator = request.POST.get(f'training_coordinator_{user.id}') == 'on'
             # Zapisz wartości w bazie danych
@@ -130,3 +130,31 @@ def roles_in_club(request,club_id):
 
         return redirect(club_settings, club.id)
     return render(request,'clubs\\roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})
+
+def add_user_to_club(request,club_id):
+    usersClubs, teams = data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    if request.method == 'POST':
+        form = UsersClubForm(club, request.POST or None)
+        if form.is_valid():
+            user = form.cleaned_data['username']
+            admin = form.cleaned_data['admin']
+            coach = form.cleaned_data['coach']
+            employee = form.cleaned_data['employee']
+            training_coordinator = form.cleaned_data['training_coordinator']
+
+            users_club, created = UsersClub.objects.get_or_create(user=user, club=club)
+
+            # Zaktualizuj dane
+            users_club.admin = admin
+            users_club.coach = coach
+            users_club.employee = employee
+            users_club.training_coordinator = training_coordinator
+            users_club.save()
+
+
+            return redirect(club_settings, club.id)
+    else:
+        form = UsersClubForm(club, request.POST or None)
+
+    return render(request,'clubs\\add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})

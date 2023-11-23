@@ -1,0 +1,16 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Dodaj użytkownika do klubu{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Dodaj</button>
+  </form>
+  
+
+
+
+{% endblock %}

@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<form action="#" method="post">
+<form action="#" method="post" name="roles">
     {% csrf_token %}
     <table>
         <thead>
@@ -37,6 +37,6 @@
         </tbody>
     </table>
 
-    <input type="submit" value="Submit">
+    <input type="submit" value="Zapisz">
 </form>
 {% endblock %}

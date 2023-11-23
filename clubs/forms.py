@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Club
+from .models import Profile, Club, UsersClub
 
 
 
@@ -36,3 +36,36 @@ class ClubCreationForm(forms.ModelForm):
     class Meta:
         model = Club
         fields = ('name', 'addres', 'regon', 'nip', 'legal_form', 'year_of_foundation')
+
+class UsersClubForm(forms.ModelForm):
+    username = forms.CharField(label='Nazwa użytkownika', required=True)
+    
+    class Meta:
+        model = UsersClub
+        fields = ['admin', 'coach', 'employee', 'training_coordinator']
+
+    def __init__(self, club, *args, **kwargs):
+        self.club = club
+        super().__init__(*args, **kwargs)
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        try:
+            user = User.objects.get(username=username)
+            return user
+        except User.DoesNotExist:
+            raise forms.ValidationError('Użytkownik o podanej nazwie nie istnieje.')
+        
+    def clean(self):
+        cleaned_data = super().clean()
+        user = cleaned_data.get('username')
+        admin = cleaned_data.get('admin')
+        coach = cleaned_data.get('coach')
+        employee = cleaned_data.get('employee')
+        training_coordinator = cleaned_data.get('training_coordinator')
+
+        if UsersClub.objects.filter(user=user, club=self.club).exists():
+            raise forms.ValidationError('Użytkownik jest już przypisany do tego klubu.')
+
+        if not any([admin, coach, employee, training_coordinator]):
+            raise forms.ValidationError('Musisz zaznaczyć co najmniej jedną opcję.')
