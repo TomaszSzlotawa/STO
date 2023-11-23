@@ -26,27 +26,28 @@ def signup(request):
     return render(request, 'clubs\signup.html', {'form': form})
 
 def user_panel(request):
+    current_user = request.user
     clubs = Club.objects.all()
     usersClubs = UsersClub.objects.all()
     teams = Team.objects.all()
     return render(request,'clubs\\user_panel.html',{'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
 
-def user_profile(request,user_id):
-    user = get_object_or_404(User, pk = user_id)
+def user_profile(request):
+    user = request.user
     user_form = UserForm(request.POST or None, instance = user)
-    profile = get_object_or_404(Profile, user = user_id)
+    profile = get_object_or_404(Profile, user = user)
     profile_form = ProfileForm(request.POST or None, instance = profile)
     if all((user_form.is_valid(),profile_form.is_valid())):
         user = user_form.save()
         profile = profile_form.save()
-        return redirect(user_profile, user.id)
+        return redirect(user_profile)
     if request.method == 'POST':
         password_form = PasswordChangeForm(request.user, request.POST)
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
-            return redirect(user_profile, user.id)
+            return redirect(user_profile)
         else:
             messages.error(request, 'Please correct the error below.')
     else:
@@ -55,8 +56,8 @@ def user_profile(request,user_id):
     #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
     return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form})
 
-def delete_profile(request,user_id):
-    user = get_object_or_404(User, pk = user_id)
+def delete_profile(request):
+    user = request.user
     if request.method == 'POST':
         user.delete()
         return redirect(user_panel)
