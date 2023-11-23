@@ -3,12 +3,13 @@
 {% block title %}Ustawienia klubu{% endblock %}
 
 {% block content %}
-{{club.name}}
+
 
 <form method="post">
     {% csrf_token %}
     {{ form }}
     <button type="submit">Zapisz</button>
   </form>
+<a href="{% url 'delete_club' club.id %}">Usuń klub</a><br>
 <a href="{% url 'user_panel' %}">Wróć</a>
 {% endblock %}

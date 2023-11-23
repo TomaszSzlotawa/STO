@@ -1,6 +1,13 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Stwórz klub{% endblock %}
+
+{% block content %}
 <h2>Załóż klub</h2>
 <form method="post">
   {% csrf_token %}
   {{ form }}
   <button type="submit">Załóż klub</button>
 </form>
+
+{% endblock %}

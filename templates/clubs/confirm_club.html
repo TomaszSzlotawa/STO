@@ -5,11 +5,11 @@
 {% block content %}
     <div class="card" style="width: 28rem;">
         <div class="card-body">
-            <h5 class="card-title">{{ user.username }}, czy na pewno chcesz usunąć swoje konto?</h5>
+            <h5 class="card-title">Czy na pewno chcesz usunąć {{club.name}}?</h5>
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger">Usuń</button>
-                <a href="{% url 'user_profile' %}" class="btn btn-secondary">wróć</a>
+                <a href="{% url 'club_settings' club.id %}" class="btn btn-secondary">wróć</a>
         </form>
             
         </div>

@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Ustawienia klubu{% endblock %}
+
+{% block content %}
     <form method="post">
     {% csrf_token %}
     {{ user_form }}
@@ -21,5 +18,4 @@
     <a href="{% url 'delete_profile' %}" class="btn btn-secondary">Usuń swoje konto</a>
     <a href="{% url 'user_panel' %}" class="btn btn-secondary">Wróć</a>
 
-</body>
-</html>
+{% endblock %}

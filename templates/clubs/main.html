@@ -89,7 +89,7 @@
                 <span>{{user.username}}</span>
             </a>
             <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="{% url 'create_club' user.id %}">Dodaj klub...</a></li>
+                <li><a class="dropdown-item" href="{% url 'create_club' %}">Dodaj klub...</a></li>
                 <li><a class="dropdown-item" href="#">Ustawienia</a></li>
                 <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profil</a></li>
                 <li><hr class="dropdown-divider"></li>
@@ -100,10 +100,15 @@
 
     {% else %}
     </div>
-
     <div class="main-content">
+
+    {% block signuup/login %}
+
         <a href="{% url 'login' %}"><h1 class="display-4">zaloguj się</h1></a>
+
+    {% endblock %}
     </div>
+
     {% endif %}
 
 

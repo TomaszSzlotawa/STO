@@ -10,12 +10,17 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 
 def data_for_menu(request):
-    user = request.user
-    usersClubs = UsersClub.objects.filter(user = user)
-    teams = []
-    for club in usersClubs:
-        club_team = Team.objects.filter(club=club.club)
-        teams.extend(club_team)
+    if request.user.is_authenticated:
+        user = request.user
+        usersClubs = UsersClub.objects.filter(user = user)
+        teams = []
+        for club in usersClubs:
+            club_team = Team.objects.filter(club=club.club)
+            teams.extend(club_team)
+    else:
+        usersClubs=[]
+        teams = []
+    
     return usersClubs, teams
 
 def signup(request):
@@ -41,6 +46,8 @@ def user_panel(request):
     return render(request,'clubs\\user_panel.html',{'usersClubs':usersClubs,'teams':teams})
 
 def user_profile(request):
+    usersClubs, teams = data_for_menu(request)
+
     user = request.user
     user_form = UserForm(request.POST or None, instance = user)
     profile = get_object_or_404(Profile, user = user)
@@ -62,29 +69,43 @@ def user_profile(request):
         password_form = PasswordChangeForm(request.user)
 
     #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
-    return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form})
+    return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams})
 
 def delete_profile(request):
+    usersClubs, teams = data_for_menu(request or None)
     user = request.user
     if request.method == 'POST':
         user.delete()
         return redirect(user_panel)
-    return render(request,'clubs\\confirm.html',{'user':user})
+    return render(request,'clubs\\confirm.html',{'user':user,'usersClubs':usersClubs,'teams':teams})
 
-def create_club(request,user_id):
+def create_club(request):
+    usersClubs, teams = data_for_menu(request)
     form = ClubCreationForm(request.POST or None)
     if form.is_valid():
-        user = get_object_or_404(User, pk = user_id)
+        user = request.user
         club = form.save()
         users_club = UsersClub(club = club,user = user, admin = True)
         users_club.save()
         return redirect(user_panel)
-    return render(request,'clubs\\create_club.html',{'form':form})
+    return render(request,'clubs\\create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
 
 def club_settings(request, club_id):
+    usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     form = ClubCreationForm(request.POST or None, instance = club)
-    usersClubs, teams = data_for_menu(request)
+    if request.method == 'POST':
+        if form.is_valid():
+            club = form.save()
+            return redirect(club_settings, club.id)
+        else:
+            messages.error(request, 'Błąd')
+    return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club})
 
-    return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
-    
+def delete_club(request,club_id):
+    usersClubs, teams = data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    if request.method == 'POST':
+        club.delete()
+        return redirect(user_panel)
+    return render(request,'clubs\\confirm_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams})
