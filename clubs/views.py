@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile
-from .forms import SignUpForm
+from .forms import SignUpForm, ProfileForm, UserForm
 from django.contrib.auth import login, authenticate
 
 def signup(request):
@@ -30,5 +30,20 @@ def index(request):
 
 def user_profile(request,user_id):
     user = get_object_or_404(User, pk = user_id)
-    #profile = get_object_or_404(Profile.user == user_id)
-    return render(request, 'clubs\\user_profile.html',{'user':user})
+    user_form = UserForm(request.POST or None, instance = user)
+    profile = get_object_or_404(Profile, user = user_id)
+    profile_form = ProfileForm(request.POST or None, instance = profile)
+    if all((user_form.is_valid(),profile_form.is_valid())):
+        user = user_form.save()
+        profile = profile_form.save()
+        return redirect(index)
+
+    #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
+    return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form})
+
+def delete_profile(request,user_id):
+    user = get_object_or_404(User, pk = user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect(index)
+    return render(request,'clubs\\confirm.html',{'user':user})
