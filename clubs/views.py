@@ -70,6 +70,13 @@ def create_club(request,user_id):
         users_club = UsersClub(club = club,user = user, admin = True)
         users_club.save()
         return redirect(user_panel)
-
-
     return render(request,'clubs\\create_club.html',{'form':form})
+
+def club_settings(request, club_id):
+    club = get_object_or_404(Club,pk=club_id)
+    form = ClubCreationForm(request.POST or None, instance = club)
+    clubs = Club.objects.all()
+    usersClubs = UsersClub.objects.all()
+    teams = Team.objects.all()
+    return render(request,'clubs\\club_settings.html',{'form':form,'clubs':clubs,'usersClubs':usersClubs,'teams':teams})
+    
