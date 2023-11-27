@@ -1,7 +1,8 @@
 from django import forms
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Club, UsersClub
+from .models import Profile, Club, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 
 
 
@@ -76,3 +77,17 @@ class UsersClubForm(forms.ModelForm):
         
 class UserRoleAnswerForm(forms.Form):
     status = forms.BooleanField(required=False, widget=forms.HiddenInput)
+
+class TeamCreateForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ['name','category']
+
+
+class SeasonCreateForm(forms.ModelForm):
+    season_name = forms.CharField(max_length = 9, required=True)
+    
+    class Meta:
+        model = Season
+        fields = ['season_name', 'date_of_start']
+    

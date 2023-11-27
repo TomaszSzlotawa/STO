@@ -4,10 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile
-from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm
+from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
+
 
 def data_for_menu(request):
     if request.user.is_authenticated:
@@ -219,3 +220,30 @@ def user_role_answer(request, club_id):
             usersclub.update(accepted = status)
             return redirect(user_roles) 
     return redirect(user_roles)
+
+def create_team(request,club_id):
+    usersClubs, teams = data_for_menu(request)
+    club = get_object_or_404(Club, pk = club_id)
+    if request.method == 'POST':
+        team_form = TeamCreateForm(request.POST)
+        season_form = SeasonCreateForm(request.POST)
+
+        if team_form.is_valid() and season_form.is_valid():
+            team = team_form.save(commit=False)
+            team.club = club
+            team.save()
+
+            season = season_form.save(commit=False)
+            season.name = season_form.cleaned_data['season_name']
+            season.team = team
+            season.save()
+
+            return redirect(club_settings, club.id)
+    else:
+        team_form = TeamCreateForm()
+        season_form = SeasonCreateForm()
+
+
+
+    return render(request,'clubs\\create_team.html',{'club':club,'usersClubs':usersClubs,
+        'teams':teams,'team_form':team_form, 'season_form':season_form})

@@ -144,8 +144,33 @@ class Place(models.Model):
         return f"{self.name}, {self.addres}"
 
 class Team(models.Model):
-    name = models.CharField(max_length = 40, null = True, blank = False, help_text='Nazwa drużyny',unique=False)
+    categories = {
+        ("U6","JUNIOR G2"),
+        ("U7","JUNIOR G1"),
+        ("U8","JUNIOR F2"),
+        ("U9","JUNIOR F1"),
+        ("U10","JUNIOR E2"),
+        ("U11","JUNIOR E1"),
+        ("U12","JUNIOR D2"),
+        ("U13","JUNIOR D1"),
+        ("U14","JUNIOR C2"),
+        ("U15","JUNIOR C1"),
+        ("U16","JUNIOR B2"),
+        ("U17","JUNIOR B1"),
+        ("U18","JUNIOR A2"),
+        ("U19","JUNIOR A1"),
+        ("SENIOR","SENIOR"),
+    }
+    name = models.CharField(max_length = 40, null = True, blank = False, help_text='Nazwa drużyny')
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
+    category = models.CharField(choices=categories, blank=True, default=None)
+
+    class Meta:
+            constraints = [
+                models.UniqueConstraint(
+                    fields=['name', 'club'], name='unique_team_name_in_club'
+                )
+            ]
 
     def __str__(self):
         return f"{self.name} [{self.club.name}]"

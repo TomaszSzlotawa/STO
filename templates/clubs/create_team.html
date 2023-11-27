@@ -1,0 +1,27 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Utwórz drużynę{% endblock %}
+
+{% block content %}
+
+{% if team_errors %}
+  <div class="error">
+    {{ team_errors }}
+  </div>
+{% endif %}
+
+{% if season_errors %}
+  <div class="error">
+    {{ season_errors }}
+  </div>
+{% endif %}
+
+<h2>Utwórz drużynę</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ team_form }}
+  {{ season_form }}
+  <button type="submit">Utwórz drużynę</button>
+</form>
+
+{% endblock %}

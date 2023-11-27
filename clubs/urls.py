@@ -14,5 +14,6 @@ urlpatterns = [
     path('profile/roles/answer<int:club_id>', views.user_role_answer, name= 'user_role_answer'),
     path('profile/delete/', views.delete_profile, name= 'delete_profile'),
     path('delete/<int:club_id>', views.delete_club, name= 'delete_club'),
+    path("teams/<int:club_id>", views.create_team, name='create_team'),
 ]
 

@@ -37,4 +37,15 @@
 <a href="{% url 'roles_in_club' club.id %}">Zarządzaj rolami</a> <br>
 <a href="{% url 'add_user_to_club' club.id %}">Dodaj użytkownika</a>
 
+<hr>
+<h3>Drużyny</h3>
+
+{% for team in teams %}
+{% if team.club == club %}
+<p>{{team.name}}</p>
+{% endif %}
+{% endfor %}
+<a href="{% url 'create_team' club.id %}">Stwórz nową drużynę</a>
+
+
 {% endblock %}
