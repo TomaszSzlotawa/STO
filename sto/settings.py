@@ -139,5 +139,13 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'user_panel'
 LOGOUT_REDIRECT_URL = 'login'
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
+#EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+#EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-relay.brevo.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = env("SMTP_EMAIL")
+EMAIL_HOST_PASSWORD = env("SMTP_PASSWORD")
