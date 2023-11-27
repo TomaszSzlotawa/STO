@@ -127,7 +127,8 @@ def roles_in_club(request,club_id):
     if request.method == 'POST':
         for user in users: 
             if request.POST.get(f'admin_{user.id}') == 'on':
-                contains_admin = True
+                if user.accepted==True:
+                    contains_admin = True
         if contains_admin:
             for user in users: 
                 admin = request.POST.get(f'admin_{user.id}') == 'on'
@@ -188,8 +189,15 @@ def user_roles(request):
 
 def user_role_delete(request, club_id):
     club = get_object_or_404(Club, pk = club_id)
-    usersclub = UsersClub.objects.filter(user = request.user, club=club)
-    usersclub.delete()
+    users = UsersClub.objects.filter(club = club)
+    if request.method == 'POST':
+        for user in users: 
+            if user.admin == True and user.user != request.user:
+                if user.accepted==True:
+                    usersclub = UsersClub.objects.filter(user = request.user, club=club)
+                    usersclub.delete()
+
+
     return redirect(user_roles)
 def user_role_answer(request, club_id):
     if request.method == 'POST':
