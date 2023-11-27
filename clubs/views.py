@@ -145,9 +145,9 @@ def add_user_to_club(request,club_id):
     usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     if request.method == 'POST':
-        form = UsersClubForm(club, request.POST or None)
+        form = UsersClubForm(club, request.POST)
         if form.is_valid():
-            user = form.cleaned_data['username']
+            user = form.cleaned_data['email'] 
             admin = form.cleaned_data['admin']
             coach = form.cleaned_data['coach']
             employee = form.cleaned_data['employee']
@@ -162,9 +162,13 @@ def add_user_to_club(request,club_id):
             users_club.training_coordinator = training_coordinator
             users_club.save()
 
+            return redirect('club_settings', club.id)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
 
-            return redirect(club_settings, club.id)
     else:
-        form = UsersClubForm(club, request.POST or None)
+        form = UsersClubForm(club)
 
     return render(request,'clubs\\add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})

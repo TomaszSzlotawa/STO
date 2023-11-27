@@ -30,15 +30,19 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ('license','license_expiry_date')
+        fields = ('birth_date', 'license','license_expiry_date')
 
 class ClubCreationForm(forms.ModelForm):
     class Meta:
         model = Club
         fields = ('name', 'addres', 'regon', 'nip', 'legal_form', 'year_of_foundation')
 
+from django import forms
+from django.contrib.auth.models import User
+from .models import UsersClub
+
 class UsersClubForm(forms.ModelForm):
-    username = forms.CharField(label='Nazwa użytkownika', required=True)
+    email = forms.EmailField(label='Adres email', required=True)
     
     class Meta:
         model = UsersClub
@@ -48,17 +52,17 @@ class UsersClubForm(forms.ModelForm):
         self.club = club
         super().__init__(*args, **kwargs)
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
+    def clean_email(self):
+        email = self.cleaned_data['email']
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
             return user
         except User.DoesNotExist:
-            raise forms.ValidationError('Użytkownik o podanej nazwie nie istnieje.')
+            raise forms.ValidationError('Użytkownik o podanym adresie email nie istnieje.')
         
     def clean(self):
         cleaned_data = super().clean()
-        user = cleaned_data.get('username')
+        user = cleaned_data.get('email')
         admin = cleaned_data.get('admin')
         coach = cleaned_data.get('coach')
         employee = cleaned_data.get('employee')

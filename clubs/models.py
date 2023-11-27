@@ -25,6 +25,7 @@ class Profile(models.Model):
     ("UEFA PRO","UEFA PRO"),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    birth_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data urodzin')
     license = models.CharField(choices=licenses,null=True,blank=True, default="null", help_text="Uprawnienia")
     license_expiry_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data wygaśnięcia uprawnień')
 
