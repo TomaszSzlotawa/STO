@@ -7,7 +7,7 @@ from .models import UsersClub, Club, Team, Profile
 from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
-
+from django.core.mail import send_mail
 
 def data_for_menu(request):
     if request.user.is_authenticated:
@@ -35,10 +35,20 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
+            send_mail(
+            "Witamy w STO",
+            f"witaj {user.first_name}, właśnie założyłeś konto w systemie STO.",
+            "welcome@sto.com",
+            [f"{user.email}"],
+            fail_silently=False,
+)
             return redirect(user_panel)
     else:
         form = SignUpForm()
     return render(request, 'clubs\signup.html', {'form': form})
+
+
+
 
 def user_panel(request):
     usersClubs, teams = data_for_menu(request)

@@ -7,6 +7,10 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <input type="checkbox" value="0" id="consent" name="consent" required="True">
+        <label  for="consent">
+            Akceptuję regulamin serwisu. Wyrażam zgodę na przetwarzanie moich danych osobowych oraz akceptuję politykę prywatności.
+        </label>
     <button type="submit">Zarejestruj się</button>
     <a href="{% url 'login' %}" class=" ">wróć</a>
   </form>
