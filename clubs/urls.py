@@ -9,8 +9,9 @@ urlpatterns = [
     path("settings/roles/<int:club_id>", views.roles_in_club, name='roles_in_club'),
     path("settings/roles/add_user<int:club_id>", views.add_user_to_club, name='add_user_to_club'),
     path('profile/', views.user_profile, name= 'user_profile'),
+    path('profile/roles', views.user_roles, name= 'user_roles'),
+    path('profile/roles/delete<int:club_id>', views.user_role_delete, name= 'user_role_delete'),
     path('profile/delete/', views.delete_profile, name= 'delete_profile'),
     path('delete/<int:club_id>', views.delete_club, name= 'delete_club'),
-
 ]
 

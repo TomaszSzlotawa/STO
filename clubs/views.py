@@ -172,3 +172,13 @@ def add_user_to_club(request,club_id):
         form = UsersClubForm(club)
 
     return render(request,'clubs\\add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})
+
+def user_roles(request):
+    usersClubs, teams = data_for_menu(request)
+    return render(request,'clubs\\user_roles.html',{'usersClubs':usersClubs,'teams':teams})
+
+def user_role_delete(request, club_id):
+    club = get_object_or_404(Club, pk = club_id)
+    usersclub = UsersClub.objects.filter(user = request.user, club=club)
+    usersclub.delete()
+    return redirect(user_roles)

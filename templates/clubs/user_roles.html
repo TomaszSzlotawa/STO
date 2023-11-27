@@ -1,0 +1,35 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Ustawienia klubu{% endblock %}
+
+{% block content %}
+
+{% csrf_token %}
+
+
+
+<h3>Role w klubach</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Klub</th>
+          <th>Role</th>
+      </tr>
+  </thead>
+{% for usersClub in usersClubs %}
+  <tbody>
+      <tr>
+          <td>{{usersClub.club.name}}</td>
+          <td>
+            {{usersClub.roles}}
+          </td>
+          <td>
+            <a href="{% url 'user_role_delete' usersClub.club.id %}">Zrezygnuj</a> <br>
+          </td>
+      </tr>
+  </tbody>
+{% endfor %}
+</table>
+
+
+{% endblock %}
