@@ -239,6 +239,13 @@ class Season(models.Model):
             active_="Archiwalny"
         return f"Sezon {self.name} - {self.team} - {active_}" 
 
+    def name_and_status(self):
+        active_ = ""
+        if self.active:
+            active_="Aktywny"
+        else:
+            active_="Archiwalny"
+        return f"Sezon {self.name} [{active_}]" 
 
 
 

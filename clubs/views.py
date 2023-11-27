@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import UsersClub, Club, Team, Profile
+from .models import UsersClub, Club, Team, Profile, Season
 from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
@@ -104,6 +104,7 @@ def create_club(request):
 def club_settings(request, club_id):
     usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
+    seasons = Season.objects.filter(team__in=teams)
     allowed = False
     for usersClub in usersClubs:
         if usersClub.club == club:
@@ -119,7 +120,7 @@ def club_settings(request, club_id):
                 return redirect(club_settings, club.id)
             else:
                 messages.error(request, 'Błąd')
-        return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users})
+        return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users,'seasons':seasons})
     else:
         return redirect(user_panel)
 def delete_club(request,club_id):
@@ -243,7 +244,22 @@ def create_team(request,club_id):
         team_form = TeamCreateForm()
         season_form = SeasonCreateForm()
 
-
-
     return render(request,'clubs\\create_team.html',{'club':club,'usersClubs':usersClubs,
         'teams':teams,'team_form':team_form, 'season_form':season_form})
+
+def delete_team(request, team_id):
+    usersClubs, teams = data_for_menu(request)
+    team = get_object_or_404(Team,pk=team_id)
+    club = team.club
+    if request.method == 'POST':
+        team.delete()
+        return redirect(club_settings,club.id)
+    return render(request,'clubs\\confirm_team.html',{'team':team,'club':club,'usersClubs':usersClubs,'teams':teams})
+
+def edit_team(request, team_id):
+    usersClubs, teams = data_for_menu(request)
+    team = get_object_or_404(Team,pk=team_id)
+    club = team.club
+    team_form = TeamCreateForm(instance=team)
+    return render(request,'clubs\\create_team.html',{'club':club,'usersClubs':usersClubs,
+        'teams':teams,'team_form':team_form})

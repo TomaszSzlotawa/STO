@@ -39,12 +39,39 @@
 
 <hr>
 <h3>Drużyny</h3>
-
+<table>
+  <thead>
+      <tr>
+          <th>Nazwa</th>
+          <th>Kategoria wiekowa</th>
+          <th>Sezony</th>
+      </tr>
+  </thead>
 {% for team in teams %}
+
 {% if team.club == club %}
-<p>{{team.name}}</p>
+<tbody>
+  <tr>
+      <td>{{team.name}}</td>
+      <td>
+        {{team.category}}
+      </td>
+      <td>
+        {% for season in seasons %}
+          {% if season.team == team %}
+            {{season.name_and_status}} <br>
+          {% endif %}
+        {% endfor %}
+      </td>
+      <td>
+        <a href="{% url 'delete_team' team.id %}">Usuń</a>
+      </td>
+  </tr>
+</tbody>
 {% endif %}
 {% endfor %}
+</table>
+
 <a href="{% url 'create_team' club.id %}">Stwórz nową drużynę</a>
 
 

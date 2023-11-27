@@ -91,3 +91,29 @@ class SeasonCreateForm(forms.ModelForm):
         model = Season
         fields = ['season_name', 'date_of_start']
     
+class SeasonChoseForm(forms.ModelForm):
+    season_name = forms.CharField(max_length=9, required=True)
+    existing_season = forms.ModelChoiceField(queryset=Season.objects.none(), required=False, empty_label="Wybierz istniejący sezon")
+
+    class Meta:
+        model = Season
+        fields = ['season_name', 'date_of_start']
+
+    def __init__(self, *args, **kwargs):
+        team = kwargs.pop('team', None)
+        super(SeasonCreateForm, self).__init__(*args, **kwargs)
+
+        # Aktualizuj queryset dla existing_season na podstawie dostarczonej drużyny
+        if team:
+            self.fields['existing_season'].queryset = Season.objects.filter(team=team)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        season_name = cleaned_data.get('season_name')
+        existing_season = cleaned_data.get('existing_season')
+
+        # Sprawdź, czy użytkownik wybrał albo nowy sezon albo istniejący sezon
+        if not (season_name or existing_season):
+            raise forms.ValidationError('Musisz wybrać istniejący sezon lub wprowadzić nowy sezon.')
+
+        return cleaned_data
