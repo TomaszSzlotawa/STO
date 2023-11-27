@@ -12,7 +12,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 def data_for_menu(request):
     if request.user.is_authenticated:
         user = request.user
-        usersClubs = UsersClub.objects.filter(user = user)
+        usersClubs = UsersClub.objects.filter(user = user, accepted = True)
         teams = []
         for club in usersClubs:
             club_team = Team.objects.filter(club=club.club)
@@ -93,16 +93,24 @@ def create_club(request):
 def club_settings(request, club_id):
     usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
-    users = UsersClub.objects.filter(club = club)
-    form = ClubCreationForm(request.POST or None, instance = club)
-    if request.method == 'POST':
-        if form.is_valid():
-            club = form.save()
-            return redirect(club_settings, club.id)
-        else:
-            messages.error(request, 'Błąd')
-    return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users})
+    allowed = False
+    for usersClub in usersClubs:
+        if usersClub.club == club:
+            if usersClub.admin == True:
+                allowed=True
 
+    if allowed:
+        users = UsersClub.objects.filter(club = club)
+        form = ClubCreationForm(request.POST or None, instance = club)
+        if request.method == 'POST':
+            if form.is_valid():
+                club = form.save()
+                return redirect(club_settings, club.id)
+            else:
+                messages.error(request, 'Błąd')
+        return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users})
+    else:
+        return redirect(user_panel)
 def delete_club(request,club_id):
     usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
@@ -175,7 +183,8 @@ def add_user_to_club(request,club_id):
 
 def user_roles(request):
     usersClubs, teams = data_for_menu(request)
-    return render(request,'clubs\\user_roles.html',{'usersClubs':usersClubs,'teams':teams})
+    usersClubs_roles = UsersClub.objects.filter(user = request.user)
+    return render(request,'clubs\\user_roles.html',{'usersClubs':usersClubs,'teams':teams,'usersClubs_roles':usersClubs_roles})
 
 def user_role_delete(request, club_id):
     club = get_object_or_404(Club, pk = club_id)

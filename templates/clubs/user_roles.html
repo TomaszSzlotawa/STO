@@ -4,7 +4,6 @@
 
 {% block content %}
 
-{% csrf_token %}
 
 
 
@@ -16,7 +15,7 @@
           <th>Role</th>
       </tr>
   </thead>
-{% for usersClub in usersClubs %}
+{% for usersClub in usersClubs_roles %}
 {% if usersClub.accepted != False %}
   <tbody>
       <tr>
