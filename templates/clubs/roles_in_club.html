@@ -3,7 +3,8 @@
 {% block title %}Stwórz klub{% endblock %}
 
 {% block content %}
-
+<p>W klubie musi być co njmniej jeden administrator.</p>
+<p>Jeśli usuniesz użytkownikowi wszystkie role w klubie zostanie wtedy usunięty z klubu</p>
 <form action="#" method="post" name="roles">
     {% csrf_token %}
     <table>

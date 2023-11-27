@@ -110,7 +110,7 @@ class Rented_equipment(models.Model):
     date_of_rental = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data wypożyczenia')
     date_of_return = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data zwrócenia')
     description = models.TextField(null=True, blank=True, help_text='Opis do wypożyczonego sprzętu - np. nr, rozmiar')
-
+    #numer opcjonalny, rozmiar opcjonalny
     def __str__(self):
         return f"{self.player.surname} {self.player.name} - {self.equipment.name}({self.quantity}) [{self.player.club.name}]"
 

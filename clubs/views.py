@@ -115,18 +115,28 @@ def roles_in_club(request,club_id):
     usersClubs, teams = data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     users = UsersClub.objects.filter(club = club)
+    contains_admin = False
     if request.method == 'POST':
         for user in users: 
-            admin = request.POST.get(f'admin_{user.id}') == 'on'
-            coach = request.POST.get(f'coach_{user.id}') == 'on'
-            employee = request.POST.get(f'employee_{user.id}') == 'on'
-            training_coordinator = request.POST.get(f'training_coordinator_{user.id}') == 'on'
-            # Zapisz wartości w bazie danych
-            user.admin = admin
-            user.coach = coach
-            user.employee = employee
-            user.training_coordinator = training_coordinator
-            user.save()
+            if request.POST.get(f'admin_{user.id}') == 'on':
+                contains_admin = True
+        if contains_admin:
+            for user in users: 
+                admin = request.POST.get(f'admin_{user.id}') == 'on'
+                coach = request.POST.get(f'coach_{user.id}') == 'on'
+                employee = request.POST.get(f'employee_{user.id}') == 'on'
+                training_coordinator = request.POST.get(f'training_coordinator_{user.id}') == 'on'
+                
+                if admin or coach or employee or training_coordinator:
+                    user.admin = admin
+                    user.coach = coach
+                    user.employee = employee
+                    user.training_coordinator = training_coordinator
+                    user.save()
+                else:
+                    user.delete()
+        else:
+            return redirect(roles_in_club,club.id)
 
         return redirect(club_settings, club.id)
     return render(request,'clubs\\roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})
