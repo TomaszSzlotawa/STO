@@ -224,6 +224,7 @@ class UsersClub(models.Model):
     coach = models.BooleanField(default=False, help_text="Czy jest trenerem w klubie")
     employee = models.BooleanField(default=False, help_text="Czy jest pracownikiem w klubie")
     training_coordinator = models.BooleanField(default=False, help_text="Czy jest koordynatorem szkolenia w klubie")
+    accepted = models.BooleanField(default=None, null = True, blank=True, help_text='Czy użytkownik zaakceptował zaproszenie' )
     
     class Meta:
             constraints = [
@@ -233,6 +234,14 @@ class UsersClub(models.Model):
             ]
     def __str__(self):
         return f"{self.user} - {self.club}"
+    def status(self):
+        if self.accepted == None:
+            return "(Oczekujące)"
+        elif self.accepted == False:
+            return "(Odrzucone)"
+        else:
+            return ""
+
     def roles(self):
         text =''
         if(self.admin == True):

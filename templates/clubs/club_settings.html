@@ -26,7 +26,7 @@
 {% for user in users %}
   <tbody>
       <tr>
-          <td>{{user.user.first_name}} {{user.user.last_name}}</td>
+          <td>{{user.user.first_name}} {{user.user.last_name}}{{user.status}}</td>
           <td>
             {{user.roles}}
           </td>

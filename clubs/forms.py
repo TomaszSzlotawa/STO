@@ -73,3 +73,6 @@ class UsersClubForm(forms.ModelForm):
 
         if not any([admin, coach, employee, training_coordinator]):
             raise forms.ValidationError('Musisz zaznaczyć co najmniej jedną opcję.')
+        
+class UserRoleAnswerForm(forms.Form):
+    status = forms.BooleanField(required=False, widget=forms.HiddenInput)

@@ -17,6 +17,7 @@
       </tr>
   </thead>
 {% for usersClub in usersClubs %}
+{% if usersClub.accepted != False %}
   <tbody>
       <tr>
           <td>{{usersClub.club.name}}</td>
@@ -24,10 +25,24 @@
             {{usersClub.roles}}
           </td>
           <td>
-            <a href="{% url 'user_role_delete' usersClub.club.id %}">Zrezygnuj</a> <br>
+            {% if usersClub.accepted == True %}
+                <a href="{% url 'user_role_delete' usersClub.club.id %}">Zrezygnuj</a> <br>
+            {% elif usersClub.accepted == None  %}
+                <form method="post" action="{% url 'user_role_answer' usersClub.club.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="True">
+                    <button type="submit" class="btn btn-success">Zaakceptuj</button>
+                </form>
+                <form method="post" action="{% url 'user_role_answer' usersClub.club.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="False">
+                    <button type="submit" class="btn btn-danger">Odrzuć</button>
+                </form>
+            {% endif %}
           </td>
       </tr>
   </tbody>
+{% endif %}
 {% endfor %}
 </table>
 

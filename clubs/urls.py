@@ -11,6 +11,7 @@ urlpatterns = [
     path('profile/', views.user_profile, name= 'user_profile'),
     path('profile/roles', views.user_roles, name= 'user_roles'),
     path('profile/roles/delete<int:club_id>', views.user_role_delete, name= 'user_role_delete'),
+    path('profile/roles/answer<int:club_id>', views.user_role_answer, name= 'user_role_answer'),
     path('profile/delete/', views.delete_profile, name= 'delete_profile'),
     path('delete/<int:club_id>', views.delete_club, name= 'delete_club'),
 ]

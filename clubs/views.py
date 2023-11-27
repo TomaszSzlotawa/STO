@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile
-from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm
+from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 
@@ -85,7 +85,7 @@ def create_club(request):
     if form.is_valid():
         user = request.user
         club = form.save()
-        users_club = UsersClub(club = club,user = user, admin = True)
+        users_club = UsersClub(club = club,user = user, admin = True, accepted = True)
         users_club.save()
         return redirect(user_panel)
     return render(request,'clubs\\create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
@@ -181,4 +181,14 @@ def user_role_delete(request, club_id):
     club = get_object_or_404(Club, pk = club_id)
     usersclub = UsersClub.objects.filter(user = request.user, club=club)
     usersclub.delete()
+    return redirect(user_roles)
+def user_role_answer(request, club_id):
+    if request.method == 'POST':
+        club = get_object_or_404(Club, pk = club_id)
+        form = UserRoleAnswerForm(request.POST)
+        if form.is_valid():
+            status = form.cleaned_data['status']
+            usersclub = UsersClub.objects.filter(user = request.user, club=club)
+            usersclub.update(accepted = status)
+            return redirect(user_roles) 
     return redirect(user_roles)
