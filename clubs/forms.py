@@ -91,7 +91,7 @@ class SeasonCreateForm(forms.ModelForm):
         model = Season
         fields = ['season_name', 'date_of_start']
     
-class SeasonChoseForm(forms.ModelForm):
+class SeasonChooseForm(forms.ModelForm):
     season_name = forms.CharField(max_length=9, required=True)
     existing_season = forms.ModelChoiceField(queryset=Season.objects.none(), required=False, empty_label="Wybierz istniejący sezon")
 
@@ -101,7 +101,7 @@ class SeasonChoseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         team = kwargs.pop('team', None)
-        super(SeasonCreateForm, self).__init__(*args, **kwargs)
+        super(SeasonChooseForm, self).__init__(*args, **kwargs)
 
         # Aktualizuj queryset dla existing_season na podstawie dostarczonej drużyny
         if team:

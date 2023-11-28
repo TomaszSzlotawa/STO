@@ -52,7 +52,8 @@
 {% if team.club == club %}
 <tbody>
   <tr>
-      <td>{{team.name}}</td>
+      <td>
+        <a href="{% url 'edit_team' team.id %}" style="text-decoration: none;">{{team.name}}</a></td>
       <td>
         {{team.category}}
       </td>
