@@ -3,14 +3,14 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import UsersClub, Club, Team, Profile, Season
+from .models import UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
 
 
-def data_for_menu(request):
+def get_data_for_menu(request):
     if request.user.is_authenticated:
         user = request.user
         usersClubs = UsersClub.objects.filter(user = user, accepted = True)
@@ -52,12 +52,12 @@ def signup(request):
 
 
 def user_panel(request):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
 
     return render(request,'clubs\\user_panel.html',{'usersClubs':usersClubs,'teams':teams})
 
 def user_profile(request):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
 
     user = request.user
     user_form = UserForm(request.POST or None, instance = user)
@@ -83,7 +83,7 @@ def user_profile(request):
     return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams})
 
 def delete_profile(request):
-    usersClubs, teams = data_for_menu(request or None)
+    usersClubs, teams = get_data_for_menu(request or None)
     user = request.user
     if request.method == 'POST':
         user.delete()
@@ -91,7 +91,7 @@ def delete_profile(request):
     return render(request,'clubs\\confirm.html',{'user':user,'usersClubs':usersClubs,'teams':teams})
 
 def create_club(request):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     form = ClubCreationForm(request.POST or None)
     if form.is_valid():
         user = request.user
@@ -102,7 +102,7 @@ def create_club(request):
     return render(request,'clubs\\create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
 
 def club_settings(request, club_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     seasons = Season.objects.filter(team__in=teams)
     allowed = False
@@ -124,7 +124,7 @@ def club_settings(request, club_id):
     else:
         return redirect(user_panel)
 def delete_club(request,club_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     if request.method == 'POST':
         club.delete()
@@ -132,7 +132,7 @@ def delete_club(request,club_id):
     return render(request,'clubs\\confirm_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams})
 
 def roles_in_club(request,club_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     users = UsersClub.objects.filter(club = club)
     contains_admin = False
@@ -163,7 +163,7 @@ def roles_in_club(request,club_id):
     return render(request,'clubs\\roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})
 
 def add_user_to_club(request,club_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     if request.method == 'POST':
         form = UsersClubForm(club, request.POST)
@@ -195,7 +195,7 @@ def add_user_to_club(request,club_id):
     return render(request,'clubs\\add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})
 
 def user_roles(request):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     usersClubs_roles = UsersClub.objects.filter(user = request.user)
     return render(request,'clubs\\user_roles.html',{'usersClubs':usersClubs,'teams':teams,'usersClubs_roles':usersClubs_roles})
 
@@ -223,7 +223,7 @@ def user_role_answer(request, club_id):
     return redirect(user_roles)
 
 def create_team(request,club_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk = club_id)
     if request.method == 'POST':
         team_form = TeamCreateForm(request.POST)
@@ -248,7 +248,7 @@ def create_team(request,club_id):
         'teams':teams,'team_form':team_form, 'season_form':season_form})
 
 def delete_team(request, team_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     club = team.club
     if request.method == 'POST':
@@ -257,27 +257,31 @@ def delete_team(request, team_id):
     return render(request,'clubs\\confirm_team.html',{'team':team,'club':club,'usersClubs':usersClubs,'teams':teams})
 
 def edit_team(request, team_id):
-    usersClubs, teams = data_for_menu(request)
+    usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     club = team.club
     active_season = Season.objects.filter(team=team, active=True).first()
     season_form = SeasonChooseForm(request.POST or None, team=team, active_season=active_season)
     team_form = TeamCreateForm(request.POST or None, instance=team)
     if request.method == 'POST':
-        if 'team-submit' in request.POST:
-            if team_form.is_valid:
-                team = team_form.save()
-                return redirect(edit_team,team.id)
-        if 'season-submit' in request.POST:
-            if season_form.is_valid:
-                selected_season_id = request.POST.get('active_season')
-                if selected_season_id:
-                    Season.objects.filter(team=team).exclude(id=selected_season_id).update(active=False)
-                    season = get_object_or_404(Season,pk=selected_season_id)
-                    print(season)
-                    season.active = True
-                    season.save()
-                return redirect(edit_team,team.id)
+        if team_form.is_valid:
+            team = team_form.save()
+        if season_form.is_valid:
+            selected_season_id = request.POST.get('active_season')
+            if selected_season_id:
+                Season.objects.filter(team=team).exclude(id=selected_season_id).update(active=False)
+                season = get_object_or_404(Season,pk=selected_season_id)
+                print(season)
+                season.active = True
+                season.save()
+        return redirect(edit_team,team.id)
 
     return render(request,'clubs\\edit_team.html',{'club':club,'usersClubs':usersClubs,
         'teams':teams,'team_form':team_form, 'season_form':season_form})
+
+def club_staff(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    players = Player.objects.filter(club=club)
+
+    return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players})

@@ -1,0 +1,15 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Stwórz zawodnika{% endblock %}
+
+{% block content %}
+
+h2>Stwórz zawodnika</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ team_form }}
+  {{ season_form }}
+  <button type="submit">Stwórz zawodnika</button>
+</form>
+
+{% endblock %}

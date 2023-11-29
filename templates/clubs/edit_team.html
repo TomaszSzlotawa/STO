@@ -20,13 +20,8 @@
 <form method="post">
   {% csrf_token %}
   {{ team_form }}
-  <input  name="team-submit" value="Zapisz" type="submit"/>
-</form>
-
-<form method="post">
-  {% csrf_token %}
   {{ season_form }}
-  <input  name="season-submit" value="Zapisz" type="submit"/>
+  <input  name="submit" value="Zapisz" type="submit"/>
 
 
 </form>

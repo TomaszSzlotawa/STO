@@ -1,0 +1,39 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+
+<h3>Kadra klubu</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Data urodzin</th>
+            <th>Drużyny</th>
+        </tr>
+    </thead>
+  {% for player in players %}
+  <tbody>
+    <tr>
+        <td>
+            {{player.name}}
+        </td>
+        <td>
+            {{player.surname}}
+        </td>
+        <td>
+            {{player.player_data.date_of_birth}}
+        </td>
+        <td>
+          
+        </td>
+    </tr>
+  </tbody>
+  {% endfor %}
+  </table>
+
+
+
+{% endblock %}

@@ -121,4 +121,9 @@ class SeasonChooseForm(forms.Form):
 
         return existing_season
 
+class CreatePlayer(forms.ModelForm):
+    class Meta:
+        model = Player
+        fields = ['name','surname']
+        
 
