@@ -352,3 +352,10 @@ def delete_player_from_club(request, player_id):
     club = player.club
     player.delete()
     return redirect(club_staff, club.id)
+
+def hide_player_in_club(request, player_id):
+    player = get_object_or_404(Player,pk = player_id)
+    club = player.club
+    player.hidden = True
+    player.save()
+    return redirect(club_staff, club.id)

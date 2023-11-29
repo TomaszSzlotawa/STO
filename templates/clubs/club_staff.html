@@ -15,6 +15,7 @@
         </tr>
     </thead>
   {% for player in players %}
+  {% if not player.hidden %}
   <tbody>
     <tr>
         <td>
@@ -40,6 +41,7 @@
         </td>
     </tr>
   </tbody>
+  {% endif %}
   {% endfor %}
   </table>
   <a href="{% url 'create_player' club.id %}">Dodaj zawodnika</a>
