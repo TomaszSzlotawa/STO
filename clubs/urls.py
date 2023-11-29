@@ -20,6 +20,7 @@ urlpatterns = [
     path('delete/<int:club_id>', views.delete_club, name= 'delete_club'),
     path("teams/<int:club_id>", views.create_team, name='create_team'),
     path("teams/staff/<int:team_id>", views.team_staff, name='team_staff'),
+    path("teams/staff/delete/<int:season_id>;<int:player_id>", views.delete_player_from_team, name='delete_player_from_team'),
     path("teams/staff/add/<int:team_id>", views.add_player, name='add_player'),
     path("teams/edit/<int:team_id>", views.edit_team, name='edit_team'),
     path("teams/delete/<int:team_id>", views.delete_team, name='delete_team'),

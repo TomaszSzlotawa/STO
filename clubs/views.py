@@ -314,7 +314,7 @@ def team_staff(request, team_id):
         players = season.player.all()
     else:
         players = []
-    return render(request,'clubs\\team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team})
+    return render(request,'clubs\\team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team, 'season':season})
 
 def add_player(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -360,3 +360,11 @@ def hide_player_in_club(request, player_id):
     player.hidden = not player.hidden
     player.save()
     return redirect(club_staff, club.id)
+
+
+def delete_player_from_team(request, season_id, player_id):
+    player = get_object_or_404(Player, pk = player_id)
+    season = get_object_or_404(Season, pk=season_id)
+    season.player.remove(player)
+    
+    return redirect(team_staff, season.team.id)

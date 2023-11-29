@@ -27,7 +27,9 @@
         <td>
             {{player.player_data.date_of_birth}}
         </td>
-
+        <td>
+            <a href="{% url 'delete_player_from_team' season.id player.id %}">Usuń zawodnika z klubu</a><br>
+        </td>
     </tr>
   </tbody>
   {% endfor %}
