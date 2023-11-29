@@ -94,8 +94,8 @@ class Equipment(models.Model):
         return f"{self.name} [{self.club.name}]"
 
 class Player(models.Model):
-    name = models.CharField(max_length = 60, null = True, blank = True, help_text='Imię',unique=False)
-    surname = models.CharField(max_length = 60, null = True, blank = True, help_text='Nazwisko',unique=False)
+    name = models.CharField(max_length = 60, null = True, blank = False, help_text='Imię',unique=False)
+    surname = models.CharField(max_length = 60, null = True, blank = False, help_text='Nazwisko',unique=False)
     club = models.ForeignKey(Club, on_delete=models.CASCADE,blank=False,null=True)
     equipment = models.ManyToManyField(Equipment,through="Rented_equipment")
     joining_date = models.DateField(auto_now=True, auto_now_add=False, null=True, blank=False, help_text='Data dołącznia do klubu')

@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Club, UsersClub, Season, Team, Player, TeamsCoaching_Staff
+from .models import Player_data, Profile, Club, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 
 
 
@@ -121,9 +121,12 @@ class SeasonChooseForm(forms.Form):
 
         return existing_season
 
-class CreatePlayer(forms.ModelForm):
+class CreatePlayerForm(forms.ModelForm):
     class Meta:
         model = Player
         fields = ['name','surname']
-        
 
+class CreatePlayerDataForm(forms.ModelForm):
+    class Meta:
+        model = Player_data
+        fields = ['pesel','extranet','date_of_birth','place_of_birth', 'addres']

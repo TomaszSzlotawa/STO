@@ -4,11 +4,11 @@
 
 {% block content %}
 
-h2>Stwórz zawodnika</h2>
+<h2>Stwórz zawodnika</h2>
 <form method="post">
   {% csrf_token %}
-  {{ team_form }}
-  {{ season_form }}
+  {{ player_form }}
+  {{ player_data_form }}
   <button type="submit">Stwórz zawodnika</button>
 </form>
 

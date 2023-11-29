@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import CreatePlayerDataForm, CreatePlayerForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -287,3 +287,20 @@ def club_staff(request, club_id):
     seasons = Season.objects.filter(team__in = teams, active = True)
     print(seasons)
     return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons})
+
+def create_player(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    player_form = CreatePlayerForm(request.POST or None)
+    player_data_form = CreatePlayerDataForm(request.POST or None)
+    if request.method == 'POST':
+        if player_form.is_valid():
+            player = player_form.save(commit=False)
+            player.club = club
+            player.save()
+        if player_data_form.is_valid():
+            player_data = player_data_form.save(commit=False)
+            player_data.player = player
+            player_data.save()
+        return redirect(club_staff, club.id)
+    return render(request,'clubs\\create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form})
