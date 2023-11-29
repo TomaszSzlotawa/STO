@@ -285,8 +285,9 @@ def club_staff(request, club_id):
     players = Player.objects.filter(club=club)
     teams = Team.objects.filter(club = club)
     seasons = Season.objects.filter(team__in = teams, active = True)
-    print(seasons)
-    return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons})
+    show_hidden = request.GET.get('show_hidden', False) == 'on'
+
+    return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons,'show_hidden':show_hidden})
 
 def create_player(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -356,6 +357,6 @@ def delete_player_from_club(request, player_id):
 def hide_player_in_club(request, player_id):
     player = get_object_or_404(Player,pk = player_id)
     club = player.club
-    player.hidden = True
+    player.hidden = not player.hidden
     player.save()
     return redirect(club_staff, club.id)

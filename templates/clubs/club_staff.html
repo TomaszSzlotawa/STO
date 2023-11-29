@@ -5,6 +5,14 @@
 {% block content %}
 
 <h3>Kadra klubu</h3>
+
+<!-- Dodaj formularz do wyboru opcji -->
+<form method="get" action="">
+    <input type="checkbox" name="show_hidden" id="show_hidden" {% if show_hidden %}checked{% endif %}>
+    <label for="show_hidden">Pokazuj ukrytych zawodników</label>
+    <button type="submit">Filtruj</button>
+</form>
+
 <table>
     <thead>
         <tr>
@@ -14,38 +22,35 @@
             <th>Drużyny</th>
         </tr>
     </thead>
-  {% for player in players %}
-  {% if not player.hidden %}
-  <tbody>
-    <tr>
-        <td>
-            {{player.name}}
-        </td>
-        <td>
-            {{player.surname}}
-        </td>
-        <td>
-            {{player.player_data.date_of_birth}}
-        </td>
-        <td>
-            {% for season in seasons %}
-                {% if player in season.player.all %}
-                    {{ season.team }}<br>
-                {% endif %}
-            {% endfor %}
-
-        </td>
-        <td>
-            <a href="{% url 'delete_player_from_club' player.id %}">Usuń zawodnika z klubu</a><br>
-            <a href="{% url 'hide_player_in_club' player.id %}">Ukryj zawodnika</a>
-        </td>
-    </tr>
-  </tbody>
-  {% endif %}
-  {% endfor %}
-  </table>
-  <a href="{% url 'create_player' club.id %}">Dodaj zawodnika</a>
-
-
+    {% for player in players %}
+    {% if not player.hidden or show_hidden %}
+    <tbody>
+        <tr {% if player.hidden %} style="color: red"{% endif %}>
+            <td>
+                {{player.name}}
+            </td>
+            <td>
+                {{player.surname}}
+            </td>
+            <td>
+                {{player.player_data.date_of_birth}}
+            </td>
+            <td>
+                {% for season in seasons %}
+                    {% if player in season.player.all %}
+                        {{ season.team }}<br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                <a href="{% url 'delete_player_from_club' player.id %}">Usuń zawodnika z klubu</a><br>
+                <a href="{% url 'hide_player_in_club' player.id %}">{% if player.hidden %}Pokazuj zawodnika{% else %}Ukryj zawodnika{% endif %}</a>
+            </td>
+        </tr>
+    </tbody>
+    {% endif %}
+    {% endfor %}
+</table>
+<a href="{% url 'create_player' club.id %}">Dodaj zawodnika</a>
 
 {% endblock %}
