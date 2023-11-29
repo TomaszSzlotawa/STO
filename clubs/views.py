@@ -304,3 +304,44 @@ def create_player(request, club_id):
             player_data.save()
         return redirect(club_staff, club.id)
     return render(request,'clubs\\create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form})
+
+def team_staff(request, team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team,pk=team_id)
+    season = Season.objects.filter(team = team, active = True).first()
+    if season:
+        players = season.player.all()
+    else:
+        players = []
+    return render(request,'clubs\\team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team})
+
+def add_player(request, team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team,pk=team_id)
+    players = Player.objects.filter(club=team.club)
+    season = Season.objects.filter(team = team, active = True).first()
+    player_form = CreatePlayerForm(request.POST or None)
+    if season:
+        players_in_team = season.player.all()
+    else:
+        players_in_team = []
+    player_data_form = CreatePlayerDataForm(request.POST or None)
+    if request.method == 'POST':
+        if 'add-players' in request.POST:
+            selected_players_ids = request.POST.getlist('selected_players')
+            for player_id in selected_players_ids:
+                player = get_object_or_404(Player, pk=player_id)
+                season.player.add(player)
+        if 'create-player' in request.POST:
+            if player_form.is_valid():
+                player = player_form.save(commit=False)
+                player.club = team.club
+                player.save()
+            if player_data_form.is_valid():
+                player_data = player_data_form.save(commit=False)
+                player_data.player = player
+                player_data.save()
+            season.player.add(player)
+            
+    return render(request,'clubs\\add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})
+    

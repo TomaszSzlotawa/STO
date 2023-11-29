@@ -1,0 +1,38 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+
+<h3>Kadra zespołu {{team.name}}</h3>
+<a href="{% url 'add_player' team.id %}">Dodaj zawodnika do drużyny</a>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Data urodzin</th>
+
+        </tr>
+    </thead>
+  {% for player in players %}
+  <tbody>
+    <tr>
+        <td>
+            {{player.name}}
+        </td>
+        <td>
+            {{player.surname}}
+        </td>
+        <td>
+            {{player.player_data.date_of_birth}}
+        </td>
+
+    </tr>
+  </tbody>
+  {% endfor %}
+  </table>
+
+
+
+{% endblock %}

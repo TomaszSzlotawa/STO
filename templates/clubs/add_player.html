@@ -1,0 +1,51 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+<h2>Stwórz zawodnika</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ player_form }}
+  {{ player_data_form }}
+  <input type="submit" name="create-player" value="Dodaj">
+</form>
+
+lub wybierz zawodnika z klubu
+<h3>Kadra klubu</h3>
+<form method="post" action="{% url 'add_player' team.id %}">
+    {% csrf_token %}
+    <table>
+        <thead>
+            <tr>
+                <th>Wybierz</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Data urodzin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>
+                    <input type="checkbox" {% if player in players_in_team %} checked="True" disabled="True" {% endif %} name="selected_players" value="{{ player.id }} ">
+                </td>
+                <td>
+                    {{ player.name }}
+                </td>
+                <td>
+                    {{ player.surname }}
+                </td>
+                <td>
+                    {{ player.player_data.date_of_birth }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" name="add-players" value="Zapisz">
+</form>
+
+
+
+{% endblock %}
