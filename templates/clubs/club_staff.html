@@ -34,6 +34,10 @@
             {% endfor %}
 
         </td>
+        <td>
+            <a href="{% url 'delete_player_from_club' player.id %}">Usuń zawodnika z klubu</a><br>
+            <a href="{% url 'hide_player_in_club' player.id %}">Ukryj zawodnika</a>
+        </td>
     </tr>
   </tbody>
   {% endfor %}

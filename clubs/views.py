@@ -319,12 +319,12 @@ def add_player(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     players = Player.objects.filter(club=team.club)
-    season = Season.objects.filter(team = team, active = True).first()
-    player_form = CreatePlayerForm(request.POST or None)
+    season = Season.objects.filter(team = team, active = True).first()    
     if season:
         players_in_team = season.player.all()
     else:
         players_in_team = []
+    player_form = CreatePlayerForm(request.POST or None)
     player_data_form = CreatePlayerDataForm(request.POST or None)
     if request.method == 'POST':
         if 'add-players' in request.POST:
@@ -337,11 +337,18 @@ def add_player(request, team_id):
                 player = player_form.save(commit=False)
                 player.club = team.club
                 player.save()
+                player_form = CreatePlayerForm(None)
             if player_data_form.is_valid():
                 player_data = player_data_form.save(commit=False)
                 player_data.player = player
                 player_data.save()
+                player_data_form = CreatePlayerDataForm(None)
             season.player.add(player)
+            return redirect(team_staff, team.id)
             
     return render(request,'clubs\\add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})
-    
+def delete_player_from_club(request, player_id):
+    player = get_object_or_404(Player,pk = player_id)
+    club = player.club
+    player.delete()
+    return redirect(club_staff, club.id)
