@@ -27,7 +27,12 @@
             {{player.player_data.date_of_birth}}
         </td>
         <td>
-          
+            {% for season in seasons %}
+                {% if player in season.player.all %}
+                    {{ season.team }}<br>
+                {% endif %}
+            {% endfor %}
+
         </td>
     </tr>
   </tbody>

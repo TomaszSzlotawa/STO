@@ -283,5 +283,7 @@ def club_staff(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     players = Player.objects.filter(club=club)
-
-    return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players})
+    teams = Team.objects.filter(club = club)
+    seasons = Season.objects.filter(team__in = teams, active = True)
+    print(seasons)
+    return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons})
