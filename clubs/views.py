@@ -260,16 +260,24 @@ def edit_team(request, team_id):
     usersClubs, teams = data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     club = team.club
+    active_season = Season.objects.filter(team=team, active=True).first()
+    season_form = SeasonChooseForm(request.POST or None, team=team, active_season=active_season)
     team_form = TeamCreateForm(request.POST or None, instance=team)
-    season_form = SeasonChooseForm(request.POST, team=team)
     if request.method == 'POST':
-        if team_form.is_valid:
-            team = team_form.save()
-            return redirect(edit_team,team.id)
-        if season_form.is_valid:
-            season = season_form.save()
-            season.save()
-            return redirect(edit_team,team.id)
+        if 'team-submit' in request.POST:
+            if team_form.is_valid:
+                team = team_form.save()
+                return redirect(edit_team,team.id)
+        if 'season-submit' in request.POST:
+            if season_form.is_valid:
+                selected_season_id = request.POST.get('active_season')
+                if selected_season_id:
+                    Season.objects.filter(team=team).exclude(id=selected_season_id).update(active=False)
+                    season = get_object_or_404(Season,pk=selected_season_id)
+                    print(season)
+                    season.active = True
+                    season.save()
+                return redirect(edit_team,team.id)
 
     return render(request,'clubs\\edit_team.html',{'club':club,'usersClubs':usersClubs,
         'teams':teams,'team_form':team_form, 'season_form':season_form})

@@ -91,29 +91,34 @@ class SeasonCreateForm(forms.ModelForm):
         model = Season
         fields = ['season_name', 'date_of_start']
     
-class SeasonChooseForm(forms.ModelForm):
-    season_name = forms.CharField(max_length=9, required=True)
-    existing_season = forms.ModelChoiceField(queryset=Season.objects.none(), required=False, empty_label="Wybierz istniejący sezon")
-
+class SeasonChooseForm(forms.Form):
     class Meta:
         model = Season
-        fields = ['season_name', 'date_of_start']
+        fields = ['active_season']
+    active_season = forms.ModelChoiceField(queryset=Season.objects.none(), required=False, empty_label="Wybierz sezon")
 
     def __init__(self, *args, **kwargs):
         team = kwargs.pop('team', None)
+        active_season = kwargs.pop('active_season', None)
         super(SeasonChooseForm, self).__init__(*args, **kwargs)
 
         # Aktualizuj queryset dla existing_season na podstawie dostarczonej drużyny
         if team:
-            self.fields['existing_season'].queryset = Season.objects.filter(team=team)
+            seasons = Season.objects.filter(team=team)
+            self.fields['active_season'].queryset = seasons
+
+            # Znajdź sezon z ustawionym statusem active
+            if active_season:
+                self.fields['active_season'].initial = active_season.id
 
     def clean(self):
         cleaned_data = super().clean()
-        season_name = cleaned_data.get('season_name')
-        existing_season = cleaned_data.get('existing_season')
+        existing_season = cleaned_data.get('active_season')
 
-        # Sprawdź, czy użytkownik wybrał albo nowy sezon albo istniejący sezon
-        if not (season_name or existing_season):
-            raise forms.ValidationError('Musisz wybrać istniejący sezon lub wprowadzić nowy sezon.')
+        # Sprawdź, czy użytkownik wybrał istniejący sezon
+        if not existing_season:
+            raise forms.ValidationError('Musisz wybrać istniejący sezon.')
 
-        return cleaned_data
+        return existing_season
+
+

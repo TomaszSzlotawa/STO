@@ -222,8 +222,6 @@ class Season(models.Model):
     date_of_start = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data rozpoczęcia sezonu')
     date_of_end = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data zakończenia sezonu')
 
-
-
     class Meta:
             constraints = [
                 models.UniqueConstraint(
