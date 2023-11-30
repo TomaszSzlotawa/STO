@@ -4,6 +4,7 @@ import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from datetime import date
 
 def current_year():
     return datetime.date.today().year
@@ -240,11 +241,12 @@ class Season(models.Model):
     def name_and_status(self):
         active_ = ""
         if self.active:
-            active_="Aktywny"
+            active_="[Wybrany]"
+        if self.date_of_end and self.date_of_end < date.today():
+            status="Zakończony"
         else:
-            active_="Archiwalny"
-        return f"Sezon {self.name} [{active_}]" 
-
+            status="Bieżący"
+        return f"Sezon {self.name}-{status}{active_}"
 
 
 class UsersClub(models.Model):
