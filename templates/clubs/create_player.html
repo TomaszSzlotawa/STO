@@ -10,6 +10,8 @@
   {{ player_form }}
   {{ player_data_form }}
   <button type="submit">Stwórz zawodnika</button>
+  <a href="{% url 'club_staff' club.id %}" >wróć</a>
+
 </form>
 
 {% endblock %}

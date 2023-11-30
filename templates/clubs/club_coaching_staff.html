@@ -1,0 +1,39 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Drużyny</th>
+        </tr>
+    </thead>
+    {% for coach in coaches %}
+    {% if coach.accepted %}
+    <tbody>
+        <tr>
+            <td>
+                {{coach.user.first_name}}
+            </td>
+            <td>
+                {{coach.user.last_name}}
+            </td>
+            <td>
+                {% for role_in_team in roles_in_teams %}
+                    {% if role_in_team.coach == coach.user %}
+                        {{ role_in_team.display }}<br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    </tbody>
+    {% endif %}
+    {% endfor %}
+</table>
+
+{% endblock %}

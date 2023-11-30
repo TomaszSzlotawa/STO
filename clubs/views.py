@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import UsersClub, Club, Team, Profile, Season, Player, Player_data
+from .models import TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import CreatePlayerDataForm, CreatePlayerForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
@@ -368,3 +368,13 @@ def delete_player_from_team(request, season_id, player_id):
     season.player.remove(player)
     
     return redirect(team_staff, season.team.id)
+
+
+def club_coaching_staff(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club, pk=club_id)
+    coaches = UsersClub.objects.filter(club=club, coach=True)
+    club_teams = Team.objects.filter(club=club)
+    roles_in_teams = TeamsCoaching_Staff.objects.filter(team__in=club_teams,leaving_date=None)
+    print(roles_in_teams)
+    return render(request,'clubs\\club_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})

@@ -38,7 +38,7 @@
                               <ul class="list-unstyled ps-2 ">
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz klubowy</a></li>
                                 <li><a href="{% url 'club_staff' club.club.id %}" class="link-dark rounded text-decoration-none">Kadra</a></li>
-                                <li><a href="#" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
+                                <li><a href="{% url 'club_coaching_staff' club.club.id %}" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
                                 <li></li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}_teams-collapse" aria-expanded="true">
                                    Drużyny
                                 </button></li>

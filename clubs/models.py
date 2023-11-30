@@ -326,15 +326,17 @@ class TeamsCoaching_Staff(models.Model):
         ("TRENER MENTALNY","TRENER MENTALNY"),
         ("TRENER","TRENER "),
     ]
-    coaching_Staff = models.ForeignKey(Coaching_Staff,on_delete=models.CASCADE)
+    coach = models.ForeignKey(User,on_delete=models.CASCADE)
     team = models.ForeignKey(Team,on_delete=models.CASCADE)
     takeover_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data przejęcia druzyny')
     leaving_date = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data odejścia z druzyny')
     role_in_team = models.CharField(choices=roles,null=True,blank=False,default="null",help_text="Funkcja w drużynie")
 
     def __str__(self):
-        return f"{self.team} - {self.coaching_Staff.user}({self.role_in_team})"
+        return f"{self.team} - {self.coach.first_name} {self.coach.last_name}({self.role_in_team})"
 
+    def display(self):
+        return f"{self.team.name} - {self.role_in_team} od {self.takeover_date}"
 
 class Grant(models.Model):
     name = models.CharField(max_length=100,null=False,blank=False,help_text="Nazwa dofinansowania")
