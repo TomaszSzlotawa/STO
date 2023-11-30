@@ -257,6 +257,7 @@ def delete_team(request, team_id):
 def edit_team(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
+    seasons = Season.objects.filter(team=team).order_by('-date_of_start')
     club = team.club
     active_season = Season.objects.filter(team=team, active=True).first()
     season_form = SeasonChooseForm(request.POST or None, team=team, active_season=active_season)
@@ -276,7 +277,7 @@ def edit_team(request, team_id):
             return redirect(edit_team,team.id)
 
     return render(request,'clubs\\edit_team.html',{'club':club,'usersClubs':usersClubs,
-        'teams':teams,'team_form':team_form, 'season_form':season_form, 'team':team})
+        'teams':teams,'team_form':team_form, 'season_form':season_form, 'team':team, 'seasons':seasons})
 
 def club_staff(request, club_id):
     usersClubs, teams = get_data_for_menu(request)

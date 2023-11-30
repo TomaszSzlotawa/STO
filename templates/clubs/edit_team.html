@@ -27,6 +27,26 @@
   <a href="{% url 'club_settings' club.id %}">wróć</a>
 </form>
 
+<hr>
+<h3>Sezony</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Nazwa</th>
+          <th>Data rozpoczęcia</th>
+          <th>Data zakończenia</th>
+      </tr>
+  </thead>
+  <tbody>
+      {% for season in seasons %}
+          <tr>
+              <td>{{ season.name }}</td>
+              <td>{{ season.date_of_start }}</td>
+              <td>{{ season.date_of_end }}</td>
+          </tr>
+      {% endfor %}
+  </tbody>
+</table>
   
 
 
