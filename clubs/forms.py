@@ -151,3 +151,8 @@ class AddCoachToTeam(forms.ModelForm):
             coach_in_team.save()
 
         return coach_in_team
+    
+class EditCoachInTeam(forms.ModelForm):
+    class Meta:
+        model = TeamsCoaching_Staff
+        fields = ['role_in_team','takeover_date']

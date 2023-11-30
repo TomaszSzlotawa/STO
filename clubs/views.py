@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, CreatePlayerDataForm, CreatePlayerForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
-
+from datetime import date
 
 def get_data_for_menu(request):
     if request.user.is_authenticated:
@@ -388,11 +388,35 @@ def team_coaching_staff(request, team_id):
 
     return render(request,'clubs\\team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'coaches':coaches,'team':team})
 
-def edit_team_coaching_staff(request, team_id):
+def edit_team_coaching_staff(request, team_id, coach_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
-
-    return render(request,'clubs\\team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team})
+    coach = get_object_or_404(TeamsCoaching_Staff, team=team, leaving_date=None, coach_id=coach_id)
+    r = coach.role_in_team
+    take_ovr = coach.takeover_date
+    form = EditCoachInTeam(instance=coach)
+    if request.method == 'POST':
+        if "edit-role" in request.POST:
+            form = EditCoachInTeam(request.POST, instance=coach)
+            if form.is_valid():
+                role = form.cleaned_data['role_in_team']
+                takeover_date = form.cleaned_data['takeover_date']
+                if role != r:
+                    coach.leaving_date = date.today()
+                    coach.role_in_team = r
+                    coach.takeover_date = take_ovr
+                    coach.save()
+                    new_role = TeamsCoaching_Staff(coach=coach.coach, team=coach.team, takeover_date=takeover_date,  role_in_team=role)
+                    new_role.save()
+                else:
+                    coach.takeover_date = takeover_date
+                    coach.save()
+                return redirect(team_coaching_staff,team.id)
+        if "delete-role" in request.POST:
+            coach.leaving_date = date.today()
+            coach.save()
+            return redirect(team_coaching_staff,team.id)
+    return render(request,'clubs\\edit_team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'coach':coach})
 
 def add_coach_to_team(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -402,7 +426,7 @@ def add_coach_to_team(request, team_id):
     coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
     form = AddCoachToTeam(coaches_not_in_team, request.POST or None)
     if request.method == 'POST':
-        coach=form.save(team=team)
+        form.save(team=team)
         return redirect(team_coaching_staff,team.id)
     return render(request,'clubs\\add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
 

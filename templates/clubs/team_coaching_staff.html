@@ -24,11 +24,14 @@
           <td>
             {{ coach.display_role_and_since }}
           </td>
+          <td>
+            <a href="{% url 'edit_team_coaching_staff' team.id coach.coach.id %}">Edytuj</a>
+          </td>
       </tr>
   </tbody>
   {% endfor %}
 </table>
-<a href="{% url 'add_coach_to_team' team.id %}">Dodaj członka sztabu</a>
+<a href="{% url 'add_coach_to_team' team.id %}">Dodaj członka sztabu</a><br>
 
 
 

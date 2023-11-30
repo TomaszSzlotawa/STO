@@ -9,6 +9,7 @@
     {% csrf_token %}
     {{ form }}
     <input type="submit" name="add-coach" value="Dodaj">
+    <a href="{% url 'team_coaching_staff' team.id %}">wróć</a>
 </form>
 
 

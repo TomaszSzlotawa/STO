@@ -1,0 +1,18 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+
+<h3>{{coach.coach.first_name}} {{coach.coach.last_name}}</h3>
+<form method="post">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" name="edit-role" value="Zapisz">
+  <input type="submit" name="delete-role" value="Usuń z drużyny">
+  <a href="{% url 'team_coaching_staff' team.id %}">wróć</a>
+</form>
+
+
+
+{% endblock %}
