@@ -130,3 +130,24 @@ class CreatePlayerDataForm(forms.ModelForm):
     class Meta:
         model = Player_data
         fields = ['pesel','extranet','date_of_birth','place_of_birth', 'addres']
+
+class AddCoachToTeam(forms.ModelForm):
+    class Meta:
+        model = TeamsCoaching_Staff
+        fields = ['role_in_team', 'takeover_date']
+    
+    coach = forms.ModelChoiceField(queryset=None)  
+
+    def __init__(self, coaches, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['coach'].queryset = coaches
+
+    def save(self,team, commit=True):
+        coach_in_team = super().save(commit=False)
+        coach_in_team.coach = self.cleaned_data['coach'].user  
+        coach_in_team.team = team
+
+        if commit:
+            coach_in_team.save()
+
+        return coach_in_team

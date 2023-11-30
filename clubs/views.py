@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import CreatePlayerDataForm, CreatePlayerForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, CreatePlayerDataForm, CreatePlayerForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -389,4 +389,20 @@ def team_coaching_staff(request, team_id):
     return render(request,'clubs\\team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'coaches':coaches,'team':team})
 
 def edit_team_coaching_staff(request, team_id):
-    pass
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team, pk=team_id)
+
+    return render(request,'clubs\\team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team})
+
+def add_coach_to_team(request, team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team, pk=team_id)
+    coaches = UsersClub.objects.filter(club=team.club, coach=True)
+    coaches_in_team = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
+    coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
+    form = AddCoachToTeam(coaches_not_in_team, request.POST or None)
+    if request.method == 'POST':
+        coach=form.save(team=team)
+        return redirect(team_coaching_staff,team.id)
+    return render(request,'clubs\\add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
+
