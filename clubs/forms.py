@@ -1,3 +1,4 @@
+from datetime import date
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
@@ -85,11 +86,43 @@ class TeamCreateForm(forms.ModelForm):
 
 
 class SeasonCreateForm(forms.ModelForm):
-    season_name = forms.CharField(max_length = 9, required=True)
-    
+    season_name = forms.CharField(max_length=9, required=True)
+
     class Meta:
         model = Season
-        fields = ['season_name', 'date_of_start']
+        fields = ['season_name', 'date_of_start', 'date_of_end']
+
+    def __init__(self, *args, **kwargs):
+        super(SeasonCreateForm, self).__init__(*args, **kwargs)
+
+        if self.instance:
+            self.fields['season_name'].initial = self.instance.name
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_of_start = cleaned_data.get('date_of_start')
+        date_of_end = cleaned_data.get('date_of_end')
+
+        if date_of_start and date_of_end and date_of_start > date_of_end:
+            raise forms.ValidationError("Data rozpoczęcia nie może być późniejsza niż data zakończenia.")        
+        if date_of_start and  date_of_start > date.today():
+            raise forms.ValidationError("Sezon nie może się rozpoczynać w przyszłości.")
+        latest_season = Season.objects.filter(team = self.instance.team,).exclude(id = self.instance.id).order_by('-date_of_end').first()
+        if latest_season and latest_season.date_of_end and date_of_start and date_of_start < latest_season.date_of_end:
+            raise forms.ValidationError("Data rozpoczęcia sezonu nie może być wcześniejsza niż najnowsza data zakończenia poprzedniego sezonu dla drużyny.")
+
+
+        return cleaned_data
+
+    def save(self, team, commit=True):
+        Season.objects.filter(team=team).update(active=False)
+        season = super(SeasonCreateForm, self).save(commit=False)
+        season.name = self.cleaned_data['season_name']
+        season.team = team
+        season.active=True
+        if commit:
+            season.save()
+        return season
     
 class SeasonChooseForm(forms.Form):
     class Meta:

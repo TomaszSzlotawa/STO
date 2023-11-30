@@ -221,7 +221,7 @@ class Season(models.Model):
     player = models.ManyToManyField(Player,blank=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE,blank=False, null = True)
     date_of_start = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data rozpoczęcia sezonu')
-    date_of_end = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data zakończenia sezonu')
+    date_of_end = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=False, help_text='Data zakończenia sezonu')
 
     class Meta:
             constraints = [
@@ -233,20 +233,15 @@ class Season(models.Model):
     def __str__(self):
         active_ = ""
         if self.active:
-            active_="Aktywny"
-        else:
-            active_="Archiwalny"
-        return f"Sezon {self.name} - {self.team} - {active_}" 
-
-    def name_and_status(self):
-        active_ = ""
-        if self.active:
             active_="[Wybrany]"
         if self.date_of_end and self.date_of_end < date.today():
             status="Zakończony"
         else:
             status="Bieżący"
         return f"Sezon {self.name}-{status}{active_}"
+
+    def name_and_status(self):
+        return self
 
 
 class UsersClub(models.Model):

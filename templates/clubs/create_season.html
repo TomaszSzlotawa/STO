@@ -1,0 +1,15 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Edytuj dane drużyny{% endblock %}
+
+{% block content %}
+<H3>{% if edit %} Edytuj sezon {% else %} Dodaj sezon {% endif %}</H3>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" name="add-coach" value="{% if edit %} Zapisz {% else %} Dodaj {% endif %}">
+    <a href="{% url 'edit_team' team.id %}">wróć</a>
+</form>
+
+{% endblock %}

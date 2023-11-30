@@ -21,7 +21,9 @@
   {% csrf_token %}
   {{ team_form }}
   {{ season_form }}
-  <input  name="data-submit" value="Zapisz" type="submit"/>
+  <input  name="data-submit" value="Zapisz" type="submit"/> <br>
+  <a href="{% url 'add_season' team.id %}">Dodaj sezon</a> <br>
+  <a href="{% url 'edit_active_season' team.id %}">Edytuj aktywny sezon</a> <br>
   <a href="{% url 'club_settings' club.id %}">wróć</a>
 </form>
 

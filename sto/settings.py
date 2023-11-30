@@ -28,10 +28,10 @@ SECRET_KEY = env("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['https://sto-dev.unicloud.pl/']
-SECURE_SSL_REDIRECT = True
+#ALLOWED_HOSTS = ['https://sto-dev.unicloud.pl/']
+#SECURE_SSL_REDIRECT = True
 
 # Application definition
 
