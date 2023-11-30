@@ -21,10 +21,11 @@
   {% csrf_token %}
   {{ team_form }}
   {{ season_form }}
-  <input  name="submit" value="Zapisz" type="submit"/>
-
-
+  <input  name="data-submit" value="Zapisz" type="submit"/>
+  <a href="{% url 'club_settings' club.id %}">wróć</a>
 </form>
+
+  
 
 
 {% endblock %}

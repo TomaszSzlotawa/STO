@@ -1,0 +1,35 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+
+<table>
+  <thead>
+      <tr>
+          <th>Imię</th>
+          <th>Nazwisko</th>
+          <th>Rola</th>
+      </tr>
+  </thead>
+  {% for coach in coaches %}
+  <tbody>
+      <tr>
+          <td>
+            {{coach.coach.first_name}}
+          </td>
+          <td>
+            {{coach.coach.last_name}}
+          </td>
+          <td>
+            {{ coach.display_role_and_since }}
+          </td>
+      </tr>
+  </tbody>
+  {% endfor %}
+</table>
+<a href="{% url 'edit_team_coaching_staff' team.id %}">Edytuj sztab</a>
+
+
+
+{% endblock %}

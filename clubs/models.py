@@ -335,8 +335,11 @@ class TeamsCoaching_Staff(models.Model):
     def __str__(self):
         return f"{self.team} - {self.coach.first_name} {self.coach.last_name}({self.role_in_team})"
 
-    def display(self):
+    def display_team_role_and_since(self):
         return f"{self.team.name} - {self.role_in_team} od {self.takeover_date}"
+    
+    def display_role_and_since(self):
+        return f"{self.role_in_team} od {self.takeover_date}"
 
 class Grant(models.Model):
     name = models.CharField(max_length=100,null=False,blank=False,help_text="Nazwa dofinansowania")
