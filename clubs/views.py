@@ -303,7 +303,7 @@ def create_player(request, club_id):
             player_data.player = player
             player_data.save()
         return redirect(club_staff, club.id)
-    return render(request,'clubs\\create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form})
+    return render(request,'clubs\\create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':False})
 
 def team_staff(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -448,3 +448,17 @@ def edit_active_season(request, team_id):
             season = form.save(team)
             return redirect(edit_team,team.id)
     return render(request,'clubs\\create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'edit':True})
+
+def edit_player(request, player_id):
+    usersClubs, teams = get_data_for_menu(request)
+    player = get_object_or_404(Player,pk=player_id)
+    player_form = CreatePlayerForm(request.POST or None, instance=player)
+    player_data = get_object_or_404(Player_data, player=player)
+    player_data_form = CreatePlayerDataForm(request.POST or None, instance=player_data)
+    if request.method == 'POST':
+        if player_form.is_valid():
+            player.save()
+        if player_data_form.is_valid():
+            player_data.save()
+        return redirect(club_staff, player.club.id)
+    return render(request,'clubs\\create_player.html',{'club':player.club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':True})

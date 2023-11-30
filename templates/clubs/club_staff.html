@@ -20,6 +20,7 @@
             <th>Nazwisko</th>
             <th>Data urodzin</th>
             <th>Drużyny</th>
+            <th>Zarządzaj</th>
         </tr>
     </thead>
     {% for player in players %}
@@ -43,14 +44,29 @@
                 {% endfor %}
             </td>
             <td>
-                <a href="{% url 'delete_player_from_club' player.id %}">Usuń zawodnika z klubu</a><br>
-                <a href="{% url 'hide_player_in_club' player.id %}">{% if player.hidden %}Pokazuj zawodnika{% else %}Ukryj zawodnika{% endif %}</a>
+                <div class="dropdown">
+                    <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Zarządzaj
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="{% url 'delete_player_from_club' player.id %}">Usuń zawodnika z klubu</a></li>
+                        <li><a class="dropdown-item" href="{% url 'hide_player_in_club' player.id %}">
+                            {% if player.hidden %}
+                                Pokazuj zawodnika
+                            {% else %}
+                                Ukryj zawodnika
+                            {% endif %}
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'edit_player' player.id %}">Edytuj dane zawodnika</a></li>
+                    </ul>
+                </div>
             </td>
         </tr>
     </tbody>
     {% endif %}
     {% endfor %}
 </table>
+
 <a href="{% url 'create_player' club.id %}">Dodaj zawodnika</a>
 
 {% endblock %}

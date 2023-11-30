@@ -4,12 +4,12 @@
 
 {% block content %}
 
-<h2>Stwórz zawodnika</h2>
+<h2>{% if edit %} Edytuj dane zawodnika {% else %} Stwórz zawodnika {% endif %}</h2>
 <form method="post">
   {% csrf_token %}
   {{ player_form }}
   {{ player_data_form }}
-  <button type="submit">Stwórz zawodnika</button>
+  <button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>
   <a href="{% url 'club_staff' club.id %}" >wróć</a>
 
 </form>
