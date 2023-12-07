@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
@@ -9,6 +10,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
 from datetime import date
+from django.template.defaulttags import register
+
 
 def get_data_for_menu(request):
     if request.user.is_authenticated:
@@ -543,3 +546,29 @@ def players_equipment(request, player_id):
     items = Rented_equipment.objects.filter(player=player, date_of_return__isnull=True)
 
     return render(request, 'clubs\\players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})
+
+def teams_equipment(request, team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team, pk=team_id)
+    season = Season.objects.filter(team = team, active = True).first()
+    if season:
+        players = season.player.all()
+    else:
+        players = []
+    rented_equipments = Rented_equipment.objects.filter(player__in=players, date_of_return__isnull=True)
+    player_counts = defaultdict(int)
+
+    for rent in rented_equipments:
+        player_counts[rent.player.id] += 1
+    for player in players:
+        if player_counts[player.id] == 0:
+            player_counts[player.id] += 1
+
+    player_counts_dict = dict(player_counts)
+    @register.filter
+    def get_item(dictionary, key):
+        return dictionary.get(key)
+
+
+    return render(request,'clubs\\teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
+
