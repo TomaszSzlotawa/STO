@@ -162,7 +162,11 @@ class CreatePlayerForm(forms.ModelForm):
 class CreatePlayerDataForm(forms.ModelForm):
     class Meta:
         model = Player_data
-        fields = ['pesel','extranet','date_of_birth','place_of_birth', 'addres']
+        fields = ['pesel', 'extranet', 'date_of_birth', 'place_of_birth', 'addres']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+
 
 class AddCoachToTeam(forms.ModelForm):
     class Meta:
