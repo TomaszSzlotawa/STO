@@ -36,5 +36,8 @@ urlpatterns = [
     path("equipment/edit/<int:item_id>", views.edit_equipment, name='edit_equipment'),
     path("equipment/delete/<int:item_id>", views.delete_equipment, name='delete_equipment'),
     path("equipment/rent/<int:item_id>", views.rent_equipment, name='rent_equipment'),
+    path("equipment/raport/<int:item_id>", views.rented_equipment, name='rented_equipment'),
+    path("equipment/return/<int:rent_id>", views.return_equipment, name='return_equipment'),
+    
 ]
 

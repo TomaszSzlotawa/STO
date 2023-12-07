@@ -16,7 +16,7 @@
     <tbody>
       {% for item in equipment %}
         <tr>
-          <td><a href="#">{{ item.name }}</a></td>
+          <td>{{ item.name }}</td>
           <td>{{ item.producer }}</td>
           <td>{{ item.all_quantity }}</td>
           <td>
@@ -28,6 +28,7 @@
                     <li><a class="dropdown-item" href="{% url 'edit_equipment' item.id %}">Edytuj</a></li>
                     <li><a class="dropdown-item" href="{% url 'delete_equipment' item.id %}">Usuń</a></li>
                     <li><a class="dropdown-item" href="{% url 'rent_equipment' item.id %}">Wypożycz sprzęt</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rented_equipment' item.id %}">Raport</a></li>
                 </ul>
             </div>
           </td>

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import Equipment, TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
+from .models import Equipment, Rented_equipment, TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, RentEquipmentForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
@@ -520,3 +520,19 @@ def rent_equipment(request, item_id):
             form = RentEquipmentForm(club, None)
     return render(request,'clubs\\rent_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'form':form})
 
+def rented_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    equipment_holders = Rented_equipment.objects.filter(equipment = item, date_of_return = None)
+    historical_holders = Rented_equipment.objects.filter(equipment = item, date_of_return__isnull=False)
+    sum = 0
+    for holder in equipment_holders:
+        sum += holder.quantity
+    rest = item.all_quantity - sum
+    return render(request,'clubs\\rented_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'sum':sum, 'rest':rest})
+
+def return_equipment(request, rent_id):
+    rent = get_object_or_404(Rented_equipment,pk=rent_id)
+    rent.date_of_return = date.today()
+    rent.save()
+    return redirect(rented_equipment, rent.equipment.id)

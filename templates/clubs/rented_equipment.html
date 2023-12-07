@@ -1,0 +1,97 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Kadra{% endblock %}
+
+{% block content %}
+
+
+Posiadany sprzęt - {{item.all_quantity}} szt. <br>
+Wypożyczony sprzęt - {{sum}} szt. <br>
+{% if rest < 0 %}
+Wypożyczyłeś o {{rest}} szt. za dużo.
+{% else %}
+Pozostały sprzęt - {{rest}} szt.
+{% endif %}
+<h3>Posiadacze sprzętu</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Ilość</th>
+            <th>Data wypożyczenia</th>
+            <th>Opis</th>
+            <th>Data zwrotu</th>
+        </tr>
+    </thead>
+    {% for holder in equipment_holders %}
+    <tbody>
+        <tr>
+            <td>
+                {{holder.player.name}}
+            </td>
+            <td>
+                {{holder.player.surname}}
+            </td>
+            <td>
+                {{holder.quantity}}
+            </td>
+            <td>
+                {{holder.date_of_rental}}
+            </td>
+            <td>
+                {{holder.description}}
+            </td>
+            <td>
+                <a href="{% url 'return_equipment' holder.id %}">Zwrócił sprzęt</a>
+            </td>
+
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+{% if historical_holders %}
+<br><hr>
+<h3>Historia wypożyczeń</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Ilość</th>
+            <th>Data wypożyczenia</th>
+            <th>Opis</th>
+            <th>Data zwrotu</th>
+        </tr>
+    </thead>
+    {% for holder in historical_holders %}
+    <tbody>
+        <tr>
+            <td>
+                {{holder.player.name}}
+            </td>
+            <td>
+                {{holder.player.surname}}
+            </td>
+            <td>
+                {{holder.quantity}}
+            </td>
+            <td>
+                {{holder.date_of_rental}}
+            </td>
+            <td>
+                {{holder.description}}
+            </td>
+            <td>
+                {{holder.date_of_return}}
+            </td>
+
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+{% endif %}
+
+{% endblock %}
