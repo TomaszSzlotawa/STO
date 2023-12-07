@@ -1,14 +1,17 @@
+from collections import defaultdict
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .models import Equipment, Rented_equipment, TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
+from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, RentEquipmentForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
 from datetime import date
+from django.template.defaulttags import register
+
 
 def get_data_for_menu(request):
     if request.user.is_authenticated:
@@ -469,3 +472,103 @@ def edit_player(request, player_id):
             player_data.save()
         return redirect(club_staff, player.club.id)
     return render(request,'clubs\\create_player.html',{'club':player.club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':True})
+
+
+def clubs_equipment(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club, pk=club_id)
+    equipment = Equipment.objects.filter(club=club)
+    return render(request,'clubs\\equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'equipment':equipment})
+
+def create_equipment(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club, pk=club_id)
+    form = CreateEquipment(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(club=club)
+        return redirect(clubs_equipment, club.id)
+    return render(request,'clubs\\create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
+
+
+
+def edit_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    club = get_object_or_404(Club, pk=item.club.id)
+    form = CreateEquipment(request.POST or None, instance= item)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(club=club)
+        return redirect(clubs_equipment, club.id)
+    return render(request,'clubs\\create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form, 'edit':True})
+
+def delete_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    club = get_object_or_404(Club, pk=item.club.id)
+    if request.method == 'POST':
+        item.delete()
+        return redirect(clubs_equipment, club.id)
+    return render(request,'clubs\\confirm_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'item':item})
+
+def rent_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    club = item.club
+    form = RentEquipmentForm(club, request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(item)
+            form = RentEquipmentForm(club, None)
+    return render(request,'clubs\\rent_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'form':form})
+
+def rented_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    equipment_holders = Rented_equipment.objects.filter(equipment = item, date_of_return = None)
+    historical_holders = Rented_equipment.objects.filter(equipment = item, date_of_return__isnull=False)
+    sum = 0
+    for holder in equipment_holders:
+        sum += holder.quantity
+    rest = item.all_quantity - sum
+    return render(request,'clubs\\rented_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'sum':sum, 'rest':rest})
+
+def return_equipment(request, rent_id):
+    rent = get_object_or_404(Rented_equipment,pk=rent_id)
+    rent.date_of_return = date.today()
+    rent.save()
+    return redirect(rented_equipment, rent.equipment.id)
+
+def players_equipment(request, player_id):
+    usersClubs, teams = get_data_for_menu(request)
+    player = get_object_or_404(Player, pk = player_id)
+    items = Rented_equipment.objects.filter(player=player, date_of_return__isnull=True)
+
+    return render(request, 'clubs\\players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})
+
+def teams_equipment(request, team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team, pk=team_id)
+    season = Season.objects.filter(team = team, active = True).first()
+    if season:
+        players = season.player.all()
+    else:
+        players = []
+    rented_equipments = Rented_equipment.objects.filter(player__in=players, date_of_return__isnull=True)
+    player_counts = defaultdict(int)
+
+    for rent in rented_equipments:
+        player_counts[rent.player.id] += 1
+    for player in players:
+        if player_counts[player.id] == 0:
+            player_counts[player.id] += 1
+
+    player_counts_dict = dict(player_counts)
+    @register.filter
+    def get_item(dictionary, key):
+        return dictionary.get(key)
+
+
+    return render(request,'clubs\\teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
+

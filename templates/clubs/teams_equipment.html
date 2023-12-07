@@ -1,0 +1,38 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Sprzęt w drużynie{% endblock %}
+
+{% block content %}
+<h4>Sprzęt w {{team.name}}</h4>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Nazwa sprzętu</th>
+            <th>Ilość</th>
+            <th>Data wypożyczenia</th>
+            <th>Opis</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in players %}
+        <tr>
+            <td rowspan="{{ player_counts_dict|get_item:player.id }}"> {{ player.name }} </td>
+            <td rowspan="{{ player_counts_dict|get_item:player.id }}"> {{ player.surname }} </td>
+            {% for rent in rented_equipments %}
+                {% if player == rent.player %}
+                    
+                        <td>{{ rent.equipment.name }}</td>
+                        <td>{{ rent.quantity }}</td>
+                        <td>{{ rent.date_of_rental }}</td>
+                        <td>{{ rent.description }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

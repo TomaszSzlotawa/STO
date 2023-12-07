@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Player_data, Profile, Club, UsersClub, Season, Team, Player, TeamsCoaching_Staff
+from .models import Equipment, Player_data, Profile, Club, Rented_equipment, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 
 
 
@@ -193,3 +193,34 @@ class EditCoachInTeam(forms.ModelForm):
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team','takeover_date']
+
+
+class CreateEquipment(forms.ModelForm):
+    class Meta:
+        model = Equipment
+        fields = ['name','producer','all_quantity','description']
+
+    def save(self,club, commit=True):
+        item = super().save(commit=False)
+        item.club = club
+
+        if commit:
+            item.save()
+        return item
+    
+class RentEquipmentForm(forms.ModelForm):
+    class Meta:
+        model = Rented_equipment
+        fields = ['player', 'quantity', 'date_of_rental', 'description']
+
+    def __init__(self, club, *args, **kwargs):
+        super(RentEquipmentForm, self).__init__(*args, **kwargs)
+        self.fields['player'].queryset = Player.objects.filter(club=club)
+
+    def save(self, item, commit=True):
+        rent = super().save(commit=False)
+        rent.equipment = item
+
+        if commit:
+            rent.save()
+        return rent

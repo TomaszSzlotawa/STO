@@ -31,5 +31,15 @@ urlpatterns = [
     path("teams/staff/add/<int:team_id>", views.add_player, name='add_player'),
     path("teams/edit/<int:team_id>", views.edit_team, name='edit_team'),
     path("teams/delete/<int:team_id>", views.delete_team, name='delete_team'),
+    path("equipment/<int:club_id>", views.clubs_equipment, name='clubs_equipment'),
+    path("equipment/create/<int:club_id>", views.create_equipment, name='create_equipment'),
+    path("equipment/edit/<int:item_id>", views.edit_equipment, name='edit_equipment'),
+    path("equipment/delete/<int:item_id>", views.delete_equipment, name='delete_equipment'),
+    path("equipment/rent/<int:item_id>", views.rent_equipment, name='rent_equipment'),
+    path("equipment/raport/<int:item_id>", views.rented_equipment, name='rented_equipment'),
+    path("equipment/return/<int:rent_id>", views.return_equipment, name='return_equipment'),
+    path("equipment/player/<int:player_id>", views.players_equipment, name='players_equipment'),
+    path("equipment/team/<int:team_id>", views.teams_equipment, name='teams_equipment'),
+    
 ]
 

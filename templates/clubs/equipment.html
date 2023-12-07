@@ -1,0 +1,40 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Sprzęt w klubie{% endblock %}
+
+{% block content %}
+  <h3>Sprzęt w klubie {{ club.name }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa</th>
+        <th>Producent</th>
+        <th>Ilość</th>
+        <th>Zarządzaj</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in equipment %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.producer }}</td>
+          <td>{{ item.all_quantity }}</td>
+          <td>
+            <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Zarządzaj
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'edit_equipment' item.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_equipment' item.id %}">Usuń</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rent_equipment' item.id %}">Wypożycz sprzęt</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rented_equipment' item.id %}">Raport</a></li>
+                </ul>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<a href="{% url 'create_equipment' club.id %}">Dodaj nowy sprzęt</a>
+{% endblock %}
