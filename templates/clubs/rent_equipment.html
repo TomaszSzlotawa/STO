@@ -1,0 +1,15 @@
+{% extends 'clubs//main.html ' %}
+
+{% block title %}Wypożycz sprzęt{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>
+    <a href="{% url 'clubs_equipment' club.id %}" >wróć</a>
+  
+  </form>
+
+{% endblock %}

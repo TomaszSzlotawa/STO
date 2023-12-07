@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import Equipment, TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, RentEquipmentForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -510,4 +510,13 @@ def delete_equipment(request, item_id):
     return render(request,'clubs\\confirm_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'item':item})
 
 def rent_equipment(request, item_id):
-    pass
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    club = item.club
+    form = RentEquipmentForm(club, request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(item)
+            form = RentEquipmentForm(club, None)
+    return render(request,'clubs\\rent_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'form':form})
+
