@@ -536,3 +536,10 @@ def return_equipment(request, rent_id):
     rent.date_of_return = date.today()
     rent.save()
     return redirect(rented_equipment, rent.equipment.id)
+
+def players_equipment(request, player_id):
+    usersClubs, teams = get_data_for_menu(request)
+    player = get_object_or_404(Player, pk = player_id)
+    items = Rented_equipment.objects.filter(player=player, date_of_return__isnull=True)
+
+    return render(request, 'clubs\\players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})

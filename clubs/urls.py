@@ -38,6 +38,7 @@ urlpatterns = [
     path("equipment/rent/<int:item_id>", views.rent_equipment, name='rent_equipment'),
     path("equipment/raport/<int:item_id>", views.rented_equipment, name='rented_equipment'),
     path("equipment/return/<int:rent_id>", views.return_equipment, name='return_equipment'),
+    path("equipment/player/<int:player_id>", views.players_equipment, name='players_equipment'),
     
 ]
 
