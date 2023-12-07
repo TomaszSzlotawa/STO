@@ -1,0 +1,15 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Sprzęt w klubie{% endblock %}
+
+{% block content %}
+<h2>{% if edit %} Edytuj dane sprzętu {% else %} Stwórz sprzęt {% endif %}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form }}
+  <button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>
+  <a href="{% url 'clubs_equipment' club.id %}" >wróć</a>
+
+</form>
+
+{% endblock %}

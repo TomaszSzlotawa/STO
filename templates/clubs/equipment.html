@@ -1,0 +1,26 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Sprzęt w klubie{% endblock %}
+
+{% block content %}
+  <h3>Sprzęt w klubie {{ club.name }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa</th>
+        <th>Producent</th>
+        <th>Ilość</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in equipment %}
+        <tr>
+          <td><a href="#">{{ item.name }}</a></td>
+          <td>{{ item.producer }}</td>
+          <td>{{ item.all_quantity }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<a href="{% url 'create_equipment' club.id %}">Dodaj nowy sprzęt</a>
+{% endblock %}

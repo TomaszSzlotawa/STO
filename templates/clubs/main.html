@@ -56,14 +56,14 @@
                                                 <li><a href="{% url 'team_staff' team.id %}" class="link-dark rounded text-decoration-none">Kadra</a></li>
                                                 <li><a href="{% url 'team_coaching_staff' team.id %}" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
                                                 <li><a href="#" class="link-dark rounded text-decoration-none">Plan treningowy</a></li>
-                                                <li><a href="#" class="link-dark rounded text-decoration-none">Sprzęt drużyny</a></li>
+                                                <li><a href="{% url 'clubs_equipment' club.club.id %}" class="link-dark rounded text-decoration-none">Sprzęt drużyny</a></li>
                                             </ul>
                                         </div>
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
                                 </div>
-                                <li><a href="#" class="link-dark rounded text-decoration-none">Sprzęt</a></li>
+                                <li><a href="{% url 'clubs_equipment' club.club.id %}" class="link-dark rounded text-decoration-none">Sprzęt</a></li>
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Obiekty</a></li>
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Zadania</a></li>
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Dofinansowania</a></li>
