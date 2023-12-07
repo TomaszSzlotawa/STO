@@ -486,3 +486,28 @@ def create_equipment(request, club_id):
             form.save(club=club)
         return redirect(clubs_equipment, club.id)
     return render(request,'clubs\\create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
+
+
+
+def edit_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    club = get_object_or_404(Club, pk=item.club.id)
+    form = CreateEquipment(request.POST or None, instance= item)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(club=club)
+        return redirect(clubs_equipment, club.id)
+    return render(request,'clubs\\create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form, 'edit':True})
+
+def delete_equipment(request, item_id):
+    usersClubs, teams = get_data_for_menu(request)
+    item = get_object_or_404(Equipment, pk=item_id)
+    club = get_object_or_404(Club, pk=item.club.id)
+    if request.method == 'POST':
+        item.delete()
+        return redirect(clubs_equipment, club.id)
+    return render(request,'clubs\\confirm_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'item':item})
+
+def rent_equipment(request, item_id):
+    pass

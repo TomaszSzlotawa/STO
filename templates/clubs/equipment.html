@@ -10,6 +10,7 @@
         <th>Nazwa</th>
         <th>Producent</th>
         <th>Ilość</th>
+        <th>Zarządzaj</th>
       </tr>
     </thead>
     <tbody>
@@ -18,6 +19,18 @@
           <td><a href="#">{{ item.name }}</a></td>
           <td>{{ item.producer }}</td>
           <td>{{ item.all_quantity }}</td>
+          <td>
+            <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Zarządzaj
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'edit_equipment' item.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_equipment' item.id %}">Usuń</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rent_equipment' item.id %}">Wypożyczenia</a></li>
+                </ul>
+            </div>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
