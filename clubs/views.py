@@ -588,3 +588,12 @@ def create_place(request, club_id):
             form.save(club=club)
         return redirect(places, club.id)
     return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
+
+def delete_place(request, place_id):
+    usersClubs, teams = get_data_for_menu(request)
+    place = get_object_or_404(Place, pk=place_id)
+    club = get_object_or_404(Club, pk=place.club.id)
+    if request.method == 'POST':
+        place.delete()
+        return redirect(places, club.id)
+    return render(request,'clubs\\confirm_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'place':place})

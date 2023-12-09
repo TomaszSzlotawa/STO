@@ -42,6 +42,7 @@ urlpatterns = [
     path("equipment/team/<int:team_id>", views.teams_equipment, name='teams_equipment'),
     path("places/<int:club_id>", views.places, name='places'),
     path("places/create/<int:club_id>", views.create_place, name='create_place'),
+    path("places/delete/<int:place_id>", views.delete_place, name='delete_place'),
     
 ]
 

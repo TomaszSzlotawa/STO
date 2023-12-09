@@ -138,6 +138,8 @@ class Place(models.Model):
     name = models.CharField(max_length = 60, null = True, blank = False, help_text='Nazwa Obiektu',unique=False)
     addres = models.CharField(max_length = 100, null = True, blank = True, help_text='Adres obiektu',unique=False)
     lights = models.BooleanField(null=True,blank=True, help_text='Oświetlenie')
+    toilets = models.BooleanField(null=True,blank=True, help_text='Toalety')
+    changing_rooms = models.BooleanField(null=True,blank=True, help_text='Sztanie')
     surface = models.CharField(choices=surfaces, default="nt")
     description = models.TextField(null=True, blank=True, help_text='Specyfikacja obiektu')
 
