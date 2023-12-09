@@ -608,3 +608,13 @@ def edit_place(request,place_id):
             form.save(club=club)
         return redirect(places, club.id)
     return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'edit':True})
+
+def place_details(request, place_id):
+    usersClubs, teams = get_data_for_menu(request)
+    place = get_object_or_404(Place, pk=place_id)
+    club = get_object_or_404(Club,pk=place.club.id)
+    form = PlaceForm(request.POST or None, instance=place)
+    for field_name in form.fields:
+        form.fields[field_name].widget.attrs['disabled'] = True
+    
+    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'details':True})

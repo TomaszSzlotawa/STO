@@ -44,6 +44,7 @@ urlpatterns = [
     path("places/create/<int:club_id>", views.create_place, name='create_place'),
     path("places/delete/<int:place_id>", views.delete_place, name='delete_place'),
     path("places/edit/<int:place_id>", views.edit_place, name='edit_place'),
+    path("places/details/<int:place_id>", views.place_details, name='place_details'),
     
 ]
 

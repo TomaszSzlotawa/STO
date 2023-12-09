@@ -3,11 +3,11 @@
 {% block title %}Sprzęt w klubie{% endblock %}
 
 {% block content %}
-<h2>{% if edit %} Edytuj dane obiektu {% else %} Stwórz obiekt {% endif %}</h2>
+<h2>{% if edit %} Edytuj dane obiektu {% elif details %} Szczegóły obiektu{% else %}Stwórz obiekt {% endif %}</h2>
 <form method="post">
   {% csrf_token %}
-  {{ form }}
-  <button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>
+  {{ form }} <br>
+  {% if details == false %}<button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>{% endif %} 
   <a href="{% url 'places' club.id %}" >wróć</a>
 
 </form>
