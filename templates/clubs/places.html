@@ -1,0 +1,40 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Obiekty{% endblock %}
+
+{% block content %}
+  <h3>Obiekty {{ club.name }}</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa</th>
+        <th>Adres</th>
+        <th>Nawierzchnia</th>
+        <th>Zarządzaj</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for place in places %}
+        <tr>
+          <td>{{ place.name }}</td>
+          <td>{{ place.addres }}</td>
+          <td>{{ place.surface }}</td>
+          <td>
+            <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Zarządzaj
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'edit_equipment' place.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_equipment' place.id %}">Usuń</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rent_equipment' place.id %}">Wypożycz sprzęt</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rented_equipment' place.id %}">Raport</a></li>
+                </ul>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<a href="{% url 'create_equipment' club.id %}">Dodaj nowy obiekt</a>
+{% endblock %}

@@ -40,6 +40,7 @@ urlpatterns = [
     path("equipment/return/<int:rent_id>", views.return_equipment, name='return_equipment'),
     path("equipment/player/<int:player_id>", views.players_equipment, name='players_equipment'),
     path("equipment/team/<int:team_id>", views.teams_equipment, name='teams_equipment'),
+    path("places/<int:club_id>", views.places, name='places'),
     
 ]
 
