@@ -134,7 +134,7 @@ class Place(models.Model):
     ("at","murawa sztuczna"),
     ("fs","płaska powierzchnia")
     ]
-    club = models.ManyToManyField(Club)
+    club = models.ForeignKey(Club, on_delete=models.CASCADE)
     name = models.CharField(max_length = 60, null = True, blank = False, help_text='Nazwa Obiektu',unique=False)
     addres = models.CharField(max_length = 100, null = True, blank = True, help_text='Adres obiektu',unique=False)
     lights = models.BooleanField(null=True,blank=True, help_text='Oświetlenie')

@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Equipment, Player_data, Profile, Club, Rented_equipment, UsersClub, Season, Team, Player, TeamsCoaching_Staff
+from .models import Equipment, Place, Player_data, Profile, Club, Rented_equipment, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 
 
 
@@ -224,3 +224,17 @@ class RentEquipmentForm(forms.ModelForm):
         if commit:
             rent.save()
         return rent
+    
+class PlaceForm(forms.ModelForm):
+    class Meta:
+        model = Place
+        fields=['name','addres', 'lights', 'surface','description']
+
+    def save(self,club, commit=True):
+        place = super().save(commit=False)
+        place.club = club
+
+        if commit:
+            place.save()
+        return place
+    
