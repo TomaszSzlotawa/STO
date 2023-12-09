@@ -597,3 +597,14 @@ def delete_place(request, place_id):
         place.delete()
         return redirect(places, club.id)
     return render(request,'clubs\\confirm_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'place':place})
+
+def edit_place(request,place_id):
+    usersClubs, teams = get_data_for_menu(request)
+    place = get_object_or_404(Place, pk=place_id)
+    club = get_object_or_404(Club,pk=place.club.id)
+    form = PlaceForm(request.POST or None, instance=place)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(club=club)
+        return redirect(places, club.id)
+    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'edit':True})
