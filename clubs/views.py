@@ -49,7 +49,7 @@ def signup(request):
             return redirect(user_panel)
     else:
         form = SignUpForm()
-    return render(request, 'clubs\signup.html', {'form': form})
+    return render(request, 'clubs/signup.html', {'form': form})
 
 
 
@@ -57,7 +57,7 @@ def signup(request):
 def user_panel(request):
     usersClubs, teams = get_data_for_menu(request)
 
-    return render(request,'clubs\\user_panel.html',{'usersClubs':usersClubs,'teams':teams})
+    return render(request,'clubs/user_panel.html',{'usersClubs':usersClubs,'teams':teams})
 
 def user_profile(request):
     usersClubs, teams = get_data_for_menu(request)
@@ -83,7 +83,7 @@ def user_profile(request):
         password_form = PasswordChangeForm(request.user)
 
     #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
-    return render(request, 'clubs\\user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams})
+    return render(request, 'clubs/user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams})
 
 def delete_profile(request):
     usersClubs, teams = get_data_for_menu(request or None)
@@ -91,7 +91,7 @@ def delete_profile(request):
     if request.method == 'POST':
         user.delete()
         return redirect(user_panel)
-    return render(request,'clubs\\confirm.html',{'user':user,'usersClubs':usersClubs,'teams':teams})
+    return render(request,'clubs/confirm.html',{'user':user,'usersClubs':usersClubs,'teams':teams})
 
 def create_club(request):
     usersClubs, teams = get_data_for_menu(request)
@@ -102,7 +102,7 @@ def create_club(request):
         users_club = UsersClub(club = club,user = user, admin = True, accepted = True)
         users_club.save()
         return redirect(user_panel)
-    return render(request,'clubs\\create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
+    return render(request,'clubs/create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
 
 def club_settings(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -123,7 +123,7 @@ def club_settings(request, club_id):
                 return redirect(club_settings, club.id)
             else:
                 messages.error(request, 'Błąd')
-        return render(request,'clubs\\club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users,'seasons':seasons})
+        return render(request,'clubs/club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users,'seasons':seasons})
     else:
         return redirect(user_panel)
 def delete_club(request,club_id):
@@ -131,18 +131,18 @@ def delete_club(request,club_id):
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
     if role.admin == False:
-        return render(request, 'clubs\\lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
+        return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
     if request.method == 'POST':
         club.delete()
         return redirect(user_panel)
-    return render(request,'clubs\\confirm_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams})
+    return render(request,'clubs/confirm_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams})
 
 def roles_in_club(request,club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
     if role.admin == False:
-        return render(request, 'clubs\\lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
+        return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
     users = UsersClub.objects.filter(club = club)
     contains_admin = False
     if request.method == 'POST':
@@ -169,14 +169,14 @@ def roles_in_club(request,club_id):
             return redirect(roles_in_club,club.id)
 
         return redirect(club_settings, club.id)
-    return render(request,'clubs\\roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})
+    return render(request,'clubs/roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})
 
 def add_user_to_club(request,club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
     if role.admin == False:
-        return render(request, 'clubs\\lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
+        return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
     if request.method == 'POST':
         form = UsersClubForm(club, request.POST)
         if form.is_valid():
@@ -204,12 +204,12 @@ def add_user_to_club(request,club_id):
     else:
         form = UsersClubForm(club)
 
-    return render(request,'clubs\\add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})
+    return render(request,'clubs/add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})
 
 def user_roles(request):
     usersClubs, teams = get_data_for_menu(request)
     usersClubs_roles = UsersClub.objects.filter(user = request.user)
-    return render(request,'clubs\\user_roles.html',{'usersClubs':usersClubs,'teams':teams,'usersClubs_roles':usersClubs_roles})
+    return render(request,'clubs/user_roles.html',{'usersClubs':usersClubs,'teams':teams,'usersClubs_roles':usersClubs_roles})
 
 def user_role_delete(request, club_id):
     club = get_object_or_404(Club, pk = club_id)
@@ -250,7 +250,7 @@ def create_team(request,club_id):
     else:
         team_form = TeamCreateForm()
         season_form = SeasonCreateForm()
-    return render(request,'clubs\\create_team.html',{'club':club,'usersClubs':usersClubs,
+    return render(request,'clubs/create_team.html',{'club':club,'usersClubs':usersClubs,
         'teams':teams,'team_form':team_form, 'season_form':season_form})
 
 def delete_team(request, team_id):
@@ -260,7 +260,7 @@ def delete_team(request, team_id):
     if request.method == 'POST':
         team.delete()
         return redirect(club_settings,club.id)
-    return render(request,'clubs\\confirm_team.html',{'team':team,'club':club,'usersClubs':usersClubs,'teams':teams})
+    return render(request,'clubs/confirm_team.html',{'team':team,'club':club,'usersClubs':usersClubs,'teams':teams})
 
 def edit_team(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -285,7 +285,7 @@ def edit_team(request, team_id):
                     season.save()
             return redirect(edit_team,team.id)
 
-    return render(request,'clubs\\edit_team.html',{'club':club,'usersClubs':usersClubs,
+    return render(request,'clubs/edit_team.html',{'club':club,'usersClubs':usersClubs,
         'teams':teams,'team_form':team_form, 'season_form':season_form, 'team':team, 'seasons':seasons})
 
 def club_staff(request, club_id):
@@ -296,7 +296,7 @@ def club_staff(request, club_id):
     seasons = Season.objects.filter(team__in = teams, active = True)
     show_hidden = request.GET.get('show_hidden', False) == 'on'
 
-    return render(request,'clubs\\club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons,'show_hidden':show_hidden})
+    return render(request,'clubs/club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons,'show_hidden':show_hidden})
 
 def create_player(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -313,7 +313,7 @@ def create_player(request, club_id):
             player_data.player = player
             player_data.save()
         return redirect(club_staff, club.id)
-    return render(request,'clubs\\create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':False})
+    return render(request,'clubs/create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':False})
 
 def team_staff(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -323,7 +323,7 @@ def team_staff(request, team_id):
         players = season.player.all()
     else:
         players = []
-    return render(request,'clubs\\team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team, 'season':season})
+    return render(request,'clubs/team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team, 'season':season})
 
 def add_player(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -356,7 +356,7 @@ def add_player(request, team_id):
             season.player.add(player)
             return redirect(team_staff, team.id)
             
-    return render(request,'clubs\\add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})
+    return render(request,'clubs/add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})
 def delete_player_from_club(request, player_id):
     player = get_object_or_404(Player,pk = player_id)
     club = player.club
@@ -386,7 +386,7 @@ def club_coaching_staff(request, club_id):
     club_teams = Team.objects.filter(club=club)
     roles_in_teams = TeamsCoaching_Staff.objects.filter(team__in=club_teams,leaving_date=None)
     print(roles_in_teams)
-    return render(request,'clubs\\club_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})
+    return render(request,'clubs/club_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})
 
 
 def team_coaching_staff(request, team_id):
@@ -394,7 +394,7 @@ def team_coaching_staff(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
 
-    return render(request,'clubs\\team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'coaches':coaches,'team':team})
+    return render(request,'clubs/team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'coaches':coaches,'team':team})
 
 def edit_team_coaching_staff(request, team_id, coach_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -424,7 +424,7 @@ def edit_team_coaching_staff(request, team_id, coach_id):
             coach.leaving_date = date.today()
             coach.save()
             return redirect(team_coaching_staff,team.id)
-    return render(request,'clubs\\edit_team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'coach':coach})
+    return render(request,'clubs/edit_team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'coach':coach})
 
 def add_coach_to_team(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -436,7 +436,7 @@ def add_coach_to_team(request, team_id):
     if request.method == 'POST':
         form.save(team=team)
         return redirect(team_coaching_staff,team.id)
-    return render(request,'clubs\\add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
+    return render(request,'clubs/add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
 
 def add_season(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -446,7 +446,7 @@ def add_season(request, team_id):
         if form.is_valid():
             form.save(team)
             return redirect(edit_team, team.id)
-    return render(request,'clubs\\create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form,'edit':False})
+    return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form,'edit':False})
 
 def edit_active_season(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -457,7 +457,7 @@ def edit_active_season(request, team_id):
         if form.is_valid():
             season = form.save(team)
             return redirect(edit_team,team.id)
-    return render(request,'clubs\\create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'edit':True})
+    return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'edit':True})
 
 def edit_player(request, player_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -471,14 +471,14 @@ def edit_player(request, player_id):
         if player_data_form.is_valid():
             player_data.save()
         return redirect(club_staff, player.club.id)
-    return render(request,'clubs\\create_player.html',{'club':player.club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':True})
+    return render(request,'clubs/create_player.html',{'club':player.club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':True})
 
 
 def clubs_equipment(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk=club_id)
     equipment = Equipment.objects.filter(club=club)
-    return render(request,'clubs\\equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'equipment':equipment})
+    return render(request,'clubs/equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'equipment':equipment})
 
 def create_equipment(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -488,7 +488,7 @@ def create_equipment(request, club_id):
         if form.is_valid():
             form.save(club=club)
         return redirect(clubs_equipment, club.id)
-    return render(request,'clubs\\create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
+    return render(request,'clubs/create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
 
 
 
@@ -501,7 +501,7 @@ def edit_equipment(request, item_id):
         if form.is_valid():
             form.save(club=club)
         return redirect(clubs_equipment, club.id)
-    return render(request,'clubs\\create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form, 'edit':True})
+    return render(request,'clubs/create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form, 'edit':True})
 
 def delete_equipment(request, item_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -510,7 +510,7 @@ def delete_equipment(request, item_id):
     if request.method == 'POST':
         item.delete()
         return redirect(clubs_equipment, club.id)
-    return render(request,'clubs\\confirm_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'item':item})
+    return render(request,'clubs/confirm_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'item':item})
 
 def rent_equipment(request, item_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -521,7 +521,7 @@ def rent_equipment(request, item_id):
         if form.is_valid():
             form.save(item)
             form = RentEquipmentForm(club, None)
-    return render(request,'clubs\\rent_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'form':form})
+    return render(request,'clubs/rent_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'form':form})
 
 def rented_equipment(request, item_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -532,7 +532,7 @@ def rented_equipment(request, item_id):
     for holder in equipment_holders:
         sum += holder.quantity
     rest = item.all_quantity - sum
-    return render(request,'clubs\\rented_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'sum':sum, 'rest':rest})
+    return render(request,'clubs/rented_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'sum':sum, 'rest':rest})
 
 def return_equipment(request, rent_id):
     rent = get_object_or_404(Rented_equipment,pk=rent_id)
@@ -545,7 +545,7 @@ def players_equipment(request, player_id):
     player = get_object_or_404(Player, pk = player_id)
     items = Rented_equipment.objects.filter(player=player, date_of_return__isnull=True)
 
-    return render(request, 'clubs\\players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})
+    return render(request, 'clubs/players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})
 
 def teams_equipment(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -570,14 +570,14 @@ def teams_equipment(request, team_id):
         return dictionary.get(key)
 
 
-    return render(request,'clubs\\teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
+    return render(request,'clubs/teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
 
 def places(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     places = Place.objects.filter(club=club)
 
-    return render(request,'clubs\\places.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'places':places})
+    return render(request,'clubs/places.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'places':places})
 
 def create_place(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -587,7 +587,7 @@ def create_place(request, club_id):
         if form.is_valid():
             form.save(club=club)
         return redirect(places, club.id)
-    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
+    return render(request,'clubs/create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
 
 def delete_place(request, place_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -596,7 +596,7 @@ def delete_place(request, place_id):
     if request.method == 'POST':
         place.delete()
         return redirect(places, club.id)
-    return render(request,'clubs\\confirm_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'place':place})
+    return render(request,'clubs/confirm_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'place':place})
 
 def edit_place(request,place_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -607,7 +607,7 @@ def edit_place(request,place_id):
         if form.is_valid():
             form.save(club=club)
         return redirect(places, club.id)
-    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'edit':True})
+    return render(request,'clubs/create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'edit':True})
 
 def place_details(request, place_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -617,4 +617,4 @@ def place_details(request, place_id):
     for field_name in form.fields:
         form.fields[field_name].widget.attrs['disabled'] = True
     
-    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'details':True})
+    return render(request,'clubs/create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'details':True})
