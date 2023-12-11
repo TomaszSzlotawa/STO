@@ -4,8 +4,8 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import Equipment, Rented_equipment, TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, RentEquipmentForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .models import Equipment, Place, Rented_equipment, TeamsCoaching_Staff, UsersClub, Club, Team, Profile, Season, Player, Player_data
+from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -572,3 +572,49 @@ def teams_equipment(request, team_id):
 
     return render(request,'clubs\\teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
 
+def places(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    places = Place.objects.filter(club=club)
+
+    return render(request,'clubs\\places.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'places':places})
+
+def create_place(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    form = PlaceForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(club=club)
+        return redirect(places, club.id)
+    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
+
+def delete_place(request, place_id):
+    usersClubs, teams = get_data_for_menu(request)
+    place = get_object_or_404(Place, pk=place_id)
+    club = get_object_or_404(Club, pk=place.club.id)
+    if request.method == 'POST':
+        place.delete()
+        return redirect(places, club.id)
+    return render(request,'clubs\\confirm_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'place':place})
+
+def edit_place(request,place_id):
+    usersClubs, teams = get_data_for_menu(request)
+    place = get_object_or_404(Place, pk=place_id)
+    club = get_object_or_404(Club,pk=place.club.id)
+    form = PlaceForm(request.POST or None, instance=place)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(club=club)
+        return redirect(places, club.id)
+    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'edit':True})
+
+def place_details(request, place_id):
+    usersClubs, teams = get_data_for_menu(request)
+    place = get_object_or_404(Place, pk=place_id)
+    club = get_object_or_404(Club,pk=place.club.id)
+    form = PlaceForm(request.POST or None, instance=place)
+    for field_name in form.fields:
+        form.fields[field_name].widget.attrs['disabled'] = True
+    
+    return render(request,'clubs\\create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'details':True})

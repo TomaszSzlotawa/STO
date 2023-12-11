@@ -40,6 +40,11 @@ urlpatterns = [
     path("equipment/return/<int:rent_id>", views.return_equipment, name='return_equipment'),
     path("equipment/player/<int:player_id>", views.players_equipment, name='players_equipment'),
     path("equipment/team/<int:team_id>", views.teams_equipment, name='teams_equipment'),
+    path("places/<int:club_id>", views.places, name='places'),
+    path("places/create/<int:club_id>", views.create_place, name='create_place'),
+    path("places/delete/<int:place_id>", views.delete_place, name='delete_place'),
+    path("places/edit/<int:place_id>", views.edit_place, name='edit_place'),
+    path("places/details/<int:place_id>", views.place_details, name='place_details'),
     
 ]
 
