@@ -664,3 +664,12 @@ def training_details(request,training_id):
     for field_name in form.fields:
         form.fields[field_name].widget.attrs['disabled'] = True
     return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form,'details':True})
+
+def delete_training(request,training_id):
+    usersClubs, teams = get_data_for_menu(request)
+    training = get_object_or_404(Training,pk=training_id)
+    team = get_object_or_404(Team,pk=training.season.team.id)
+    if request.method == 'POST':
+        training.delete()
+        return redirect(trainings, team.id)
+    return render(request,'clubs/confirm_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team,'training':training})
