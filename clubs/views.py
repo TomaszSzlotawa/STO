@@ -640,3 +640,16 @@ def add_training(request,team_id):
             form.save()
             return redirect(trainings,season.team.id)
     return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form})
+
+def edit_training(request,training_id):
+    usersClubs, teams = get_data_for_menu(request)
+    training = get_object_or_404(Training,pk=training_id)
+    team = get_object_or_404(Team,pk=training.season.team.id)
+    season = get_object_or_404(Season,pk=training.season.id)
+    players = season.player.all()
+    form = TrainingForm(request.POST or None, players = players, season=season, instance=training)
+    if request.method =='POST':
+        if form.is_valid():
+            form.save()
+            return redirect(trainings,season.team.id)
+    return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form,'edit':True})

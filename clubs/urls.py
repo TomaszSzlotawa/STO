@@ -47,6 +47,7 @@ urlpatterns = [
     path("places/details/<int:place_id>", views.place_details, name='place_details'),
     path("teams/trainings/<int:team_id>", views.trainings, name='trainings'),
     path("teams/trainings/add/<int:team_id>", views.add_training, name='add_training'),
+    path("teams/trainings/edit/<int:training_id>", views.edit_training, name='edit_training'),
     
 ]
 

@@ -265,6 +265,9 @@ class TrainingForm(forms.ModelForm):
             self.fields['player'].queryset = players
             self.fields['player'].initial = players.values_list('pk', flat=True)
         self.season = season
+        if self.instance.pk:
+            self.fields['duration'].initial = (self.instance.end_datatime - self.instance.start_datatime).seconds // 60
+
 
     def clean(self):
         cleaned_data = super().clean()
@@ -292,8 +295,12 @@ class TrainingForm(forms.ModelForm):
             training.save()
             selected_players = self.cleaned_data['player']
 
-            if selected_players:
-                for player in selected_players:
-                    Attendance.objects.create(training=training, player=player, present=None)
+            current_players = set(Attendance.objects.filter(training=training).values_list('player', flat=True))
+
+            removed_players = current_players - set(selected_players)
+            Attendance.objects.filter(training=training, player__in=removed_players).delete()
+
+            for player in selected_players:
+                Attendance.objects.get_or_create(training=training, player=player, defaults={'present': None})
 
         return training
