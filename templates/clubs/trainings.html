@@ -23,7 +23,7 @@
                 
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li><a class="dropdown-item" href="#">Pokaż szczegóły</a></li>
+              <li><a class="dropdown-item" href="{%url 'training_details' training.id %}">Pokaż szczegóły</a></li>
               <li><a class="dropdown-item" href="{%url 'edit_training' training.id %}">Edytuj</a></li>
               <li><a class="dropdown-item" href="#">Sprawdź obecność</a></li>
           </ul>

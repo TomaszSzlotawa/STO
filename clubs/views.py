@@ -622,10 +622,10 @@ def trainings(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team=team, active=True).first()
-    schedueled_trainings = Training.objects.filter(season=season)
+    schedueled_trainings = Training.objects.filter(season=season).order_by('-start_datatime')
     finished_trainings = [training for training in schedueled_trainings if training.end_datatime < datetime.now()]
     finished_training_ids = [training.id for training in finished_trainings]
-    schedueled_trainings = schedueled_trainings.exclude(id__in=finished_training_ids)
+    schedueled_trainings = schedueled_trainings.exclude(id__in=finished_training_ids).order_by('start_datatime')
 
     return render(request,'clubs/trainings.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'schedueled_trainings':schedueled_trainings, 'finished_trainings':finished_trainings})
 
@@ -653,3 +653,14 @@ def edit_training(request,training_id):
             form.save()
             return redirect(trainings,season.team.id)
     return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form,'edit':True})
+
+def training_details(request,training_id):
+    usersClubs, teams = get_data_for_menu(request)
+    training = get_object_or_404(Training,pk=training_id)
+    team = get_object_or_404(Team,pk=training.season.team.id)
+    season = get_object_or_404(Season,pk=training.season.id)
+    players = season.player.all()
+    form = TrainingForm(request.POST or None, players = players, season=season, instance=training)
+    for field_name in form.fields:
+        form.fields[field_name].widget.attrs['disabled'] = True
+    return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form,'details':True})

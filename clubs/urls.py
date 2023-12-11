@@ -48,6 +48,7 @@ urlpatterns = [
     path("teams/trainings/<int:team_id>", views.trainings, name='trainings'),
     path("teams/trainings/add/<int:team_id>", views.add_training, name='add_training'),
     path("teams/trainings/edit/<int:training_id>", views.edit_training, name='edit_training'),
+    path("teams/trainings/details/<int:training_id>", views.training_details, name='training_details'),
     
 ]
 
