@@ -1,0 +1,112 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Treningi{% endblock %}
+
+{% block content %}
+
+<!-- <a class="link" href="{% url 'add_training' team.id %}">Utwórz trening</a> -->
+
+<table>
+  <thead>
+    <tr>
+      <th>Zaplanowane</th>
+      <th>Zakończone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <td>
+      <table>
+        <thead>
+          <tr>
+            <th>Trening</th>
+            <th>Zarządzaj</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for training in schedueled_trainings %}
+          <tr>
+            <td>{{training.topic}} - {{training.start_datatime}}</td>
+            <td>
+              <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                      
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">Pokaż szczegóły</a></li>
+                    <li><a class="dropdown-item" href="#">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="#">Sprawdź obecność</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </td>
+    <td>
+      <table>
+        <thead>
+          <tr>
+            <th>Trening</th>
+            <th>Zarządzaj</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for training in finished_trainings %}
+          <tr>
+            <td>{{training.topic}} - {{training.start_datatime}}</td>
+            <td>
+              <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                      
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#">Pokaż szczegóły</a></li>
+                    <li><a class="dropdown-item" href="#">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="#">Sprawdź obecność</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </td>
+  </tbody>
+</table>
+
+
+  <h3>Treningi</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa</th>
+        <th>Producent</th>
+        <th>Ilość</th>
+        <th>Zarządzaj</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in equipment %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.producer }}</td>
+          <td>{{ item.all_quantity }}</td>
+          <td>
+            <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Zarządzaj
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'edit_equipment' item.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_equipment' item.id %}">Usuń</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rent_equipment' item.id %}">Wypożycz sprzęt</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rented_equipment' item.id %}">Raport</a></li>
+                </ul>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

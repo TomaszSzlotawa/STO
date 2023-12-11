@@ -55,6 +55,7 @@
                                                 <li><a href="#" class="link-dark rounded text-decoration-none">Obecność</a></li>
                                                 <li><a href="{% url 'team_staff' team.id %}" class="link-dark rounded text-decoration-none">Kadra</a></li>
                                                 <li><a href="{% url 'team_coaching_staff' team.id %}" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
+                                                <li><a href="{% url 'trainings' team.id %}" class="link-dark rounded text-decoration-none">Treningi</a></li>
                                                 <li><a href="#" class="link-dark rounded text-decoration-none">Plan treningowy</a></li>
                                                 <li><a href="{% url 'teams_equipment' team.id %}" class="link-dark rounded text-decoration-none">Raport sprzętu drużyny</a></li>
                                             </ul>
@@ -65,9 +66,9 @@
                                 </div>
                                 <li><a href="{% url 'clubs_equipment' club.club.id %}" class="link-dark rounded text-decoration-none">Sprzęt</a></li>
                                 <li><a href="{% url 'places' club.club.id %}" class="link-dark rounded text-decoration-none">Obiekty</a></li>
-                                <li><a href="#" class="link-dark rounded text-decoration-none">Zadania</a></li>
+                                <!-- <li><a href="#" class="link-dark rounded text-decoration-none">Zadania</a></li>
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Dofinansowania</a></li>
-                                <li><a href="#" class="link-dark rounded text-decoration-none">Sponsorzy</a></li>
+                                <li><a href="#" class="link-dark rounded text-decoration-none">Sponsorzy</a></li> -->
                                 <li><a href="{% url 'club_settings' club.club.id %}" class="link-dark rounded text-decoration-none">Ustawienia klubu</a></li>
     
                               </ul>

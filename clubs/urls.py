@@ -45,6 +45,8 @@ urlpatterns = [
     path("places/delete/<int:place_id>", views.delete_place, name='delete_place'),
     path("places/edit/<int:place_id>", views.edit_place, name='edit_place'),
     path("places/details/<int:place_id>", views.place_details, name='place_details'),
+    path("teams/trainings/<int:team_id>", views.trainings, name='trainings'),
+    path("teams/trainings/add/<int:team_id>", views.add_training, name='add_training'),
     
 ]
 
