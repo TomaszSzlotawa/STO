@@ -1,11 +1,11 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Equipment, Place, Player_data, Profile, Club, Rented_equipment, UsersClub, Season, Team, Player, TeamsCoaching_Staff
-
-
+from .models import Attendance, Equipment, Place, Player_data, Profile, Club, Rented_equipment, Training, UsersClub, Season, Team, Player, TeamsCoaching_Staff
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30,required=True, help_text="wpisz swoje imię")
@@ -238,3 +238,62 @@ class PlaceForm(forms.ModelForm):
             place.save()
         return place
     
+class test(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, player):
+        return f"{player.surname} {player.name}" 
+
+class TrainingForm(forms.ModelForm):
+    duration = forms.IntegerField(min_value=1, required=True)
+    player = test(
+        queryset=Player.objects.all().order_by('surname', 'name'),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    start_datatime = forms.DateTimeField(
+        widget=forms.widgets.DateTimeInput(
+            attrs={'type': 'datetime-local'},
+        )
+    )
+    
+    class Meta:
+        model = Training
+        exclude = ['season', 'end_datatime']
+        
+    def __init__(self, *args, players=None, season, **kwargs):
+        super(TrainingForm, self).__init__(*args, **kwargs)
+        if players is not None:
+            self.fields['player'].queryset = players
+            self.fields['player'].initial = players.values_list('pk', flat=True)
+        self.season = season
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_datatime = cleaned_data.get('start_datatime')
+        duration = cleaned_data.get('duration')
+
+        if start_datatime and duration:
+            end_datatime = start_datatime + timedelta(minutes=duration)
+            season_start = datetime.combine(self.season.date_of_start, datetime.min.time())
+            season_end = datetime.combine(self.season.date_of_end, datetime.max.time())
+
+            if start_datatime < season_start or end_datatime > season_end:
+                raise ValidationError("Trening musi odbywać się w ramach trwającego sezonu.")
+
+    def save(self, commit=True):
+        training = super().save(commit=False)
+        training.season = self.season
+        duration_minutes = self.cleaned_data['duration']
+        start_datatime = self.cleaned_data.get('start_datatime')
+        
+        if start_datatime:
+            training.end_datatime = start_datatime + timedelta(minutes=duration_minutes)
+
+        if commit:
+            training.save()
+            selected_players = self.cleaned_data['player']
+
+            if selected_players:
+                for player in selected_players:
+                    Attendance.objects.create(training=training, player=player, present=None)
+
+        return training

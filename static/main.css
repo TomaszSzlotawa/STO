@@ -38,7 +38,7 @@ body {
 
 .main-content {
     flex: 1; /* Wypełnij dostępną przestrzeń */
-    margin-left: 220px; /* Szerokość sidebar */
+    /*margin-left: 220px;  Szerokość sidebar */
     padding: 15px; /* Dodatkowy padding dla main-content */
     overflow-y: auto; /* Add vertical scrollbar for main-content */
 }

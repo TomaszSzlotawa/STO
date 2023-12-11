@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import Equipment, Place, Rented_equipment, TeamsCoaching_Staff, Training, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -622,7 +622,7 @@ def trainings(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team=team, active=True).first()
-    schedueled_trainings = Training.objects.filter(team=team,season=season)
+    schedueled_trainings = Training.objects.filter(season=season)
     finished_trainings = [training for training in schedueled_trainings if training.end_datatime < datetime.now()]
     finished_training_ids = [training.id for training in finished_trainings]
     schedueled_trainings = schedueled_trainings.exclude(id__in=finished_training_ids)
@@ -630,4 +630,13 @@ def trainings(request, team_id):
     return render(request,'clubs/trainings.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'schedueled_trainings':schedueled_trainings, 'finished_trainings':finished_trainings})
 
 def add_training(request,team_id):
-    pass
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team,pk=team_id)
+    season = Season.objects.filter(team=team, active=True).first()
+    players = season.player.all()
+    form = TrainingForm(request.POST or None, players = players, season=season)
+    if request.method =='POST':
+        if form.is_valid():
+            form.save()
+            return redirect(trainings,season.team.id)
+    return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form})

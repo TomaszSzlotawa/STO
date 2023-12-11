@@ -1,0 +1,24 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Utwórz trening{% endblock %}
+
+{% block content %}
+<h2>{% if edit %} Edytuj dane treningu {% elif details %} Szczegóły treningu{% else %}Utwórz trening {% endif %}</h2>
+{% if form.errors %}
+  <ul class="errorlist">
+    {% for field_errors in form.errors.values %}
+      {% for error in field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+{% endif %}
+<form method="post">
+  {% csrf_token %}
+  {{ form }} <br>
+  {% if details == false %}<button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>{% endif %} 
+  <a href="{% url 'trainings' team.id %}" >wróć</a>
+
+</form>
+
+{% endblock %}

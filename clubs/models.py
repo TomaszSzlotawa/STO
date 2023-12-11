@@ -219,22 +219,22 @@ class Training(models.Model):
     start_datatime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data i godzina rozpoczęcia')
     end_datatime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data i godzina zakończenia')
     place = models.ForeignKey(Place, on_delete=models.SET_NULL,blank=False, null=True)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    #team = models.ForeignKey(Team, on_delete=models.CASCADE)
     player = models.ManyToManyField(Player, through="Attendance")
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
+
+    
     def __str__(self):
-        return f"Trening {self.start_datatime} - {self.team}({self.place})"
+        return f"Trening {self.start_datatime} - {self.season.team.name}({self.place})"
     
 class Attendance(models.Model):
-    player = models.OneToOneField(Player, on_delete=models.CASCADE)
-    training = models.OneToOneField(Training, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    training = models.ForeignKey(Training, on_delete=models.CASCADE)
     present = models.BooleanField(blank=True,null=True,help_text="Obecny na zajęciach")
+
     class Meta:
-            constraints = [
-                models.UniqueConstraint(
-                    fields=['player', 'training'], name='unique_player_training_attendence'
-                )
-            ]
+        unique_together = ('player', 'training')
+        
     def __str__(self):
         present_ = ''
         if self.present == None:
