@@ -52,11 +52,11 @@
                                         <div class="collapse" id="{{team.name_without_spaces}}-collapse">
                                             <ul class="list-unstyled ps-2 ">
                                                 <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz {{team.name}}</a></li>
-                                                <li><a href="#" class="link-dark rounded text-decoration-none">Obecność</a></li>
                                                 <li><a href="{% url 'team_staff' team.id %}" class="link-dark rounded text-decoration-none">Kadra</a></li>
                                                 <li><a href="{% url 'team_coaching_staff' team.id %}" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
                                                 <li><a href="{% url 'trainings' team.id %}" class="link-dark rounded text-decoration-none">Treningi</a></li>
                                                 <li><a href="#" class="link-dark rounded text-decoration-none">Plan treningowy</a></li>
+                                                <li><a href="{% url 'team_attendance_report' team.id %}" class="link-dark rounded text-decoration-none">Raport obecności</a></li>
                                                 <li><a href="{% url 'teams_equipment' team.id %}" class="link-dark rounded text-decoration-none">Raport sprzętu drużyny</a></li>
                                             </ul>
                                         </div>

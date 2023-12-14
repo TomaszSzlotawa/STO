@@ -1,0 +1,57 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Raport Frekwencji dla drużyny{% endblock %}
+
+{% block content %}
+
+<h3>{{team.name}} - Raport Frekwencji</h3>
+<h3>Frekwencja wyniosła {{avg_attendance}}%</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            {% for training in trainings %}
+            <th>{{training.start_datatime|date:"m-d"}}<br>{{training.start_datatime|date:"Y"}}</th>
+            {% endfor %}
+            <th>Średnio</th>
+        </tr>
+    </thead>
+  {% for player in players %}
+  <tbody>
+    <tr>
+        <td>
+            {{player.name}}
+        </td>
+        <td>
+            {{player.surname}}
+        </td>
+        {% for t in trainings %}
+            <td>
+            {% for att in attendances %}
+                {% if att.training.id == t.id %}
+                    {% if att.player.id == player.id %}
+                        {% if att.present %}
+                            &#x2705;
+                        {% elif att.present == False %}
+                            &#10060;
+                        {% else %}
+                            &#10068;
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            </td>
+        {% endfor %}
+        <td>
+            {{ players_avg|get_item:player.id }}%
+        </td>
+        
+    </tr>
+  </tbody>
+  {% endfor %}
+  </table>
+
+
+
+{% endblock %}

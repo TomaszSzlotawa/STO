@@ -12,6 +12,9 @@ from django.core.mail import send_mail
 from datetime import date, datetime
 from django.template.defaulttags import register
 
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 def get_data_for_menu(request):
     if request.user.is_authenticated:
@@ -565,9 +568,7 @@ def teams_equipment(request, team_id):
             player_counts[player.id] += 1
 
     player_counts_dict = dict(player_counts)
-    @register.filter
-    def get_item(dictionary, key):
-        return dictionary.get(key)
+
 
 
     return render(request,'clubs/teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
@@ -703,3 +704,31 @@ def training_attendance_report(request, training_id):
             present += 1
     avg_attendance = round(present / len(attendance) *100,2)
     return render(request, 'clubs/training_attendance_report.html', {'teams': teams, 'usersClubs': usersClubs,'attendance':attendance, 'training': training,'avg_attendance':avg_attendance})
+
+def team_attendance_report(request,team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team,pk=team_id)
+    season = Season.objects.filter(team = team, active = True).first()
+    trainings = Training.objects.filter(season=season).order_by('start_datatime')
+    attendances = Attendance.objects.filter(training__in = trainings)
+    if season:
+        players = season.player.all().order_by('surname')
+    else:
+        players = []
+    players_att = {p.id: 0 for p in players}
+    players_presents = {p.id: 0 for p in players}
+    present = 0
+
+    for att in attendances:
+        if att.present:
+            present += 1
+        for p in players:
+            if p.id == att.player.id:
+                players_att[p.id]+=1
+                if att.present:
+                    players_presents[p.id]+=1
+    players_avg = {p_id: round(players_presents[p_id] / players_att[p_id] * 100,2) if players_att[p_id] > 0 else 0 for p_id in players_att}
+
+    avg_attendance = round(present / len(attendances) *100,2)
+
+    return render(request,'clubs/team_attendance_report.html',{'players_avg':players_avg,'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'players':players,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})
