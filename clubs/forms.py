@@ -294,14 +294,16 @@ class TrainingForm(forms.ModelForm):
         if commit:
             training.save()
             selected_players = self.cleaned_data['player']
-
+            selected_players_ids = selected_players.values_list('id', flat=True)
             current_players = set(Attendance.objects.filter(training=training).values_list('player', flat=True))
 
-            removed_players = current_players - set(selected_players)
+            removed_players = current_players - set(selected_players_ids)
+
             Attendance.objects.filter(training=training, player__in=removed_players).delete()
 
             for player in selected_players:
-                Attendance.objects.get_or_create(training=training, player=player, defaults={'present': None})
+                if player not in current_players:
+                    Attendance.objects.get_or_create(training=training, player=player,)
 
         return training
     
