@@ -50,6 +50,7 @@ urlpatterns = [
     path("teams/trainings/edit/<int:training_id>", views.edit_training, name='edit_training'),
     path("teams/trainings/details/<int:training_id>", views.training_details, name='training_details'),
     path("teams/trainings/delete/<int:training_id>", views.delete_training, name='delete_training'),
+    path("teams/trainings/attendance/<int:training_id>", views.training_attendance, name='training_attendance'),
     
 ]
 

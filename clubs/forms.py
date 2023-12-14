@@ -304,3 +304,42 @@ class TrainingForm(forms.ModelForm):
                 Attendance.objects.get_or_create(training=training, player=player, defaults={'present': None})
 
         return training
+    
+class AttendanceForm(forms.ModelForm):
+    present = forms.BooleanField(label="Obecny", required=False)
+    not_specified = forms.BooleanField(label="Nieokreślono", required=False)
+    absent = forms.BooleanField(label="Nieobecny", required=False)
+
+    class Meta:
+        model = Attendance
+        fields = []
+
+    def __init__(self, *args, **kwargs):
+        super(AttendanceForm, self).__init__(*args, **kwargs)
+
+        if self.instance and self.instance.present is not None:
+            self.initial['present'] = 'on' if self.instance.present else False
+            self.initial['absent'] = 'on' if not self.instance.present else False
+            self.initial['not_specified'] = False
+        else:
+            self.initial['present'] = False
+            self.initial['absent'] = False
+            self.initial['not_specified'] = True
+
+    def save(self, commit=True):
+        att = super().save(commit=False)
+        present = self.cleaned_data.get('present') 
+        absent = self.cleaned_data.get('absent')
+        not_specified = self.cleaned_data.get('not_specified')
+
+        if present:
+            att.present = True
+        elif absent:
+            att.present = False
+        elif not_specified:
+            att.present = None
+
+        if commit:
+            att.save()
+
+        return att

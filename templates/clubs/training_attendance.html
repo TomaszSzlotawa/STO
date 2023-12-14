@@ -1,0 +1,48 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Sprawdź obecność{% endblock %}
+
+{% block content %}
+<h2>Sprawdź obecność</h2>
+{% if form.errors %}
+  <ul class="errorlist">
+    {% for field_errors in form.errors.values %}
+      {% for error in field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+{% endif %}
+<form method="post">
+  <table>
+    <thead>
+      <th>Imię</th>
+      <th>Nazwisko</th>
+      <th>Obecny</th>
+      <th>Nie określono</th>
+      <th>Nieobecny</th>
+    </thead>
+    <tbody>
+      {% for att, form in forms_list %}
+          <tr>
+            <td>{{ att.player.name }}</td>
+            <td>{{ att.player.surname }}</td>
+            <td>
+                {{ form.present }} {{ form.present.label }}
+            </td>
+            <td>
+                {{ form.not_specified }} {{ form.not_specified.label }}
+            </td>
+            <td>
+                {{ form.absent }} {{ form.absent.label }}
+            </td>
+          </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+  {% csrf_token %}
+  <input type="submit" value="Zapisz">
+</form>
+
+{% endblock %}
