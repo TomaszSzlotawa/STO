@@ -675,7 +675,6 @@ def delete_training(request,training_id):
     return render(request,'clubs/confirm_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team,'training':training})
 
 def training_attendance(request, training_id):
-    print(request.POST)
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training, pk=training_id)
     attendance = Attendance.objects.filter(training=training).order_by('player')
@@ -687,13 +686,20 @@ def training_attendance(request, training_id):
         # Przetwarzanie formularzy po kliknięciu przycisku "Zapisz"
         for att, form in forms_list:
             form = AttendanceForm(request.POST, instance=att, prefix=str(att.player.id))
-            print(form)
-            #if form.is_valid():
-            form.save()
+            if form.is_valid():
+                form.save()
 
         # Przekierowanie gdziekolwiek chcesz po zapisaniu danych
         return redirect(trainings,training.season.team.id)
-
-
-
     return render(request, 'clubs/training_attendance.html', {'teams': teams, 'usersClubs': usersClubs, 'attendance': attendance, 'training': training, 'forms_list': forms_list})
+
+def training_attendance_report(request, training_id):
+    usersClubs, teams = get_data_for_menu(request)
+    training = get_object_or_404(Training, pk=training_id)
+    attendance = Attendance.objects.filter(training=training).order_by('player')
+    present = 0
+    for att in attendance:
+        if att.present:
+            present += 1
+    avg_attendance = round(present / len(attendance) *100,2)
+    return render(request, 'clubs/training_attendance_report.html', {'teams': teams, 'usersClubs': usersClubs,'attendance':attendance, 'training': training,'avg_attendance':avg_attendance})

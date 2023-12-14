@@ -55,8 +55,9 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <li><a class="dropdown-item" href="{%url 'training_details' training.id %}">Pokaż szczegóły</a></li>
-              <li><a class="dropdown-item" href="{%url 'training_attendance' training.id %}">Sprawdź obecność</a></li>
               <li><a class="dropdown-item" href="{%url 'edit_training' training.id %}">Edytuj</a></li>
+              <li><a class="dropdown-item" href="{%url 'training_attendance' training.id %}">Sprawdź obecność</a></li>
+              <li><a class="dropdown-item" href="{%url 'training_attendance_report' training.id %}">Raport obecności</a></li>
               <li><a class="dropdown-item" href="{%url 'delete_training' training.id %}">Usuń trening</a></li>
             </ul>
         </div>
