@@ -13,7 +13,7 @@
     {% endfor %}
   </ul>
 {% endif %}
-<form method="post">
+<form method="post" id="attendance-form">
   <table>
     <thead>
       <th>Imię</th>
@@ -28,14 +28,17 @@
             <td>{{ att.player.name }}</td>
             <td>{{ att.player.surname }}</td>
             <td>
-                {{ form.present }} {{ form.present.label }}
+                {{ form.present }} 
+                <label for="id_{{att.player.id}}-present">{{ form.present.label }}</label>
             </td>
             <td>
-                {{ form.not_specified }} {{ form.not_specified.label }}
+                {{ form.not_specified }} 
+                <label for="id_{{att.player.id}}-not_specified">{{ form.not_specified.label }}</label>
             </td>
             <td>
-                {{ form.absent }} {{ form.absent.label }}
-            </td>
+                {{ form.absent }} 
+                <label for="id_{{att.player.id}}-absent">{{ form.absent.label }}</label>
+              </td>
           </tr>
         {% endfor %}
     </tbody>
@@ -44,5 +47,33 @@
   {% csrf_token %}
   <input type="submit" value="Zapisz">
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var rows = document.querySelectorAll('#attendance-form tbody tr');
+
+    rows.forEach(function(row) {
+        var checkboxes = row.querySelectorAll('input[type="checkbox"]');
+        
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var checkedCheckboxes = row.querySelectorAll('input[type="checkbox"]:checked');
+                
+                if (checkedCheckboxes.length === 0) {
+                    // Jeśli żaden checkbox nie jest zaznaczony, zaznacz aktualny checkbox
+                    checkbox.checked = true;
+                } else {
+                    // Odznacz pozostałe checkboxy
+                    checkboxes.forEach(function(otherCheckbox) {
+                        if (otherCheckbox !== checkbox) {
+                            otherCheckbox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+});
+</script>
 
 {% endblock %}
