@@ -5,11 +5,11 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import Attendance, Equipment, Place, Rented_equipment, TeamsCoaching_Staff, Training, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, AttendanceForm, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.template.defaulttags import register
 
 @register.filter
@@ -709,7 +709,17 @@ def team_attendance_report(request,team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team = team, active = True).first()
-    trainings = Training.objects.filter(season=season).order_by('start_datatime')
+    attendance_filter = AttendanceReportFilter(request.GET or None, season = season)
+    if attendance_filter.is_valid():
+        start_date = attendance_filter.cleaned_data.get('start_date')
+        end_date = attendance_filter.cleaned_data.get('end_date')
+        end_date += timedelta(days=1)
+    else:
+        start_date = season.date_of_start
+        end_date = season.date_of_end
+        end_date += timedelta(days=1)
+
+    trainings = Training.objects.filter(season=season,start_datatime__range=[start_date, end_date]).order_by('start_datatime')
     attendances = Attendance.objects.filter(training__in = trainings)
     if season:
         players = season.player.all().order_by('surname')
@@ -728,7 +738,10 @@ def team_attendance_report(request,team_id):
                 if att.present:
                     players_presents[p.id]+=1
     players_avg = {p_id: round(players_presents[p_id] / players_att[p_id] * 100,2) if players_att[p_id] > 0 else 0 for p_id in players_att}
+    if len(attendances)==0:
+        avg_attendance = 0.00
+    else:
+        avg_attendance = round(present / len(attendances) *100,2)
 
-    avg_attendance = round(present / len(attendances) *100,2)
 
-    return render(request,'clubs/team_attendance_report.html',{'players_avg':players_avg,'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'players':players,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})
+    return render(request,'clubs/team_attendance_report.html',{'attendance_filter':attendance_filter, 'players_avg':players_avg,'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'players':players,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})

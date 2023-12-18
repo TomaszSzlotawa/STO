@@ -5,7 +5,20 @@
 {% block content %}
 
 <h3>{{team.name}} - Raport Frekwencji</h3>
-<h3>Frekwencja wyniosła {{avg_attendance}}%</h3>
+<h3>Średnia frekwencja wyniosła {{avg_attendance}}%</h3>
+{% if attendance_filter.errors %}
+  <ul class="errorlist">
+    {% for field_errors in attendance_filter.errors.values %}
+      {% for error in field_errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+{% endif %}
+<form method="get" action="">
+    {{ attendance_filter.as_p }}
+    <button type="submit">Filtruj</button>
+</form>
 <table>
     <thead>
         <tr>

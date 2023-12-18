@@ -345,3 +345,26 @@ class AttendanceForm(forms.ModelForm):
             att.save()
 
         return att
+    
+class AttendanceReportFilter(forms.Form):
+    start_date = forms.DateField(label='Data początkowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(label='Data końcowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def __init__(self, *args, season=None, **kwargs):
+        super(AttendanceReportFilter, self).__init__(*args, **kwargs)
+    
+        if season:
+            self.fields['start_date'].initial = season.date_of_start
+            self.fields['start_date'].widget.attrs['min'] = season.date_of_start
+            self.fields['start_date'].widget.attrs['max'] = season.date_of_end
+            self.fields['end_date'].initial = season.date_of_end
+            self.fields['end_date'].widget.attrs['min'] = season.date_of_start
+            self.fields['end_date'].widget.attrs['max'] = season.date_of_end
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+
+        if start_date and end_date and start_date > end_date:
+            raise ValidationError("Data początkowa nie może być późniejsza niż data końcowa.")
