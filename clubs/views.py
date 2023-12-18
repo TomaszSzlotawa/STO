@@ -720,7 +720,7 @@ def team_attendance_report(request,team_id):
         end_date += timedelta(days=1)
 
     trainings = Training.objects.filter(season=season,start_datatime__range=[start_date, end_date]).order_by('start_datatime')
-    attendances = Attendance.objects.filter(training__in = trainings)
+    attendances = Attendance.objects.filter(training__in = trainings,)
     if season:
         players = season.player.all().order_by('surname')
     else:
@@ -745,3 +745,32 @@ def team_attendance_report(request,team_id):
 
 
     return render(request,'clubs/team_attendance_report.html',{'attendance_filter':attendance_filter, 'players_avg':players_avg,'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'players':players,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})
+
+
+def player_attendance_report(request, season_id, player_id):
+    usersClubs, teams = get_data_for_menu(request)
+    player = get_object_or_404(Player,pk=player_id)
+    season = get_object_or_404(Season,pk=season_id)
+    team = season.team
+    attendance_filter = AttendanceReportFilter(request.GET or None, season = season)
+    if attendance_filter.is_valid():
+        start_date = attendance_filter.cleaned_data.get('start_date')
+        end_date = attendance_filter.cleaned_data.get('end_date')
+        end_date += timedelta(days=1)
+    else:
+        start_date = season.date_of_start
+        end_date = season.date_of_end
+        end_date += timedelta(days=1)
+    trainings = Training.objects.filter(season=season,start_datatime__range=[start_date, end_date]).order_by('start_datatime')
+    attendances = Attendance.objects.filter(training__in = trainings, player = player)
+    present = 0
+
+    for att in attendances:
+        if att.present:
+            present += 1
+    if len(attendances)==0:
+        avg_attendance = 0.00
+    else:
+        avg_attendance = round(present / len(attendances) *100,2)
+
+    return render(request,'clubs/player_attendance_report.html',{'attendance_filter':attendance_filter, 'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'player':player,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})

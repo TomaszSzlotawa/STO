@@ -33,6 +33,7 @@
                     Zarządzaj
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'player_attendance_report' season.id player.id %}">Raport frekwencji</a></li>
                     <li><a class="dropdown-item" href="{% url 'delete_player_from_team' season.id player.id %}">Usuń zawodnika z drużyny</a></li>
                     <li><a class="dropdown-item" href="{% url 'edit_player' player.id %}">Edytuj dane zawodnika</a></li>
                 </ul>

@@ -28,6 +28,7 @@ urlpatterns = [
     path("teams/coaching_staff/edit/<int:team_id>;<int:coach_id>", views.edit_team_coaching_staff, name='edit_team_coaching_staff'),
     path("teams/coaching_staff/add/<int:team_id>", views.add_coach_to_team, name='add_coach_to_team'),
     path("teams/staff/delete/<int:season_id>;<int:player_id>", views.delete_player_from_team, name='delete_player_from_team'),
+    path("teams/staff/attendance/<int:season_id>;<int:player_id>", views.player_attendance_report, name='player_attendance_report'),
     path("teams/staff/add/<int:team_id>", views.add_player, name='add_player'),
     path("teams/edit/<int:team_id>", views.edit_team, name='edit_team'),
     path("teams/delete/<int:team_id>", views.delete_team, name='delete_team'),
