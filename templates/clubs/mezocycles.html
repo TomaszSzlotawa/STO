@@ -1,0 +1,41 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Mezocykle drużyny {{team.name}}{% endblock %}
+{% block content %}
+  <h3>Mezocykle drużyny {{team.name}}</h3>
+  <a href="{% url 'create_mezocycle' team.id %}">Utwórz nowy mezocykl</a>
+  <h5>Szablony mezocykil drużyny {{team.name}}</h5>
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa</th>
+        <th>Długość[tygodnie]</th>
+        <th>Ilość jednostek w tygodniu</th>
+        <th>Zarządzaj</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in mezocycles %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.weeks }}</td>
+          <td>{{ item.trainings_per_week }}</td>
+          <td>
+            <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Zarządzaj
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'edit_equipment' item.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_equipment' item.id %}">Usuń</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rent_equipment' item.id %}">Wypożycz sprzęt</a></li>
+                    <li><a class="dropdown-item" href="{% url 'rented_equipment' item.id %}">Raport</a></li>
+                </ul>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+<a href="{% url 'create_equipment' team.id %}">Dodaj nowy sprzęt</a>
+{% endblock %}

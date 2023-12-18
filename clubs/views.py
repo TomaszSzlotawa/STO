@@ -4,13 +4,15 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import Attendance, Equipment, Place, Rented_equipment, TeamsCoaching_Staff, Training, UsersClub, Club, Team, Profile, Season, Player, Player_data
+from .models import Attendance, Equipment, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
 from datetime import date, datetime, timedelta
 from django.template.defaulttags import register
+from django.db.models import Q
+
 
 @register.filter
 def get_item(dictionary, key):
@@ -780,3 +782,16 @@ def player_attendance_report(request, season_id, player_id):
         avg_attendance = round(present / len_attendance *100,2)
 
     return render(request,'clubs/player_attendance_report.html',{'attendance_filter':attendance_filter, 'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'player':player,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})
+
+
+def mezocycles(request,team_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team,pk = team_id)
+    user = request.user
+
+    mezocycles = Mezocycle.objects.filter(Q(team=team) | Q(user=user)).order_by('id')
+
+    return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles})
+
+def create_mezocycle(request, team_id):
+    pass
