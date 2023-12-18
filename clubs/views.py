@@ -728,20 +728,24 @@ def team_attendance_report(request,team_id):
     players_att = {p.id: 0 for p in players}
     players_presents = {p.id: 0 for p in players}
     present = 0
+    len_attendance = 0
 
     for att in attendances:
-        if att.present:
-            present += 1
-        for p in players:
-            if p.id == att.player.id:
-                players_att[p.id]+=1
-                if att.present:
-                    players_presents[p.id]+=1
+        if att.training.end_datatime < datetime.now():
+            len_attendance += 1
+            if att.present:
+                present += 1
+            for p in players:
+                if p.id == att.player.id:
+                        players_att[p.id]+=1
+                        if att.present:
+                            players_presents[p.id]+=1
     players_avg = {p_id: round(players_presents[p_id] / players_att[p_id] * 100,2) if players_att[p_id] > 0 else 0 for p_id in players_att}
-    if len(attendances)==0:
+    print(present)
+    if len_attendance==0:
         avg_attendance = 0.00
     else:
-        avg_attendance = round(present / len(attendances) *100,2)
+        avg_attendance = round(present / len_attendance * 100,2)
 
 
     return render(request,'clubs/team_attendance_report.html',{'attendance_filter':attendance_filter, 'players_avg':players_avg,'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'players':players,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})
@@ -764,13 +768,15 @@ def player_attendance_report(request, season_id, player_id):
     trainings = Training.objects.filter(season=season,start_datatime__range=[start_date, end_date]).order_by('start_datatime')
     attendances = Attendance.objects.filter(training__in = trainings, player = player)
     present = 0
-
+    len_attendance = 0
     for att in attendances:
-        if att.present:
-            present += 1
-    if len(attendances)==0:
+        if att.training.end_datatime < datetime.now():
+            len_attendance +=1
+            if att.present:
+                present += 1
+    if len_attendance ==0:
         avg_attendance = 0.00
     else:
-        avg_attendance = round(present / len(attendances) *100,2)
+        avg_attendance = round(present / len_attendance *100,2)
 
     return render(request,'clubs/player_attendance_report.html',{'attendance_filter':attendance_filter, 'avg_attendance':avg_attendance,'teams':teams,'usersClubs':usersClubs,'player':player,'trainings':trainings, 'team':team,'attendances':attendances, 'season':season})

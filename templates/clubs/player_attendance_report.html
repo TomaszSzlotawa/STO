@@ -4,8 +4,8 @@
 
 {% block content %}
 
-<h3>{{team.name}} - Raport Frekwencji</h3>
-<h3>Średnia frekwencja wyniosła {{avg_attendance}}%</h3>
+<h3>{{player.name}} {{player.surname}} - Raport Frekwencji</h3>
+<h3>Frekwencja wyniosła {{avg_attendance}}%</h3>
 {% if attendance_filter.errors %}
   <ul class="errorlist">
     {% for field_errors in attendance_filter.errors.values %}
@@ -22,8 +22,6 @@
 <table>
     <thead>
         <tr>
-            <th>Imię</th>
-            <th>Nazwisko</th>
             {% for training in trainings %}
             <th>{{training.start_datatime|date:"m-d"}}<br>{{training.start_datatime|date:"Y"}}</th>
             {% endfor %}
@@ -31,30 +29,27 @@
     </thead>
   <tbody>
     <tr>
-        <td>
-            {{player.name}}
-        </td>
-        <td>
-            {{player.surname}}
-        </td>
-        {% for t in trainings %}
-            <td>
-            {% for att in attendances %}
-                {% if att.training.id == t.id %}
-                    {% if att.player.id == player.id %}
-                        {% if att.present %}
-                            &#x2705;
-                        {% elif att.present == False %}
-                            &#10060;
-                        {% else %}
-                            &#10068;
+        {% if trainings %}
+            {% for t in trainings %}
+                <td>
+                {% for att in attendances %}
+                    {% if att.training.id == t.id %}
+                        {% if att.player.id == player.id %}
+                            {% if att.present %}
+                                &#x2705;
+                            {% elif att.present == False %}
+                                &#10060;
+                            {% else %}
+                                &#10068;
+                            {% endif %}
                         {% endif %}
                     {% endif %}
-                {% endif %}
+                {% endfor %}
+                </td>
             {% endfor %}
-            </td>
-        {% endfor %}
-        
+        {% else %}
+        <td>Brak treningów w wybranym okresie</td>
+        {% endif %}
     </tr>
   </tbody>
 
