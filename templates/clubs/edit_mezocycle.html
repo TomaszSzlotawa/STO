@@ -1,0 +1,39 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Edytuj mezocykl{% endblock %}
+
+{% block content %}
+<h2> Edytuj mezocykl </h2>
+<p>{{mezocycle.name}}</p>
+<form method="post">
+<table>
+  <thead>
+    <th>Tydzień</th>
+    {% for t in for_t %}
+      <th>Trening {{ t }}</th>
+    {% endfor %}
+  </thead>
+  <tbody>
+    {% for w in for_w %}
+      <tr>
+        <td>{{ w }}</td>
+        {% for t in for_t %}
+          {% for form in forms_list %}
+            {% if form.week_number == w and form.training_number == t%}
+            <td>
+              <form method="post">
+              {{form.as_p }}
+              </form>
+            </td>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% csrf_token %}
+<input type="submit" name="mezocycle_details" value="Zapisz">
+</form>
+<a href="{% url 'mezocycles' mezocycle.team.id %}" >wróć</a>
+{% endblock %}

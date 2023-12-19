@@ -844,7 +844,7 @@ def create_mezocycle(request, team_id):
                     training_in_mezocycle.duration = request.POST.get(str(w)+str(t)+"-duration", "")
                     training_in_mezocycle.mezocycle = mezocycle
                     training_in_mezocycle.save()
-
+                return redirect(mezocycles,team.id)
     for_w = range(1, weeks + 1)
     for_t = range(1, trainings_per_week + 1)
     for_wt = list(product(for_w, for_t))
@@ -859,5 +859,25 @@ def create_mezocycle(request, team_id):
                                                          'forms_list':forms_list,})
 
 
+def edit_mezocycle(request, mezocycle_id):
+    usersClubs, teams = get_data_for_menu(request)
+    mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
+    trainings = Training_in_mezocycle.objects.filter(mezocycle = mezocycle)
+    forms_list = []
+    for_w = range(1, mezocycle.weeks + 1)
+    for_t = range(1, mezocycle.trainings_per_week + 1)
+    for training in trainings:
+        form = Training_in_mezocycleForm(request.POST or None, instance=training)
+        form.week_number = training.week_number
+        form.training_number =  training.training_number
+        forms_list.append(form)
+        print(form)
 
+    if request.method == 'POST':
+        for form in forms_list:
+            if form.is_valid():
+                form.save()
+        return redirect(mezocycles,mezocycle.team.id)
+
+    return render(request,'clubs/edit_mezocycle.html',{'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
 
