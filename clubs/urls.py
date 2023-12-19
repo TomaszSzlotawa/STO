@@ -34,6 +34,7 @@ urlpatterns = [
     path("teams/delete/<int:team_id>", views.delete_team, name='delete_team'),
     path("teams/mezocycles/<int:team_id>", views.mezocycles, name='mezocycles'),
     path("teams/mezocycles/edit/<int:mezocycle_id>", views.edit_mezocycle, name='edit_mezocycle'),
+    path("teams/mezocycles/delete/<int:mezocycle_id>", views.delete_mezocycle, name='delete_mezocycle'),
     path("teams/mezocycles/create/<int:team_id>", views.create_mezocycle, name='create_mezocycle'),
     path("equipment/<int:club_id>", views.clubs_equipment, name='clubs_equipment'),
     path("equipment/create/<int:club_id>", views.create_equipment, name='create_equipment'),

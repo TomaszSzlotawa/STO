@@ -1,0 +1,17 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Usuń mezocykl{% endblock %}
+
+{% block content %}
+    <div class="card" style="width: 28rem;">
+        <div class="card-body">
+            <h5 class="card-title">Czy na pewno chcesz usunąć mezocykl - "{{mezocycle.name}}?"</h5>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Usuń</button>
+                <a href="{% url 'mezocycles' mezocycle.team.id %}" class="btn btn-secondary">wróć</a>
+        </form>
+            
+        </div>
+    </div>
+{% endblock %}

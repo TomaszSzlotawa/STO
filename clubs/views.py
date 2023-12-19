@@ -993,3 +993,12 @@ def edit_mezocycle(request, mezocycle_id):
 
 
     return render(request,'clubs/edit_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
+
+def delete_mezocycle(request, mezocycle_id):
+    usersClubs, teams = get_data_for_menu(request)
+    mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
+    team = get_object_or_404(Team, pk=mezocycle.team.id)
+    if request.method == 'POST':
+        mezocycle.delete()
+        return redirect(mezocycles, team.id)
+    return render(request, 'clubs/confirm_mezocycle.html', {'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,}) 
