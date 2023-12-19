@@ -5,6 +5,12 @@
 {% block content %}
 <h2> Edytuj mezocykl </h2>
 <p>{{mezocycle.name}}</p>
+
+<form method="post">
+{% csrf_token %}
+{{ mezocycle_form }}
+<input type="submit" name="mezocycle" value="Zapisz">
+
 <form method="post">
 <table>
   <thead>
@@ -21,9 +27,7 @@
           {% for form in forms_list %}
             {% if form.week_number == w and form.training_number == t%}
             <td>
-              <form method="post">
               {{form.as_p }}
-              </form>
             </td>
             {% endif %}
           {% endfor %}
@@ -34,6 +38,7 @@
 </table>
 {% csrf_token %}
 <input type="submit" name="mezocycle_details" value="Zapisz">
+<input type="submit" name="mezocycle_copy" value="Zapisz jako kopię">
 </form>
 <a href="{% url 'mezocycles' mezocycle.team.id %}" >wróć</a>
 {% endblock %}
