@@ -864,7 +864,6 @@ def edit_mezocycle(request, mezocycle_id):
     mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
     trainings = Training_in_mezocycle.objects.filter(mezocycle = mezocycle)
     mezocycle_form = MezocycleForm(request.POST or None, instance=mezocycle)
-    #print(request.POST)
     if request.method == 'POST':
         if 'mezocycle' in request.POST:
             if mezocycle_form.is_valid():
@@ -874,23 +873,19 @@ def edit_mezocycle(request, mezocycle_id):
                 for_t = range(1, mezocycle.trainings_per_week + 1)
                 weeks = trainings.order_by('-week_number').first()
                 tranings_per_week = trainings.order_by('-training_number').first()
-                print(weeks.week_number,tranings_per_week.training_number)
                 for w in for_w:
                     for t in for_t:
                         for training in trainings:
                             if training.week_number == w and training.training_number == t:
                                 form = Training_in_mezocycleForm(request.POST or None, instance=training, prefix=(str(training.week_number)+str(training.training_number)))
-                                #print(form)
                                 form.week_number = training.week_number
                                 form.training_number =  training.training_number
                                 forms_list.append(form)
                         if t > tranings_per_week.training_number or w > weeks.week_number:
-                            print(t,w,'|',tranings_per_week.training_number,weeks.week_number)
                             form = Training_in_mezocycleForm(request.POST or None, initial={'topic':None,'duration':None}, prefix=(str(w)+str(t)))
                             form.week_number = w
                             form.training_number = t
                             forms_list.append(form)
-            #print(forms_list)
         if 'mezocycle_details' in request.POST:
             if mezocycle_form.is_valid():
                 mezocycle = mezocycle_form.save(commit=False)
@@ -899,13 +894,11 @@ def edit_mezocycle(request, mezocycle_id):
             for_t = range(1, mezocycle.trainings_per_week + 1)
             weeks = trainings.order_by('-week_number').first()
             tranings_per_week = trainings.order_by('-training_number').first()
-            print(weeks.week_number,tranings_per_week.training_number)
             for w in for_w:
                 for t in for_t:
                     for training in trainings:
                         if training.week_number == w and training.training_number == t:
                             form = Training_in_mezocycleForm(request.POST or None, instance=training, prefix=(str(training.week_number)+str(training.training_number)))
-                            #print(form)
                             form.week_number = training.week_number
                             form.training_number =  training.training_number
                             forms_list.append(form)
@@ -923,12 +916,9 @@ def edit_mezocycle(request, mezocycle_id):
                         form.week_number = training.week_number
                         form.training_number =  training.training_number
                         forms_list.append(form)
-            print(request.POST)
             for form in forms_list:
-                #print(form)
                 if form.is_valid():
                     form.save()
-                    print(form) 
                 else:
                     print('błąd walidacji')
             mezocycle.save()
@@ -936,6 +926,60 @@ def edit_mezocycle(request, mezocycle_id):
                 if training.week_number not in for_w or training.training_number not in for_t:
                     training.delete()
             return redirect(mezocycles,mezocycle.team.id)
+        
+        if 'mezocycle_copy' in request.POST:
+            if mezocycle_form.is_valid():
+                print('mezocykl form valid')
+                mezocycle = mezocycle_form.save(commit=False)
+            forms_list = []
+            for_w = range(1, mezocycle.weeks + 1)
+            for_t = range(1, mezocycle.trainings_per_week + 1)
+            weeks = trainings.order_by('-week_number').first()
+            tranings_per_week = trainings.order_by('-training_number').first()
+            for w in for_w:
+                for t in for_t:
+                    for training in trainings:
+                        if training.week_number == w and training.training_number == t:
+                            form = Training_in_mezocycleForm(request.POST or None, instance=training, prefix=(str(training.week_number)+str(training.training_number)))
+                            form.week_number = training.week_number
+                            form.training_number =  training.training_number
+                            forms_list.append(form)
+                    if t > tranings_per_week.training_number or w > weeks.week_number:
+                        training_in_mezocycle = Training_in_mezocycle()
+                        training_in_mezocycle.topic = request.POST.get(str(w)+str(t)+"-topic", "")
+                        training_in_mezocycle.week_number = w
+                        training_in_mezocycle.training_number = t
+                        training_in_mezocycle.goals = request.POST.get(str(w)+str(t)+"-goals", "")
+                        training_in_mezocycle.rules = request.POST.get(str(w)+str(t)+"-rules", "")
+                        training_in_mezocycle.actions = request.POST.get(str(w)+str(t)+"-actions", "")
+                        training_in_mezocycle.duration = request.POST.get(str(w)+str(t)+"-duration", "")
+                        training_in_mezocycle.mezocycle = mezocycle
+                        form = Training_in_mezocycleForm(request.POST or None, instance=training_in_mezocycle, prefix=(str(w)+str(t)))
+                        form.week_number = training.week_number
+                        form.training_number =  training.training_number
+                        forms_list.append(form)
+            
+            new_mezocycle = Mezocycle(name=mezocycle.name, user=mezocycle.user, team=mezocycle.team, weeks=mezocycle.weeks, trainings_per_week=mezocycle.trainings_per_week)
+            new_mezocycle.save()
+            print(mezocycle,'|',new_mezocycle)
+            for form in forms_list:
+                if form.is_valid():
+                    training = form.save(commit=False)
+                    new_training = Training_in_mezocycle()
+                    new_training.mezocycle = new_mezocycle
+                    new_training.topic = training.topic
+                    new_training.week_number = training.week_number
+                    new_training.training_number = training.training_number
+                    new_training.goals = training.goals
+                    new_training.rules = training.rules
+                    new_training.actions = training.actions
+                    new_training.duration = training.duration
+                    new_training.save()
+                else:
+                    print('błąd walidacji')
+
+            return redirect(mezocycles,mezocycle.team.id)
+
     else:  
         forms_list = []
         for_w = range(1, mezocycle.weeks + 1)
