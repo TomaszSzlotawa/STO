@@ -1,0 +1,46 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Utwórz mezocykl{% endblock %}
+
+{% block content %}
+<h2>{% if edit %} Edytuj mezocykl {% else %} Utwórz mezocykl {% endif %}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ mezocycle_form }}
+  <button type="submit">{% if edit %}Zapisz{% else %}Utwórz{% endif %}</button>
+</form>
+{% if mezocycle_set %}
+<form method="post">
+<table>
+  <thead>
+    <th>Tydzień</th>
+    {% for t in for_t %}
+      <th>Trening {{ t }}</th>
+    {% endfor %}
+  </thead>
+  <tbody>
+    {% for w in for_w %}
+      <tr>
+        <td>{{ w }}</td>
+        {% for t in for_t %}
+          {% for wt, form in forms_list %}
+            {% if wt.week == w and wt.training == t%}
+            <td>
+              <input type="hidden" name="{{ form.prefix }}-week_number" value="{{ w }}">
+              <input type="hidden" name="{{ form.prefix }}-training_number" value="{{ t }}">
+              {{form.as_p }}
+              
+            </td>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% csrf_token %}
+<button type="submit">{% if edit %}Zapisz{% else %}Utwórz{% endif %}</button>
+</form>
+{% endif %}
+<a href="{% url 'mezocycles' team.id %}" >wróć</a>
+{% endblock %}

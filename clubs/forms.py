@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Attendance, Equipment, Place, Player_data, Profile, Club, Rented_equipment, Training, UsersClub, Season, Team, Player, TeamsCoaching_Staff
+from .models import Attendance, Equipment, Mezocycle, Place, Player_data, Profile, Club, Rented_equipment, Training, Training_in_mezocycle, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -368,3 +368,14 @@ class AttendanceReportFilter(forms.Form):
 
         if start_date and end_date and start_date > end_date:
             raise ValidationError("Data początkowa nie może być późniejsza niż data końcowa.")
+
+
+class MezocycleForm(forms.ModelForm):
+    class Meta:
+        model = Mezocycle
+        exclude = ['id','team','user']
+
+class Training_in_mezocycleForm(forms.ModelForm):
+    class Meta:
+        model = Training_in_mezocycle
+        exclude = ['id','mezocycle','week_number','training_number']

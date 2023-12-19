@@ -1,11 +1,12 @@
 from collections import defaultdict
+from itertools import product
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import Attendance, Equipment, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -794,4 +795,34 @@ def mezocycles(request,team_id):
     return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles})
 
 def create_mezocycle(request, team_id):
-    pass
+
+    class Training_in_week:
+        def __init__(self, week, training):
+            self.week = week
+            self.training = training
+
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team,pk = team_id)
+    user = request.user
+    mezocycle_form = MezocycleForm(request.POST or None)
+    weeks = 0
+    trainings_per_week = 0
+    mezocycle_set = False
+    if mezocycle_form.is_valid():
+        weeks = mezocycle_form.cleaned_data.get('weeks')
+        trainings_per_week = mezocycle_form.cleaned_data.get('trainings_per_week')
+        mezocycle_set = True
+
+    forms_list = []
+    for_w = range(1, weeks + 1)
+    for_t = range(1, trainings_per_week + 1)
+    for_wt = list(product(for_w, for_t))
+    
+    for w,t in for_wt:
+        form = Training_in_mezocycleForm(request.POST or None, prefix=(str(w)+str(t)))
+        wt = Training_in_week(w,t)
+        forms_list.append((wt,form))
+
+
+    return render(request,'clubs/create_mezocycle.html',{'for_t':for_t,'for_w':for_w,'mezocycle_set':mezocycle_set,'teams':teams,'usersClubs':usersClubs, 'team':team,'mezocycle_form':mezocycle_form,'forms_list':forms_list,})
+
