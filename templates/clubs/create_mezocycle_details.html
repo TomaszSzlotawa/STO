@@ -24,9 +24,12 @@
           {% for wt, form in forms_list %}
             {% if wt.week == w and wt.training == t%}
             <td>
+              <form method="post">
               <input type="hidden" name="{{ form.prefix }}-week_number" value="{{ w }}">
               <input type="hidden" name="{{ form.prefix }}-training_number" value="{{ t }}">
               {{form.as_p }}
+              </form>
+
             </td>
             {% endif %}
           {% endfor %}
