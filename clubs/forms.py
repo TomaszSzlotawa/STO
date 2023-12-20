@@ -376,6 +376,8 @@ class MezocycleForm(forms.ModelForm):
         exclude = ['id','team','user']
 
 class Training_in_mezocycleForm(forms.ModelForm):
+    #topic = forms.CharField(required=False)
+    #duration = forms.IntegerField(min_value=1, required=False)
     class Meta:
         model = Training_in_mezocycle
         exclude = ['id','mezocycle','week_number','training_number']

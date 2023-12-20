@@ -1,5 +1,6 @@
 {% extends 'clubs/main.html' %}
 
+
 {% block title %}Mezocykle drużyny {{team.name}}{% endblock %}
 {% block content %}
   <h3>Mezocykle drużyny {{team.name}}</h3>
@@ -59,6 +60,7 @@
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'review_implemented_mezocycle' item.id %}">Podgląd</a></li>
+                    <li><a class="dropdown-item" href="{% url 'pdf_view' item.team.id %}">Wygeneruj PDF</a></li>
                     <li><a class="dropdown-item" href="{% url 'delete_implemented_mezocycle' item.id %}">Usuń mezocykl</a></li>
                 </ul>
             </div>

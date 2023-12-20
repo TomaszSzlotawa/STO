@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 from datetime import date, datetime, timedelta
 from django.template.defaulttags import register
 from django.db.models import Q
-
+from sto.utils import render_to_pdf
 
 @register.filter
 def get_item(dictionary, key):
@@ -849,11 +849,12 @@ def create_mezocycle(request, team_id):
     for_w = range(1, weeks + 1)
     for_t = range(1, trainings_per_week + 1)
     for_wt = list(product(for_w, for_t))
-
+    print(request.POST)
     for w,t in for_wt:
-        form = Training_in_mezocycleForm(request.POST or None, prefix=(str(w)+str(t)))
+        form = Training_in_mezocycleForm(request.POST or None,initial={'topic':'ee','duration':3}, prefix=(str(w)+str(t)))
         wt = Training_in_week(w,t)
         forms_list.append((wt,form))
+
 
     return render(request,'clubs/create_mezocycle.html',{'for_t':for_t,'for_w':for_w,'mezocycle_set':mezocycle_set,
                                                          'teams':teams,'usersClubs':usersClubs, 'team':team,'mezocycle_form':mezocycle_form,
@@ -1071,3 +1072,6 @@ def review_implemented_mezocycle(request, mezocycle_id):
             trainings = trainings[1:]
 
     return render(request,'clubs/review_implemented_mezocycle.html',{'for_t':for_t,'for_w':for_w,'teams':teams,'usersClubs':usersClubs, 'team':mezocycle.team, 'trainings_list':trainings_list})
+
+def pdf_view(request,team_id):
+    return render_to_pdf('pdf/invoice.html')
