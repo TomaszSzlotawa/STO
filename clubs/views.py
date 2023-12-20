@@ -1,12 +1,13 @@
 from collections import defaultdict
 from itertools import product
+from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from .models import Attendance, Equipment, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
-from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
+from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.mail import send_mail
@@ -744,7 +745,7 @@ def team_attendance_report(request,team_id):
                         if att.present:
                             players_presents[p.id]+=1
     players_avg = {p_id: round(players_presents[p_id] / players_att[p_id] * 100,2) if players_att[p_id] > 0 else 0 for p_id in players_att}
-    print(present)
+    
     if len_attendance==0:
         avg_attendance = 0.00
     else:
@@ -1002,3 +1003,39 @@ def delete_mezocycle(request, mezocycle_id):
         mezocycle.delete()
         return redirect(mezocycles, team.id)
     return render(request, 'clubs/confirm_mezocycle.html', {'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,}) 
+
+def implement_mezocycle(request, mezocycle_id):
+    usersClubs, teams = get_data_for_menu(request)
+    mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
+    team = mezocycle.team
+    season = Season.objects.filter(team=team, active=True).first()
+    trainings_in_mezocycle = Training_in_mezocycle.objects.filter(mezocycle=mezocycle)
+    players = season.player.all()
+    forms_list = []
+    for_w = range(1, mezocycle.weeks + 1)
+    for_t = range(1, mezocycle.trainings_per_week + 1)
+    mezocycle_form = ImplementMezocycleForm(request.POST or None,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'team':mezocycle.team,'name':mezocycle.name})
+    mezocycle_form.fields['weeks'].widget = forms.HiddenInput()
+    mezocycle_form.fields['trainings_per_week'].widget = forms.HiddenInput()
+    print(request.POST)
+    for tr in trainings_in_mezocycle:
+        training = Training(topic=tr.topic,actions=tr.actions,goals=tr.goals,rules=tr.rules)
+        form = ImplementTrainingForm(request.POST or None,initial={'topic':tr.topic,'actions':tr.actions,'goals':tr.goals,'rules':tr.rules,'duration':tr.duration}, players = players,season=season, prefix=(str(tr.week_number)+str(tr.training_number)))
+        form.week_number = tr.week_number
+        form.training_number =  tr.training_number
+        forms_list.append(form) 
+    
+    if request.method =='POST':
+        if 'mezocycle' in request.POST:
+            if mezocycle_form.is_valid():
+                implemented_mezocycle = mezocycle_form.save(commit=False)
+        if 'trainings' in request.POST:
+            if mezocycle_form.is_valid():
+                implemented_mezocycle = mezocycle_form.save()
+            for form in forms_list:
+                if form.is_valid():
+                    training = form.save(commit=False)
+                    training.implemented_mezocycle = implemented_mezocycle
+                    training.save()
+            return redirect(mezocycles,season.team.id)
+    return render(request,'clubs/implement_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})

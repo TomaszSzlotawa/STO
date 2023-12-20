@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Attendance, Equipment, Mezocycle, Place, Player_data, Profile, Club, Rented_equipment, Training, Training_in_mezocycle, UsersClub, Season, Team, Player, TeamsCoaching_Staff
+from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Player_data, Profile, Club, Rented_equipment, Training, Training_in_mezocycle, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -238,13 +238,13 @@ class PlaceForm(forms.ModelForm):
             place.save()
         return place
     
-class test(forms.ModelMultipleChoiceField):
+class list_of_players(forms.ModelMultipleChoiceField):
     def label_from_instance(self, player):
         return f"{player.surname} {player.name}" 
 
 class TrainingForm(forms.ModelForm):
     duration = forms.IntegerField(min_value=1, required=True)
-    player = test(
+    player = list_of_players(
         queryset=Player.objects.all().order_by('surname', 'name'),
         widget=forms.CheckboxSelectMultiple,
         required=False
@@ -379,3 +379,75 @@ class Training_in_mezocycleForm(forms.ModelForm):
     class Meta:
         model = Training_in_mezocycle
         exclude = ['id','mezocycle','week_number','training_number']
+
+
+class ImplementMezocycleForm(forms.ModelForm):
+    class Meta:
+        model = ImplementedMezocycle
+        exclude = ['id','team']
+
+class ImplementTrainingForm(forms.ModelForm):
+    duration = forms.IntegerField(min_value=1, required=True)
+    player = list_of_players(
+        queryset=Player.objects.all().order_by('surname', 'name'),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    start_datatime = forms.DateTimeField(
+        widget=forms.widgets.DateTimeInput(
+            attrs={'type': 'datetime-local'},
+        )
+    )
+    
+    class Meta:
+        model = Training
+        exclude = ['season', 'end_datatime','implemented_mezocycle']
+        
+    def __init__(self, *args, players=None, season, **kwargs):
+        super(ImplementTrainingForm, self).__init__(*args, **kwargs)
+        if players is not None:
+            self.fields['player'].queryset = players
+            self.fields['player'].initial = players.values_list('pk', flat=True)
+        self.season = season
+        if season:
+            start_min = datetime.combine(season.date_of_start, datetime.min.time())
+            start_max = datetime.combine(season.date_of_end, datetime.min.time()) + timedelta(days=1) - timedelta(seconds=1)
+            self.fields['start_datatime'].widget.attrs['min'] = start_min.strftime('%Y-%m-%dT%H:%M:%S')
+            self.fields['start_datatime'].widget.attrs['max'] = start_max.strftime('%Y-%m-%dT%H:%M:%S')
+    def clean(self):
+        cleaned_data = super().clean()
+        start_datatime = cleaned_data.get('start_datatime')
+        duration = cleaned_data.get('duration')
+
+        if start_datatime and duration:
+            end_datatime = start_datatime + timedelta(minutes=duration)
+            season_start = datetime.combine(self.season.date_of_start, datetime.min.time())
+            season_end = datetime.combine(self.season.date_of_end, datetime.max.time())
+
+            if start_datatime < season_start or end_datatime > season_end:
+                raise ValidationError("Trening musi odbywać się w ramach trwającego sezonu.")
+
+    def save(self, commit=True):
+        training = super().save(commit=False)
+        training.season = self.season
+        duration_minutes = self.cleaned_data['duration']
+        start_datatime = self.cleaned_data.get('start_datatime')
+        
+        if start_datatime:
+            training.end_datatime = start_datatime + timedelta(minutes=duration_minutes)
+
+        if commit:
+            training.save()
+            selected_players = self.cleaned_data['player']
+            selected_players_ids = selected_players.values_list('id', flat=True)
+            current_players = set(Attendance.objects.filter(training=training).values_list('player', flat=True))
+
+            removed_players = current_players - set(selected_players_ids)
+
+            Attendance.objects.filter(training=training, player__in=removed_players).delete()
+
+            for player in selected_players:
+                if player not in current_players:
+                    Attendance.objects.get_or_create(training=training, player=player,)
+
+        return training

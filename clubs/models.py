@@ -222,10 +222,10 @@ class Training(models.Model):
     #team = models.ForeignKey(Team, on_delete=models.CASCADE)
     player = models.ManyToManyField(Player, through="Attendance")
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
-
+    implemented_mezocycle = models.ForeignKey("ImplementedMezocycle", blank=True, null=True, on_delete=models.SET_NULL)
     
     def __str__(self):
-        return f"Trening {self.start_datatime} - {self.season.team.name}({self.place})"
+        return f"Trening {self.start_datatime} - {self.season.team.name}({self.place})[{self.implemented_mezocycle}]"
     
 class Attendance(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -430,3 +430,20 @@ class Training_in_mezocycle(models.Model):
 
     def __str__(self):
         return f"{self.mezocycle.name} tydzień {self.week_number}, trening {self.training_number}"
+    
+
+class ImplementedMezocycle(models.Model):
+    name = models.CharField(max_length=60,null=True,blank=False,help_text="Nazwa mezocyklu")
+    weeks = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ile trwa tygodni")
+    trainings_per_week = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość treningów tygodniowo")
+    team = models.ForeignKey(Team,on_delete=models.SET_NULL, null=True,blank = True)
+
+    class Meta:
+            constraints = [
+                models.UniqueConstraint(
+                    fields=['name', 'team'], name='unique_team_implemented_mezocycle'
+                )
+            ]
+
+    def __str__(self):
+        return f"{self.name}"
