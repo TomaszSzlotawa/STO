@@ -36,4 +36,36 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nazwa</th>
+        <th>Długość[tygodnie]</th>
+        <th>Ilość jednostek w tygodniu</th>
+        <th>Zarządzaj</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in implemented_mezocycles %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.weeks }}</td>
+          <td>{{ item.trainings_per_week }}</td>
+          <td>
+            <div class="dropdown">
+                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Zarządzaj
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'review_implemented_mezocycle' item.id %}">Podgląd</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_implemented_mezocycle' item.id %}">Usuń mezocykl</a></li>
+                </ul>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 {% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Utwórz mezocykl{% endblock %}
+
+{% block content %}
+<h2>Szczegóły mezocyklu </h2>
+
+<table>
+  <thead>
+    <th>Tydzień</th>
+    {% for t in for_t %}
+      <th>Trening {{ t }}</th>
+    {% endfor %}
+  </thead>
+  <tbody>
+    {% for w in for_w %}
+      <tr>
+        <td>{{ w }}</td>
+        {% for t in for_t %}
+        <td>
+          {% for wt, training in trainings_list %}
+            {% if wt.0 == w and wt.1 == t %}
+            <b>Data:</b>{{ training.start_datatime }} - {{ training.end_datatime }}<br>
+            <b>Lokalizacja:</b>{{ training.place }}<br>
+            <b>Temat:</b>{{ training.topic }}<br>
+            <b>Cele:</b>{{ training.goals }}<br>
+            <b>Zasady:</b>{{ training.rules }}<br>
+            <b>Działania:</b> {{ training.actions }}<br>
+            <a href="{% url 'edit_training' training.id %}" >edytuj</a>
+            
+            {% endif %}
+          {% endfor %}
+        </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<a href="{% url 'mezocycles' team.id %}" >wróć</a>
+{% endblock %}

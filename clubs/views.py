@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
-from .models import Attendance, Equipment, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
+from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import PasswordChangeForm
@@ -792,8 +792,8 @@ def mezocycles(request,team_id):
     user = request.user
 
     mezocycles = Mezocycle.objects.filter(Q(team=team) | Q(user=user)).order_by('id')
-
-    return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles})
+    implemented_mezocycles = ImplementedMezocycle.objects.filter(team=team ).order_by('id')
+    return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles,'implemented_mezocycles':implemented_mezocycles})
 
 def create_mezocycle(request, team_id):
 
@@ -1014,7 +1014,7 @@ def implement_mezocycle(request, mezocycle_id):
     forms_list = []
     for_w = range(1, mezocycle.weeks + 1)
     for_t = range(1, mezocycle.trainings_per_week + 1)
-    mezocycle_form = ImplementMezocycleForm(request.POST or None,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'team':mezocycle.team,'name':mezocycle.name})
+    mezocycle_form = ImplementMezocycleForm(request.POST or None,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'name':mezocycle.name})
     mezocycle_form.fields['weeks'].widget = forms.HiddenInput()
     mezocycle_form.fields['trainings_per_week'].widget = forms.HiddenInput()
     print(request.POST)
@@ -1031,7 +1031,9 @@ def implement_mezocycle(request, mezocycle_id):
                 implemented_mezocycle = mezocycle_form.save(commit=False)
         if 'trainings' in request.POST:
             if mezocycle_form.is_valid():
-                implemented_mezocycle = mezocycle_form.save()
+                implemented_mezocycle = mezocycle_form.save(commit=False)
+                implemented_mezocycle.team = team
+                implemented_mezocycle.save()
             for form in forms_list:
                 if form.is_valid():
                     training = form.save(commit=False)
@@ -1039,3 +1041,33 @@ def implement_mezocycle(request, mezocycle_id):
                     training.save()
             return redirect(mezocycles,season.team.id)
     return render(request,'clubs/implement_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
+
+def delete_implemented_mezocycle(request, mezocycle_id):
+    usersClubs, teams = get_data_for_menu(request)
+    mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
+    trainings = Training.objects.filter(implemented_mezocycle=mezocycle)
+    team = get_object_or_404(Team, pk=mezocycle.team.id)
+    print(request.POST)
+    if request.method == 'POST':
+        if 'mezocycle' in request.POST:
+            mezocycle.delete()
+        if 'trainings' in request.POST:
+            mezocycle.delete()
+            for training in trainings:
+                training.delete()
+        return redirect(mezocycles, team.id)
+    return render(request, 'clubs/confirm_implemented_mezocycle.html', {'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,}) 
+
+def review_implemented_mezocycle(request, mezocycle_id):
+    usersClubs, teams = get_data_for_menu(request)
+    mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
+    trainings = Training.objects.filter(implemented_mezocycle=mezocycle).order_by('start_datatime')
+    for_w = range(1, mezocycle.weeks + 1)
+    for_t = range(1, mezocycle.trainings_per_week + 1)
+    trainings_list=[]
+    for w in for_w:
+        for t in for_t:
+            trainings_list.append(((w,t),trainings[0]))
+            trainings = trainings[1:]
+
+    return render(request,'clubs/review_implemented_mezocycle.html',{'for_t':for_t,'for_w':for_w,'teams':teams,'usersClubs':usersClubs, 'team':mezocycle.team, 'trainings_list':trainings_list})
