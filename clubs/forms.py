@@ -105,20 +105,33 @@ class SeasonCreateForm(forms.ModelForm):
         self.team = team
         if self.instance:
             self.fields['season_name'].initial = self.instance.name
-            self.team = self.instance.team
+        
     def clean(self):
         cleaned_data = super().clean()
         date_of_start = cleaned_data.get('date_of_start')
         date_of_end = cleaned_data.get('date_of_end')
-        name = cleaned_data.get('name')
+        name = cleaned_data.get('season_name')
+        print(self.instance.name)
 
-        # tu trzeba zrobić walidację
-
+        # tu trzeba zrobić walidację nazwy
+        season = Season.objects.filter(team=self.team, name = name).first()
+        if season and season != self.instance:
+            raise ValidationError(f'Istnieje już sezon o nazwie "{season.name}"' )
+        
         if date_of_start and date_of_end and date_of_start > date_of_end:
             raise forms.ValidationError("Data rozpoczęcia nie może być późniejsza niż data zakończenia.")        
-        latest_season = Season.objects.filter(team = self.instance.team,).exclude(id = self.instance.id).order_by('-date_of_end').first()
-        if latest_season and latest_season.date_of_end and date_of_start and date_of_start < latest_season.date_of_end:
-            raise forms.ValidationError("Data rozpoczęcia sezonu nie może być wcześniejsza niż najnowsza data zakończenia poprzedniego sezonu dla drużyny.")
+        seasons = Season.objects.filter(team = self.team,).exclude(id = self.instance.id).order_by('-date_of_end')
+        print(seasons)
+        for season in seasons:
+            if date_of_start <= season.date_of_end and date_of_end >= season.date_of_start:
+                raise forms.ValidationError(f"Daty sezonów się pokrywają. Ramy sezonu nachodzą na sezon {season.name}")
+
+                 
+
+
+
+        #if latest_season and latest_season.date_of_end and date_of_start and date_of_start < latest_season.date_of_end:
+        #    raise forms.ValidationError("Data rozpoczęcia sezonu nie może być wcześniejsza niż najnowsza data zakończenia poprzedniego sezonu dla drużyny.")
 
 
         return cleaned_data

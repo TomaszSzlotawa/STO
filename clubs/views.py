@@ -281,14 +281,12 @@ def edit_team(request, team_id):
     if request.method == 'POST':
         if "data-submit" in request.POST:
             if team_form.is_valid():
-                print(team_form)
                 team = team_form.save()
                 if season_form.is_valid():
                     selected_season_id = request.POST.get('active_season')
                     if selected_season_id:
                         Season.objects.filter(team=team).exclude(id=selected_season_id).update(active=False)
                         season = get_object_or_404(Season,pk=selected_season_id)
-                        print(season)
                         season.active = True
                         season.save()
                 return redirect(edit_team,team.id)
@@ -449,7 +447,7 @@ def add_coach_to_team(request, team_id):
 def add_season(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
-    form = SeasonCreateForm(request.POST or None)
+    form = SeasonCreateForm(request.POST or None,team=team)
     if request.method == 'POST':
         if form.is_valid():
             form.save(team)
@@ -460,7 +458,8 @@ def edit_active_season(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     season = Season.objects.filter(team=team, active = True).first()
-    form = SeasonCreateForm(request.POST or None, instance=season)
+    print(season,"ads")
+    form = SeasonCreateForm(request.POST or None, instance=season, team=team)
     if request.method == 'POST':
         if form.is_valid():
             season = form.save(team)
