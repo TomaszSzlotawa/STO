@@ -30,7 +30,7 @@ class UserForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-
+    birth_date = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = Profile
         fields = ('birth_date', 'license','license_expiry_date')
@@ -95,6 +95,8 @@ class TeamCreateForm(forms.ModelForm):
 
 class SeasonCreateForm(forms.ModelForm):
     season_name = forms.CharField(max_length=9, required=True)
+    date_of_start = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01'}))
+    date_of_end = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01'}))
 
     class Meta:
         model = Season
@@ -182,6 +184,7 @@ class CreatePlayerForm(forms.ModelForm):
         fields = ['name','surname']
 
 class CreatePlayerDataForm(forms.ModelForm):
+    date_of_birth = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = Player_data
         fields = ['pesel', 'extranet', 'date_of_birth', 'place_of_birth', 'addres']
@@ -191,6 +194,7 @@ class CreatePlayerDataForm(forms.ModelForm):
 
 
 class AddCoachToTeam(forms.ModelForm):
+    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team', 'takeover_date']
@@ -212,6 +216,7 @@ class AddCoachToTeam(forms.ModelForm):
         return coach_in_team
     
 class EditCoachInTeam(forms.ModelForm):
+    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team','takeover_date']
@@ -231,6 +236,7 @@ class CreateEquipment(forms.ModelForm):
         return item
     
 class RentEquipmentForm(forms.ModelForm):
+    date_of_rental = forms.DateField(label='Data wypożyczenia', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = Rented_equipment
         fields = ['player', 'quantity', 'date_of_rental', 'description']
