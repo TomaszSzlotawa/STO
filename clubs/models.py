@@ -402,9 +402,6 @@ class Mezocycle(models.Model):
     class Meta:
             constraints = [
                 models.UniqueConstraint(
-                    fields=['name', 'user'], name='unique_user_mezocycle'
-                ),
-                models.UniqueConstraint(
                     fields=['name', 'team'], name='unique_team_mezocycle'
                 )
             ]

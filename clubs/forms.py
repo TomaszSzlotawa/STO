@@ -1,4 +1,5 @@
 from datetime import date, datetime, timedelta
+from typing import Any
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.forms import UserCreationForm
@@ -380,9 +381,31 @@ class AttendanceReportFilter(forms.Form):
 
 
 class MezocycleForm(forms.ModelForm):
+    weeks = forms.IntegerField(min_value=1,max_value=10,required=True)
+    trainings_per_week = forms.IntegerField(min_value=1,max_value=14,required=True)
     class Meta:
         model = Mezocycle
         exclude = ['id','team','user']
+
+    def __init__(self, *args, team=None, **kwargs):
+        # Pobierz instancję z kwargs, jeśli została przekazana
+        instance = kwargs.get('instance', None)
+        super(MezocycleForm, self).__init__(*args, **kwargs)
+        self.team = team
+
+        # Ustaw oryginalną instancję, jeśli dostępna
+        self.original_instance = instance
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+
+        mezo = Mezocycle.objects.filter(name=name, team=self.team)
+
+        # Sprawdź, czy instancja przekazana do formularza jest tą samą instancją, co znaleziony obiekt w bazie danych
+        if mezo and mezo[0] != self.original_instance:
+            raise ValidationError("taka nazwa już istnieje dla innego obiektu")
+
 
 class Training_in_mezocycleForm(forms.ModelForm):
     topic = forms.CharField(required=False)
