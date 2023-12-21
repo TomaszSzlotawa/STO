@@ -273,7 +273,14 @@ class TrainingForm(forms.ModelForm):
         cleaned_data = super().clean()
         start_datatime = cleaned_data.get('start_datatime')
         duration = cleaned_data.get('duration')
-
+        mezocycle = cleaned_data.get('implemented_mezocycle')
+        if mezocycle:
+            trainings_in_mezocycle = (mezocycle.weeks * mezocycle.trainings_per_week)
+            trainings_in_db = Training.objects.filter(implemented_mezocycle = mezocycle)
+            print(len(trainings_in_db))
+            print(trainings_in_mezocycle)
+            if len(trainings_in_db)>=trainings_in_mezocycle:
+                raise ValidationError("W tym mezocyklu zaplanowałeś już wszystkie treningi. Aby dodać trening do tego mezocyklu musisz usunąć lub edytować któryś z treningów w mezocyklu")
         if start_datatime and duration:
             end_datatime = start_datatime + timedelta(minutes=duration)
             season_start = datetime.combine(self.season.date_of_start, datetime.min.time())
@@ -281,6 +288,8 @@ class TrainingForm(forms.ModelForm):
 
             if start_datatime < season_start or end_datatime > season_end:
                 raise ValidationError("Trening musi odbywać się w ramach trwającego sezonu.")
+        else:
+            raise ValidationError("wypełnij temat i długość treningu")
 
     def save(self, commit=True):
         training = super().save(commit=False)

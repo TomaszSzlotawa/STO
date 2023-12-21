@@ -399,7 +399,6 @@ class Mezocycle(models.Model):
     trainings_per_week = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość treningów tygodniowo")
     team = models.ForeignKey(Team,on_delete=models.SET_NULL, null=True,blank = True)
     user = models.ForeignKey(User,on_delete=models.SET_NULL, null=True,blank = True)
-
     class Meta:
             constraints = [
                 models.UniqueConstraint(
@@ -439,6 +438,7 @@ class ImplementedMezocycle(models.Model):
     weeks = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ile trwa tygodni")
     trainings_per_week = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość treningów tygodniowo")
     team = models.ForeignKey(Team,on_delete=models.SET_NULL, null=True,blank = True)
+    #date_of_start = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data rozpoczęcia mezocyklu')
 
     class Meta:
             constraints = [
