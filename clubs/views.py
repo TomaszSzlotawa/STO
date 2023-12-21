@@ -1061,7 +1061,7 @@ def implement_mezocycle(request, mezocycle_id):
     forms_list = []
     for_w = range(1, mezocycle.weeks + 1)
     for_t = range(1, mezocycle.trainings_per_week + 1)
-    mezocycle_form = ImplementMezocycleForm(request.POST or None,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'name':mezocycle.name})
+    mezocycle_form = ImplementMezocycleForm(request.POST or None,team=team,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'name':mezocycle.name})
     mezocycle_form.fields['weeks'].widget = forms.HiddenInput()
     mezocycle_form.fields['trainings_per_week'].widget = forms.HiddenInput()
     print(request.POST)

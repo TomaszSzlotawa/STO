@@ -436,6 +436,18 @@ class ImplementMezocycleForm(forms.ModelForm):
         model = ImplementedMezocycle
         exclude = ['id','team']
 
+    def __init__(self, *args,team=None, **kwargs):
+        super(ImplementMezocycleForm, self).__init__(*args, **kwargs)
+        self.team = team
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+
+        mezo = ImplementedMezocycle.objects.filter(name=name, team=self.team)
+
+        if mezo:
+            raise ValidationError("taka nazwa już istnieje dla innego obiektu") 
+        
 class ImplementTrainingForm(forms.ModelForm):
     duration = forms.IntegerField(min_value=1, required=False)
     player = list_of_players(
