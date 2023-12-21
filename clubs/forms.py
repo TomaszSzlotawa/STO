@@ -385,12 +385,28 @@ class MezocycleForm(forms.ModelForm):
         exclude = ['id','team','user']
 
 class Training_in_mezocycleForm(forms.ModelForm):
-    #topic = forms.CharField(required=False)
-    #duration = forms.IntegerField(min_value=1, required=False)
+    topic = forms.CharField(required=False)
+    duration = forms.IntegerField(min_value=1, required=False)
     class Meta:
         model = Training_in_mezocycle
         exclude = ['id','mezocycle','week_number','training_number']
-
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        duration = cleaned_data.get('duration')
+        topic = cleaned_data.get('topic')
+        er = False
+        er_message = "Błąd walidacji. "
+       
+        if not topic:
+            er = True
+            er_message += "Wprowadź tytuł. "
+        if not duration:
+            er = True
+            er_message +="Wprowadź długość. "
+        
+        if er:
+            raise ValidationError(er_message)
 
 class ImplementMezocycleForm(forms.ModelForm):
     class Meta:
@@ -398,7 +414,7 @@ class ImplementMezocycleForm(forms.ModelForm):
         exclude = ['id','team']
 
 class ImplementTrainingForm(forms.ModelForm):
-    duration = forms.IntegerField(min_value=1, required=True)
+    duration = forms.IntegerField(min_value=1, required=False)
     player = list_of_players(
         queryset=Player.objects.all().order_by('surname', 'name'),
         widget=forms.CheckboxSelectMultiple,
@@ -407,8 +423,9 @@ class ImplementTrainingForm(forms.ModelForm):
     start_datatime = forms.DateTimeField(
         widget=forms.widgets.DateTimeInput(
             attrs={'type': 'datetime-local'},
-        )
+        ),required=False
     )
+    topic = forms.CharField(max_length = 100, required=False)
     
     class Meta:
         model = Training
@@ -425,19 +442,38 @@ class ImplementTrainingForm(forms.ModelForm):
             start_max = datetime.combine(season.date_of_end, datetime.min.time()) + timedelta(days=1) - timedelta(seconds=1)
             self.fields['start_datatime'].widget.attrs['min'] = start_min.strftime('%Y-%m-%dT%H:%M:%S')
             self.fields['start_datatime'].widget.attrs['max'] = start_max.strftime('%Y-%m-%dT%H:%M:%S')
+
     def clean(self):
         cleaned_data = super().clean()
         start_datatime = cleaned_data.get('start_datatime')
         duration = cleaned_data.get('duration')
-
+        topic = cleaned_data.get('topic')
+        place = cleaned_data.get('place')
+        er = False
+        er_message = "Błąd walidacji. "
         if start_datatime and duration:
             end_datatime = start_datatime + timedelta(minutes=duration)
             season_start = datetime.combine(self.season.date_of_start, datetime.min.time())
             season_end = datetime.combine(self.season.date_of_end, datetime.max.time())
 
             if start_datatime < season_start or end_datatime > season_end:
-                raise ValidationError("Trening musi odbywać się w ramach trwającego sezonu.")
-
+                er = True
+                er_message += "Trening musi odbywać się w ramach trwającego sezonu. "
+        if not topic:
+            er = True
+            er_message += "Wprowadź tytuł. "
+        if not start_datatime:
+            er = True
+            er_message +="Wprowadź datę i godzinę rozpoczęcia. "
+        if not duration:
+            er = True
+            er_message +="Wprowadź długość. "
+        if not place:
+            er = True
+            er_message +="Wprowadź miejsce. "
+        
+        if er:
+            raise ValidationError(er_message)
     def save(self, commit=True):
         training = super().save(commit=False)
         training.season = self.season
