@@ -40,10 +40,6 @@ class ClubCreationForm(forms.ModelForm):
         model = Club
         fields = ('name', 'addres', 'regon', 'nip', 'legal_form', 'year_of_foundation')
 
-from django import forms
-from django.contrib.auth.models import User
-from .models import UsersClub
-
 class UsersClubForm(forms.ModelForm):
     email = forms.EmailField(label='Adres email', required=True)
     
@@ -85,6 +81,17 @@ class TeamCreateForm(forms.ModelForm):
         model = Team
         fields = ['name','category']
 
+    def __init__(self, *args,club=None, **kwargs):
+        super(TeamCreateForm, self).__init__(*args, **kwargs)
+        self.club = club
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        team = Team.objects.filter(name=name, club=self.club)
+        if team and team[0] != self.instance:
+            raise ValidationError("Drużyna o takiej nazwie już istnieje w klubie")
+
+
 
 class SeasonCreateForm(forms.ModelForm):
     season_name = forms.CharField(max_length=9, required=True)
@@ -93,21 +100,22 @@ class SeasonCreateForm(forms.ModelForm):
         model = Season
         fields = ['season_name', 'date_of_start', 'date_of_end']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, team=None, **kwargs):
         super(SeasonCreateForm, self).__init__(*args, **kwargs)
-
+        self.team = team
         if self.instance:
             self.fields['season_name'].initial = self.instance.name
-
+            self.team = self.instance.team
     def clean(self):
         cleaned_data = super().clean()
         date_of_start = cleaned_data.get('date_of_start')
         date_of_end = cleaned_data.get('date_of_end')
+        name = cleaned_data.get('name')
+
+        # tu trzeba zrobić walidację
 
         if date_of_start and date_of_end and date_of_start > date_of_end:
             raise forms.ValidationError("Data rozpoczęcia nie może być późniejsza niż data zakończenia.")        
-        # if date_of_start and  date_of_start > date.today():
-        #     raise forms.ValidationError("Sezon nie może się rozpoczynać w przyszłości.")
         latest_season = Season.objects.filter(team = self.instance.team,).exclude(id = self.instance.id).order_by('-date_of_end').first()
         if latest_season and latest_season.date_of_end and date_of_start and date_of_start < latest_season.date_of_end:
             raise forms.ValidationError("Data rozpoczęcia sezonu nie może być wcześniejsza niż najnowsza data zakończenia poprzedniego sezonu dla drużyny.")
