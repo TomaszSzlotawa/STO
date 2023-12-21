@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+        @page {
+            size: landscape;
+        }
+        td { border: 1px solid black; }
+        th { border: 1px solid black; }
+        </style>
+</head>
+<body>
+    <div style="padding: 5px;">
+        <table>
+            <thead>
+                <th colspan="4">
+                    MEZOCYKL TRENINGOWY {{mezocycle.team.category}}
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <b>Klub: </b>{{mezocycle.team.club.name}}
+                    </td>
+                    <td>
+                        <b>Drużyna: </b>{{mezocycle.team.name}}
+                    </td>
+                    <td>
+                        <b>Kategoria wiekowa: </b>{{mezocycle.team.category}}
+                    </td>
+                    <td>
+                        <b>Data mezocyklu: </b>{{date_of_start_mezocycle}} - {{date_of_end_mezocycle}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table>
+            <thead>
+            <th style="padding: 5px; width: 100px; background-color: silver;">Tydzień</th>
+            {% for t in for_t %}
+                <th style="padding: 5px; background-color: silver;">Trening {{ t }}</th>
+            {% endfor %}
+            </thead>
+            <tbody>
+            {% for w in for_w %}
+                <tr>
+                <td style="text-align: center; background-color: gainsboro;">{{ w }}</td>
+                {% for t in for_t %}
+                <td style="padding: 5px;">
+                    {% for wt, training in trainings_list %}
+                    {% if wt.0 == w and wt.1 == t %}
+                    <b>Data:</b>{{ training.start_datatime }} - {{ training.end_datatime }}<br>
+                    <b>Lokalizacja:</b>{{ training.place }}<br>
+                    <b>Temat:</b>{{ training.topic }}<br>
+                    <b>Cele:</b>{{ training.goals }}<br>
+                    <b>Zasady:</b>{{ training.rules }}<br>
+                    <b>Działania:</b> {{ training.actions }}<br>
+                    
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

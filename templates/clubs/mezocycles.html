@@ -60,7 +60,7 @@
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'review_implemented_mezocycle' item.id %}">Podgląd</a></li>
-                    <li><a class="dropdown-item" href="{% url 'pdf_view' item.team.id %}">Wygeneruj PDF</a></li>
+                    <li><a class="dropdown-item" href="{% url 'pdf_view' item.id %}">Wygeneruj PDF</a></li>
                     <li><a class="dropdown-item" href="{% url 'delete_implemented_mezocycle' item.id %}">Usuń mezocykl</a></li>
                 </ul>
             </div>

@@ -105,8 +105,8 @@ class SeasonCreateForm(forms.ModelForm):
 
         if date_of_start and date_of_end and date_of_start > date_of_end:
             raise forms.ValidationError("Data rozpoczęcia nie może być późniejsza niż data zakończenia.")        
-        if date_of_start and  date_of_start > date.today():
-            raise forms.ValidationError("Sezon nie może się rozpoczynać w przyszłości.")
+        # if date_of_start and  date_of_start > date.today():
+        #     raise forms.ValidationError("Sezon nie może się rozpoczynać w przyszłości.")
         latest_season = Season.objects.filter(team = self.instance.team,).exclude(id = self.instance.id).order_by('-date_of_end').first()
         if latest_season and latest_season.date_of_end and date_of_start and date_of_start < latest_season.date_of_end:
             raise forms.ValidationError("Data rozpoczęcia sezonu nie może być wcześniejsza niż najnowsza data zakończenia poprzedniego sezonu dla drużyny.")

@@ -1071,7 +1071,23 @@ def review_implemented_mezocycle(request, mezocycle_id):
             trainings_list.append(((w,t),trainings[0]))
             trainings = trainings[1:]
 
-    return render(request,'clubs/review_implemented_mezocycle.html',{'for_t':for_t,'for_w':for_w,'teams':teams,'usersClubs':usersClubs, 'team':mezocycle.team, 'trainings_list':trainings_list})
+    return render(request,'clubs/review_implemented_mezocycle.html',{'for_t':for_t,'for_w':for_w,'teams':teams,'usersClubs':usersClubs,'mezocycle':mezocycle, 'team':mezocycle.team, 'trainings_list':trainings_list})
 
-def pdf_view(request,team_id):
-    return render_to_pdf('pdf/invoice.html')
+def pdf_view(request,mezocycle_id):
+    mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
+    trainings = Training.objects.filter(implemented_mezocycle=mezocycle).order_by('start_datatime')
+    date_of_start_mezocycle = trainings.first().start_datatime.date()
+    date_of_end_mezocycle = trainings.last().start_datatime.date()
+
+    for_w = range(1, mezocycle.weeks + 1)
+    for_t = range(1, mezocycle.trainings_per_week + 1)
+    trainings_list=[]
+    print(trainings)
+    for w in for_w:
+        for t in for_t:
+            trainings_list.append(((w,t),trainings[0]))
+            trainings = trainings[1:]
+
+    response = render_to_pdf('pdf/mezocycle_report.html',{'date_of_end_mezocycle':date_of_end_mezocycle,'date_of_start_mezocycle':date_of_start_mezocycle,'for_t':for_t,'for_w':for_w,'mezocycle':mezocycle, 'team':mezocycle.team, 'trainings_list':trainings_list})
+    response['Content-Type'] = 'application/pdf; charset=utf-8'
+    return response

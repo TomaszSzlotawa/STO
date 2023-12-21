@@ -202,8 +202,10 @@ class Season(models.Model):
             active_="[Wybrany]"
         if self.date_of_end and self.date_of_end < date.today():
             status="Zakończony"
-        else:
+        elif self.date_of_end and self.date_of_end >= date.today() and self.date_of_start and self.date_of_start <= date.today():
             status="Bieżący"
+        else:
+            status="Przyszły"
         return f"Sezon {self.name}-{status}{active_}"
 
     def name_and_status(self):
