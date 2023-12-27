@@ -179,9 +179,21 @@ class SeasonChooseForm(forms.Form):
         return existing_season
 
 class CreatePlayerForm(forms.ModelForm):
+    name = forms.CharField(required=False)
+    surname = forms.CharField(required=False)
     class Meta:
         model = Player
         fields = ['name','surname']
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        surname = cleaned_data.get('surname')
+        error_message = ""
+        if not name:
+            error_message+="wpisz imię "
+        if not surname:
+            error_message+="wpisz nazwisko"
+            raise ValidationError(error_message)
 
 class CreatePlayerDataForm(forms.ModelForm):
     date_of_birth = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
@@ -282,7 +294,7 @@ class TrainingForm(forms.ModelForm):
             attrs={'type': 'datetime-local'},
         )
     )
-    
+    place = forms.ModelChoiceField(queryset=Place.objects.all())
     class Meta:
         model = Training
         exclude = ['season', 'end_datatime']
@@ -293,6 +305,13 @@ class TrainingForm(forms.ModelForm):
             self.fields['player'].queryset = players
             self.fields['player'].initial = players.values_list('pk', flat=True)
         self.season = season
+        if season:
+            start_min = datetime.combine(season.date_of_start, datetime.min.time())
+            start_max = datetime.combine(season.date_of_end, datetime.min.time()) + timedelta(days=1) - timedelta(seconds=1)
+            self.fields['start_datatime'].widget.attrs['min'] = start_min.strftime('%Y-%m-%dT%H:%M:%S')
+            self.fields['start_datatime'].widget.attrs['max'] = start_max.strftime('%Y-%m-%dT%H:%M:%S')
+            places = Place.objects.filter(club = season.team.club)
+            self.fields['place'].queryset = places
         if self.instance.pk:
             self.fields['duration'].initial = (self.instance.end_datatime - self.instance.start_datatime).seconds // 60
 
@@ -488,7 +507,7 @@ class ImplementTrainingForm(forms.ModelForm):
         ),required=False
     )
     topic = forms.CharField(max_length = 100, required=False)
-    
+    place = forms.ModelChoiceField(queryset=Place.objects.all(), required=False)
     class Meta:
         model = Training
         exclude = ['season', 'end_datatime','implemented_mezocycle']
@@ -504,7 +523,8 @@ class ImplementTrainingForm(forms.ModelForm):
             start_max = datetime.combine(season.date_of_end, datetime.min.time()) + timedelta(days=1) - timedelta(seconds=1)
             self.fields['start_datatime'].widget.attrs['min'] = start_min.strftime('%Y-%m-%dT%H:%M:%S')
             self.fields['start_datatime'].widget.attrs['max'] = start_max.strftime('%Y-%m-%dT%H:%M:%S')
-
+            places = Place.objects.filter(club = season.team.club)
+            self.fields['place'].queryset = places
     def clean(self):
         cleaned_data = super().clean()
         start_datatime = cleaned_data.get('start_datatime')
@@ -541,22 +561,15 @@ class ImplementTrainingForm(forms.ModelForm):
         training.season = self.season
         duration_minutes = self.cleaned_data['duration']
         start_datatime = self.cleaned_data.get('start_datatime')
-        
+
         if start_datatime:
             training.end_datatime = start_datatime + timedelta(minutes=duration_minutes)
 
         if commit:
             training.save()
             selected_players = self.cleaned_data['player']
-            selected_players_ids = selected_players.values_list('id', flat=True)
-            current_players = set(Attendance.objects.filter(training=training).values_list('player', flat=True))
-
-            removed_players = current_players - set(selected_players_ids)
-
-            Attendance.objects.filter(training=training, player__in=removed_players).delete()
-
+            print(selected_players)
             for player in selected_players:
-                if player not in current_players:
-                    Attendance.objects.get_or_create(training=training, player=player,)
+                Attendance.objects.get_or_create(training=training, player=player,)
 
         return training

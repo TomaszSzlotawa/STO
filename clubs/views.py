@@ -1091,7 +1091,7 @@ def implement_mezocycle(request, mezocycle_id):
                     implemented_mezocycle.save()
                 for form in forms_list:
                     if form.is_valid():
-                        training = form.save(commit=False)
+                        training = form.save()
                         training.implemented_mezocycle = implemented_mezocycle
                         training.save()
                     else:
