@@ -19,85 +19,109 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div id="sidebar" class="flex-shrink-0 p-3"  style="width: 220px;">
+    <div class="wrapper">
+            <nav id="sidebar">
                 
     {% if user.is_authenticated %}
-                <a href="{% url 'user_panel' %}" class="d-flex align-items-left pb-1 mb-1 link-dark text-decoration-none">
+                <a class="user-panel" href="{% url 'user_panel' %}">
                     Panel użytkownika
                 </a>
-                <hr>
                 {% for club in usersClubs  %}
-                    <ul class="list-unstyled p-0 align-items-left">
-                        <li class="mb-10 align-items-left">
-                            <button class="btn btn-toggle align-items-left  rounded collapsed p-0" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}-collapse" aria-expanded="true">
+                    <ul class="list-unstyled  components" >
+                        <li>
+                            <a href="#{{club.club.name_without_spaces}}-collapse" class="dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
                                 {{club.club}}
-                            </button>
-                            <div class="collapse" id="{{club.club.name_without_spaces}}-collapse">
-                              <ul class="list-unstyled ps-2 ">
-                                <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz klubowy</a></li>
-                                <li><a href="{% url 'club_staff' club.club.id %}" class="link-dark rounded text-decoration-none">Kadra</a></li>
-                                <li><a href="{% url 'club_coaching_staff' club.club.id %}" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
-                                <li></li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{club.club.name_without_spaces}}_teams-collapse" aria-expanded="true">
+                            </a>
+                        </li>
+                            <ul class="collapse list-unstyled" id="{{club.club.name_without_spaces}}-collapse">
+                                <li>
+                                    <a href="#" >Kalendarz klubowy</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'club_staff' club.club.id %}" >Kadra</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'club_coaching_staff' club.club.id %}" >Sztab szkoleniowy</a>
+                                </li>
+                                <li>
+                                    <a href="#{{club.club.name_without_spaces}}_teams-collapse" class="dropdown-toggle" data-bs-toggle="collapse"  aria-expanded="false">
                                    Drużyny
-                                </button></li>
-                                <div class="collapse" id="{{club.club.name_without_spaces}}_teams-collapse">
-                                    <ul class="list-unstyled ps-2 ">
+                                    </a>
+                                </li>
+                                <ul class="collapse list-unstyled" id="{{club.club.name_without_spaces}}_teams-collapse">
                                         {% for team in teams  %}
                                             {% if team.club == club.club %}
-                                        <li><button class="btn btn-toggle p-0 align-items-left rounded collapsed" data-bs-toggle="collapse" data-bs-target="#{{team.name_without_spaces}}-collapse" aria-expanded="true">
+                                        <li>
+                                            <a href="#{{team.name_without_spaces}}-collapse" class="dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
                                         {{team.name}}
-                                        </button></li>
-                                        <div class="collapse" id="{{team.name_without_spaces}}-collapse">
-                                            <ul class="list-unstyled ps-2 ">
-                                                <li><a href="#" class="link-dark rounded text-decoration-none">Kalendarz {{team.name}}</a></li>
-                                                <li><a href="{% url 'team_staff' team.id %}" class="link-dark rounded text-decoration-none">Kadra</a></li>
-                                                <li><a href="{% url 'team_coaching_staff' team.id %}" class="link-dark rounded text-decoration-none">Sztab szkoleniowy</a></li>
-                                                <li><a href="{% url 'trainings' team.id %}" class="link-dark rounded text-decoration-none">Treningi</a></li>
-                                                <li><a href="{% url 'mezocycles' team.id %}" class="link-dark rounded text-decoration-none">Plan treningowy</a></li>
-                                                <li><a href="{% url 'team_attendance_report' team.id %}" class="link-dark rounded text-decoration-none">Raport obecności</a></li>
-                                                <li><a href="{% url 'teams_equipment' team.id %}" class="link-dark rounded text-decoration-none">Raport sprzętu drużyny</a></li>
-                                            </ul>
-                                        </div>
+                                            </a>
+                                        </li>
+                                        <ul class="collapse list-unstyled" id="{{team.name_without_spaces}}-collapse">
+                                                <li>
+                                                    <a href="#" >Kalendarz {{team.name}}</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'team_staff' team.id %}" >Kadra</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'team_coaching_staff' team.id %}" >Sztab szkoleniowy</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'trainings' team.id %}" >Treningi</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'mezocycles' team.id %}" >Plan treningowy</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'team_attendance_report' team.id %}" >Raport obecności</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'teams_equipment' team.id %}" >Raport sprzętu drużyny</a>
+                                                </li>
+                                        </ul>
                                             {% endif %}
                                         {% endfor %}
-                                    </ul>
-                                </div>
-                                <li><a href="{% url 'clubs_equipment' club.club.id %}" class="link-dark rounded text-decoration-none">Sprzęt</a></li>
-                                <li><a href="{% url 'places' club.club.id %}" class="link-dark rounded text-decoration-none">Obiekty</a></li>
+                                </ul>
+                                <li>
+                                    <a href="{% url 'clubs_equipment' club.club.id %}" >Sprzęt</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'places' club.club.id %}" >Obiekty</a>
+                                </li>
                                 <!-- <li><a href="#" class="link-dark rounded text-decoration-none">Zadania</a></li>
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Dofinansowania</a></li>
                                 <li><a href="#" class="link-dark rounded text-decoration-none">Sponsorzy</a></li> -->
-                                <li><a href="{% url 'club_settings' club.club.id %}" class="link-dark rounded text-decoration-none">Ustawienia klubu</a></li>
+                                <li>
+                                    <a href="{% url 'club_settings' club.club.id %}" >Ustawienia klubu</a>
+                                </li>
     
-                              </ul>
-                            </div>
-                        </li>
+                            </ul>
+                        
                     </ul>
                 {% endfor %}
-            </div>
+                <div class="dropdown-user">
+                    <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle " id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
+                        <span>{{user.username}}</span>
+                    </a>
+                    <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
+                        <li><a class="dropdown-item" href="{% url 'create_club' %}">Dodaj klub...</a></li>
+                        <li><a class="dropdown-item" href="{% url 'user_roles' %}">Moje role w klubach</a></li>
+                        <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
+                    </ul>
+                </div>
+
+            </nav>
+
+                
 
             <div class="main-content">
                 {% block content %}{% endblock %}
             </div>
-        </div>
     </div>
 
-    <div id="bottomsidebar">
-        <div class="dropdown" style="position: fixed; bottom: 10px; left: 10px;">
-            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle " id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
-                <span>{{user.username}}</span>
-            </a>
-            <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
-                <li><a class="dropdown-item" href="{% url 'create_club' %}">Dodaj klub...</a></li>
-                <li><a class="dropdown-item" href="{% url 'user_roles' %}">Moje role w klubach</a></li>
-                <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profil</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
-            </ul>
-        </div>
-    </div>
+    
 
     {% else %}
     </div>
@@ -115,3 +139,5 @@
 
 </body>
 </html>
+
+

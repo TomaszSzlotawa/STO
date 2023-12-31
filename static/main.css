@@ -1,30 +1,100 @@
 body {
     /*overflow: hidden; /* Prevent page scrolling */
     padding-top: 56px; /* Adjusted padding for the fixed top navbar */
-
+}
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    color: #000000;
+}
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
 }
 
+
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
 #sidebar {
     overflow-y: auto; /* Add vertical scrollbar for sidebar */
     height: 100vh;
+    min-width: 15%;
+    max-width: 15%;
     max-height: calc(100vh - 96px); /* Set max height, subtracting the height of the dropdown */
-    background-color: antiquewhite;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+    position: relative;
+    top: 0; 
+    margin-bottom: 40px;
+    align-items: stretch;
 }
-#bottomsidebar {
-    width: 220px;
+
+#sidebar ul.components {
+    border-bottom: 1px solid #ffffff;
+}
+
+
+#sidebar ul li a {
+    color:#fff;
+    padding: 4px 4px 4px 10px;
+    font-size: 0.8em;
+    display: block;
+}
+.user-panel{
+    padding: 10px 4px 10px 10px;
+    border-bottom: 1px solid #ffffff;
+    color:#fff;
+    font-size: 0.8em;
+    display: block;
+}
+#sidebar a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+
+
+ul ul a {
+    font-size: 0.8em !important;
+    padding-left: 20px !important;
+    background: #6d7fcc;
+}
+ul ul ul a {
+    font-size: 0.8em !important;
+    padding-left: 40px !important;
+    background: #8193e0;
+}
+ul ul ul ul a {
+    font-size: 0.8em !important;
+    padding-left: 60px !important;
+    background: #98a8f1;
+}
+
+.dropdown-user{
+    position: fixed; 
+    bottom: 0px; 
+    left: 0px;
+    padding: 10px;
     height: 40px;
-    background-color: antiquewhite; /* Możesz dostosować kolor tła według swoich preferencji */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    border-top: 1px solid #000; /* Dodaj czarną ramkę na górze */
+    width:15%;
+    background-color: inherit;
+    display: block;
+    border-top: 1px solid white;
 }
 
 .navbar {
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    z-index: 1001; /* Ensure the navbar is above the dropdown */
 }
 
 .navbar-toggler {
@@ -32,16 +102,15 @@ body {
     left: 10px;
     top: 10px;
 }
-.dropdown{
-    background-color: inherit;
-}
 
 .main-content {
     flex: 1; /* Wypełnij dostępną przestrzeń */
-    /*margin-left: 220px;  Szerokość sidebar */
+    /*margin-left: 220px; /* Szerokość sidebar */
     padding: 15px; /* Dodatkowy padding dla main-content */
     overflow-y: auto; /* Add vertical scrollbar for main-content */
+    max-height: calc(85vh - 1px); /* Set max height, subtracting the height of the dropdown */
 }
+
 
 td {
     border-bottom: 1px solid #dddddd;
