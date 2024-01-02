@@ -3,14 +3,59 @@
 {% block title %}Logowanie {% endblock %}
 
 {% block signuup/login %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-    <a href="{% url 'signup' %}">Nie masz konta? Załóż je!</a><br>
-    <a href="{% url 'password_reset' %}">Zapomniałeś hasła? Przywróć je!</a>
-  </form>
+  <div class="container py-5 h-100 login">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="card">
+          <div class="card-body p-4 text-center">
 
-  {% endblock %}
+              <form method="post" class="form-signin">
+                  {% csrf_token %}
+                <h2 class="fw-bold text-uppercase">logowanie</h2>
+                <p class="mb-3">Wpisz nazwę użytkownika i hasło!</p>
+                  {% if form.non_field_errors %}
+                  <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                  </div>
+                  {% endif %}
+                <div class="form-outline mb-2">
+                  <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username" class="form-control" />
+                  <label class="form-label" for="id_username">Nazwa użytkownika</label>
+                  {% if form.username.errors %}
+                    <div class="alert alert-danger">
+                      {{ form.username.errors }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="form-outline mb-1">
+                  <input type="password" name="password" autocomplete="current-password" required="" id="id_password" class="form-control" />
+                  <label class="form-label" for="id_password">Hasło</label>
+                  {% if form.password.errors %}
+                    <div class="alert alert-danger">
+                      {{ form.password.errors }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <p class="small "><a class="" href="{% url 'password_reset' %}">Zapomniałeś hasła?</a></p>
+
+                <input class="btn  btn-lg px-5" type="submit" value="Zaloguj się">
+              </form>
+
+
+            <div>
+              <p class="mt-3">Nie masz konta? <a href="{% url 'signup' %}" class="fw-bold">Załóż je!</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
 

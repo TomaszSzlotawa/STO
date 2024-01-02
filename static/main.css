@@ -213,6 +213,59 @@ ul ul ul ul a {
 
 
 
+.login .card {
+    border-radius: 1rem;
+    box-shadow: 0 0 10px #4CAF50; /* Dodaj zielony cień */
+    color: #333;
+}
+.form-signin .form-outline input {
+    border-color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+}
+.form-signin .form-outline input:focus {
+    border-color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+    box-shadow: 0 0 0 0.25rem #4caf4fa9; /* Dodanie zielonego cienia po aktywacji */
+}
+
+.form-signin .form-outline label {
+    color: #333; /* Kolor etykiety (tekstu) */
+}
+
+.form-signin .form-outline .alert {
+    margin-top: 5px; /* Dodatkowy odstęp dla komunikatów o błędach */
+}
+
+.form-signin .btn {
+    color: #fff; /* Kolor tekstu przycisku */
+    border: 3px solid #FF851B;
+    background-color: #FF851B;
+}
+.form-signin .btn:hover {
+    color: #FF851B; /* Kolor tekstu przycisku */
+    background-color: #fff;
+    border: 3px solid #FF851B;
+}
+.form-signin .btn:focus {
+    color: #FF851B; /* Kolor tekstu przycisku */
+    background-color: #fff;
+    border: 3px solid #FF851B;
+}
+.login a {
+    color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+    text-decoration: none;
+}
+
+
+/* Resetowanie stylów dla pseudo-klas WebKit Autofill */
+form input:-webkit-autofill,
+form input:-webkit-autofill:hover,
+form input:-webkit-autofill:focus,
+form input:-internal-autofill-selected {
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset !important; /* Ustawienie białego tła */
+    -webkit-text-fill-color: #333 !important; /* Kolor tekstu */
+}
+
+
+
 
 
 @media(max-width: 767px){
