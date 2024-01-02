@@ -1,51 +1,67 @@
-body {
-    /*overflow: hidden; /* Prevent page scrolling */
-    padding-top: 56px; /* Adjusted padding for the fixed top navbar */
+body{
+ background: #EEEEEE;
+ overflow: hidden; /* Prevent page scrolling */
+ font-family: 'Roboto', sans-serif;
+
 }
-p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
-    color: #000000;
+
+#side_nav{
+    overflow-y: auto; /* Add vertical scrollbar for sidebar */
+    background: #001F3F;
+    transition: all 0.3s;
+    min-width: 180px;
+    max-width: 180px;
+    min-height: 100vh;
+    max-height: 100vh;   
+    padding-bottom: 20px;
 }
-a,
-a:hover,
-a:focus {
-    color: inherit;
+#side_nav::-webkit-scrollbar {
+    width: 7px; /* Szerokość paska przewijania */
+}
+
+#side_nav::-webkit-scrollbar-thumb {
+    background-color:#001F3F; 
+    border-radius: 10px; /* Zaokrąglenie paska przewijania */
+}
+
+#side_nav::-webkit-scrollbar-track {
+    background-color: #4CAF50; /* Przezroczyste tło ścieżki przewijania */
+}
+.content{
+   width: 100%;
+}
+
+.main-content{
+    padding: 20px;
+    color: #333;
+    min-height: 90vh;
+    max-height: 90vh;
+    width: 100%;
+    overflow-y: auto; 
+}
+
+
+
+
+.sidebar li a{
+ color: #fff;
+}
+.sidebar ul.components {
+    border-bottom: 1px solid #ffffff;
+    margin-bottom: 0px;
+}
+
+.sidebar a,
+.sidebar a:hover,
+.sidebar a:focus {
+    color: white;
     text-decoration: none;
     transition: all 0.3s;
 }
 
-
-
-.wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
-}
-#sidebar {
-    overflow-y: auto; /* Add vertical scrollbar for sidebar */
-    height: 100vh;
-    min-width: 15%;
-    max-width: 15%;
-    max-height: calc(100vh - 96px); /* Set max height, subtracting the height of the dropdown */
-    background: #7386D5;
-    color: #fff;
-    transition: all 0.3s;
-    position: relative;
-    top: 0; 
-    margin-bottom: 40px;
-    align-items: stretch;
-}
-
-#sidebar ul.components {
-    border-bottom: 1px solid #ffffff;
-}
-
-
-#sidebar ul li a {
+.sidebar ul li a {
     color:#fff;
-    padding: 4px 4px 4px 10px;
-    font-size: 0.8em;
+    padding: 4px 10px 4px 10px;
     display: block;
 }
 .user-panel{
@@ -55,68 +71,160 @@ a:focus {
     font-size: 0.8em;
     display: block;
 }
-#sidebar a:hover {
-    color: #7386D5;
-    background: #fff;
+.sidebar a:hover {
+    color: #fff;
+    background: #4CAF50;
+}
+.sidebar a:active {
+    color: #fff;
+    background: #4CAF50;
 }
 
 
-
+ul a {
+    font-size: 0.8em !important;
+    padding-left: 10px !important;
+    background: #001F3F;
+}
 ul ul a {
     font-size: 0.8em !important;
-    padding-left: 20px !important;
-    background: #6d7fcc;
+    padding-left: 15px !important;
+    background: #001F3F;
 }
 ul ul ul a {
     font-size: 0.8em !important;
-    padding-left: 40px !important;
-    background: #8193e0;
+    padding-left: 20px !important;
+    background: #001F3F;
 }
 ul ul ul ul a {
     font-size: 0.8em !important;
-    padding-left: 60px !important;
-    background: #98a8f1;
+    padding-left: 25px !important;
+    background: #001F3F;
 }
 
-.dropdown-user{
-    position: fixed; 
-    bottom: 0px; 
-    left: 0px;
-    padding: 10px;
-    height: 40px;
-    width:15%;
-    background-color: inherit;
-    display: block;
-    border-top: 1px solid white;
+.sidebar li.active a {
+    background: #4CAF50;
 }
 
+
+
+
+
+.navbar{
+    background-color: #001F3F;
+    color:#fff
+}
+.navbar .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+/* Stylizacja dla nowego span z tytułem */
+
+/* Pozycjonowanie navbar */
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center;
+    background-color: #001F3F; /* Kolor tła navbar */
 }
 
-.navbar-toggler {
+.navbar-left {
+    margin-right: auto; /* Elementy z navbar-left będą przesunięte na lewo */
+}
+
+.navbar-right {
+    margin-left: auto; /* Elementy z navbar-right będą przesunięte na prawo */
+}
+
+
+
+/* Domyślny kolor ikony */
+.fa-solid.fa-bars {
+    color: white;
+    transition: color 0.3s ease; /* Dodane przejście dla koloru */
+}
+.bars-btn {
+    border: none; /* Usunięcie domyślnej obwódki */
+}
+
+.bars-btn:active {
+    border-color: transparent; /* Ustawienie niewidocznej obwódki po wciśnięciu */
+}
+
+
+/* Kolor ikony po najechaniu myszką */
+.fa-solid.fa-bars:hover {
+    color: #FF851B; /* Lub inny wybrany kolor pomarańczowy */
+}
+
+/* Domyślne style dla navbar-brand */
+.navbar-brand.fs-4 span {
+    color: #001F3F;
+    background-color: #4CAF50 ;
+}
+
+
+.header-box .logo{
+    color: #001F3F;
+    background-color: #4CAF50 ;
+}
+
+.close-btn {
+    color: white;
+    border: none; /* Usunięcie domyślnej obwódki */
+    transition: color 0.3s ease, border-color 0.3s ease; /* Dodane przejścia dla koloru tekstu i obwódki */
+}
+
+/* Zmiana koloru tekstu po najechaniu myszką */
+.close-btn:hover {
+    color: #FF851B;
+}
+
+/* Styl dla obwódki po wciśnięciu przycisku */
+.close-btn:active {
+    border-color: transparent; /* Ustawienie niewidocznej obwódki po wciśnięciu */
+}
+
+#userDropdown {
+    color: #fff !important;
+    transition: color 0.3s ease; /* Dodane przejście dla koloru tekstu */
+}
+
+
+.dropdown-menu {
+    background-color: white; /* Tło białe */
+    border: 2px solid #FF851B;
+}
+.dropdown-menu a {
+    color: #000; /* Kolor czcionki czarny */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Dodane przejścia dla tła i koloru czcionki */
+    padding: 2px;
+}
+
+/* Zmiana tła i koloru czcionki po najechaniu myszką */
+.dropdown-menu a:hover {
+    background-color: #FF851B; /* Tło pomarańczowe po najechaniu */
+    color: #fff; /* Kolor czcionki biały po najechaniu */
+}
+.dropdown-divider {
+    background-color: #FF851B;
+    padding: 1px;
+}
+
+
+
+
+
+@media(max-width: 767px){
+ #side_nav{
+    overflow-y: auto; /* Add vertical scrollbar for sidebar */
+    margin-left: -180px;
     position: absolute;
-    left: 10px;
-    top: 10px;
-}
-
-.main-content {
-    flex: 1; /* Wypełnij dostępną przestrzeń */
-    /*margin-left: 220px; /* Szerokość sidebar */
-    padding: 15px; /* Dodatkowy padding dla main-content */
-    overflow-y: auto; /* Add vertical scrollbar for main-content */
-    max-height: calc(85vh - 1px); /* Set max height, subtracting the height of the dropdown */
-}
-
-
-td {
-    border-bottom: 1px solid #dddddd;
-}
-table {
-    border-collapse: separate;
-    border-spacing: 5px; /* Dodaj odstęp 5px między kolumnami */
-    width: 100%;
+    min-height: 100vh;
+    z-index: 1;
+    max-height: 100vh;
+ }
+ #side_nav.active{
+   margin-left: 0;
+  }
 }
