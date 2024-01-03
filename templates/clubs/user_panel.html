@@ -21,58 +21,99 @@
             <div class="card  mb-4 my-trainings">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row">
-                    <h6 class="m-0"><a href="">Nadchodzące treningi</a></h6>
+                    <h6 class="m-0">Nadchodzące treningi</a></h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                     {% for training in upcoming_trainings%}
-                    <div class="training d-flex p-2 mb-2 ">
-                        <div class="col-4 p-1"><a href="{%url 'training_details' training.id %}">{{training.season.team.name}}</a></div>
-                        <div class="col-4 p-1 middle">{{training.start_datatime}}</div>
-                        <div class="col-4 p-1">{{training.place.name}}, {{training.place.addres}}</div>
-                    </div>
+                    <a href="{%url 'training_details' training.id %}">
+                        <div class="training d-flex p-2 mb-2 ">
+                            <div class="col-4 p-1 ">{{training.start_datatime}}</div>
+                            <div class="col-4 p-1 middle">{{training.season.team.name}}</div>
+                            <div class="col-4 p-1">{{training.place.name}}, {{training.place.addres}}</div>
+                        </div>
+                    </a>
                     {% endfor %}
                 </div>
             </div>
         </div>
 
         <!-- user card -->
-        <div class="col-xl-4 col-lg-5">
+        <div class="col-xl-5 col-lg-6">
             <div class="card  mb-4">
                 <!-- Card Header - Dropdown -->
-                <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                            aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Dropdown Header:</div>
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
+                <div class="card-header py-3 d-flex flex-row justify-content-between">
+                    <h6 class="m-0"> Twój profil</h6>
+                    <a class="text-decoration-none" href="{% url 'user_profile' %}"> <h6 class="m-0"><i class="fa-solid fa-eye"></i></h6> </a>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Direct
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-success"></i> Social
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Referral
-                        </span>
+                        <div class="row m-l-0 m-r-0">
+                            <div class="col-sm-4  user-profile" >
+                                <div class="text-center">
+                                    <h4 class="fw-bolder">{{user.username}}</h4>
+                                    <p class="small">{{user.email}}</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="card-block">
+                                    <div class="mb-2 d-flex flex-row justify-content-between" style="border-bottom: 1px solid #333333;">
+                                        <h6 class="m-0">Twoje dane</h6>
+                                        <a class="text-decoration-none" href="{% url 'user_profile' %}"> <h6 class="m-0"><i class="fa-solid fa-pen"></i></h6> </a>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Imię</p>
+                                            <h6 class="text-muted f-w-400">{{user.first_name}}</h6>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Nazwisko</p>
+                                            <h6 class="text-muted f-w-400">{{user.last_name}}</h6>
+                                        </div>
+                                    </div>
+                                    <div class="my-2 d-flex flex-row justify-content-between" style="border-bottom: 1px solid #333333;">
+                                        <h6 class="m-0">Twoje role</h6>
+                                        <a class="text-decoration-none" href="{% url 'user_roles' %}"> <h6 class="m-0"><i class="fa-solid fa-pen"></i></h6> </a>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Administrator</p>
+                                            {% for club in usersClubs %}
+                                            {% if club.admin%}
+                                            <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                            {% endif %}
+                                            {% endfor %}
+
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Koordynator szkolenia</p>
+                                            {% for club in usersClubs %}
+                                            {% if club.training_coordinator%}
+                                            <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Trener</p>
+                                            {% for club in usersClubs %}
+                                            {% if club.coach%}
+                                            <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Pracownik administracji klubowej</p>
+                                            {% for club in usersClubs %}
+                                            {% if club.employee%}
+                                            <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -81,26 +122,34 @@
     <div class="row">
 
         <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
+        <div class="col-xl-3 col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-header py-3 d-flex flex-row">
+                    <h6 class="m-0">Moje Kluby</a></h6>
+                </div>
+                <!-- Card Body -->
                 <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                    {% for club in usersClubs%}
+                    <a href="{% url 'club_settings' club.club.id %}">
+                        <div class="training d-flex p-2 mb-2 justify-content-between">
+                            <div class="">{{club.club.name}}</div>
+                            <div class=""><i class="fa-solid fa-gear"></i></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </a>
+                    {% endfor %}
+                    <a href="{% url 'create_club' %}">
+                        <div class="add d-flex p-2 mt-4 justify-content-between">
+                            <div>Załóż nowy klub..</div>
+                            <div><i class="fa-solid fa-plus"></i></div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
-
+        
         <!-- Earnings (Monthly) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
+            <div class="card border-left-success shadow  py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">

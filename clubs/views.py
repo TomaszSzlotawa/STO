@@ -23,10 +23,10 @@ def get_item(dictionary, key):
 def get_data_for_menu(request):
     if request.user.is_authenticated:
         user = request.user
-        usersClubs = UsersClub.objects.filter(user = user, accepted = True)
+        usersClubs = UsersClub.objects.filter(user = user, accepted = True).order_by('id')
         teams = []
         for club in usersClubs:
-            club_team = Team.objects.filter(club=club.club)
+            club_team = Team.objects.filter(club=club.club).order_by('name')
             teams.extend(club_team)
     else:
         usersClubs=[]
