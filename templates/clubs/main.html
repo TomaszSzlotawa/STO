@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="main-container d-flex">
-        <div class="sidebar" id="side_nav">
+        <div class="sidebar shadow" id="side_nav">
             <div class="header-box px-2 pt-3 pb-4 d-flex ">
                 <h1 class="fs-4"><span class="rounded shadow px-2 me-2 logo">STO</span> <span
                         class="text-white">Sport Training Organizer</span></h1>
@@ -109,50 +109,51 @@
 
         </div>
         <div class="content">
-            <nav class="navbar navbar-expand-md">
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-between d-md-none d-block">
-                        <button class="btn px-1 py-0 open-btn me-2 bars-btn"><i class="fa-solid fa-bars"></i></button>
-                           <a class="navbar-brand fs-4" href="{% url 'user_panel' %}"><span class=" rounded px-2 py-0 ">STO</span></a>   
-                    </div>
-            
-                    <div class="navbar" id="navbarSupportedContent">
-                        {% if user.is_authenticated %}             
-                        <div class="navbar-left">
-                            <span class="navbar-title text-white">{% block header %}{% endblock %}</span>
-                        </div>
-                        <div class="navbar-right">
-                            <ul class="navbar-nav mb-2 mb-lg-0">
-                                <li class="nav-item dropdown text-white">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="userDropdown">
-                                        <i class="fa-solid fa-user"></i>&nbsp;<span>{{user.username}}</span>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                        <li><a class="dropdown-item" href="{% url 'create_club' %}">Dodaj klub...</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'user_roles' %}">Moje role w klubach</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profil</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        {% else %}
-                        <div class="navbar-right">
-                            <ul class="navbar-nav mb-2 mb-lg-0">
-                                <li class="nav-item dropdown text-white">
-                                    <a class="nav-link " href="{% url 'login' %}" role="button" id="userDropdown">
-                                        <i class="fa-solid fa-user"></i>&nbsp; ZALOGUJ SIĘ
-                                    </a>
-                                    
-                                </li>
-                            </ul>
-                        </div>
-                        {% endif %}
-                    </div>
-                    
+            <nav class="navbar navbar-expand topbar static-top shadow p-3">
+
+                <!-- Sidebar Toggle -->
+                <div class="d-flex justify-content-between d-md-none d-block">
+                    <button class="btn px-1 py-0 open-btn me-2 bars-btn"><i class="fa-solid fa-bars"></i></button>
+                       <a class="navbar-brand fs-4" href="{% url 'user_panel' %}"><span class=" rounded px-2 py-0 ">STO</span></a>   
                 </div>
+
+                <!-- Nazwa modułu -->
+                {% if user.is_authenticated %}             
+                <div class="mr-auto d-flex">
+                    <span class="navbar-title text-white">{% block header %}{% endblock %}</span>
+                </div>
+                
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="userDropdown">
+                                <i class="fa-solid fa-user"></i>&nbsp;<span>{{user.username}}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'create_club' %}">Dodaj klub...</a></li>
+                                <li><a class="dropdown-item" href="{% url 'user_roles' %}">Moje role w klubach</a></li>
+                                <li><a class="dropdown-item" href="{% url 'user_profile' %}">Profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Wyloguj się</a></li>
+                            </ul>
+                        </li>
+                </ul>
+                {% else %}
+                <div class="mr-auto d-flex">
+                    <span class="navbar-title text-white">SPORT TRAINING ORGANIZER</span>
+                </div>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link " href="{% url 'login' %}" role="button" id="userDropdown">
+                            <i class="fa-solid fa-user"></i>&nbsp; ZALOGUJ SIĘ
+                        </a>
+                        
+                    </li>
+                </ul>
+                {% endif %}
             </nav>
+
             
             {% if user.is_authenticated %}
 
