@@ -210,6 +210,10 @@ class Season(models.Model):
 
     def name_and_status(self):
         return self
+    
+    def count_players(self):
+        return self.player.count()
+
 
 
 #treningi zaplanowane do kalendarza

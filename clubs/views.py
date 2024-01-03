@@ -23,7 +23,7 @@ def get_item(dictionary, key):
 def get_data_for_menu(request):
     if request.user.is_authenticated:
         user = request.user
-        usersClubs = UsersClub.objects.filter(user = user, accepted = True).order_by('id')
+        usersClubs = UsersClub.objects.filter(user=user, accepted=True).order_by('club__name')
         teams = []
         for club in usersClubs:
             club_team = Team.objects.filter(club=club.club).order_by('name')
@@ -68,6 +68,38 @@ def user_panel(request):
     seasons = Season.objects.filter(team__in=coach_in_teams)
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
     return render(request,'clubs/user_panel.html',{'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings, 'user_coaching_teams':user_coaching_teams})
+
+def club_panel(request, club_id):
+    usersClubs, teams = get_data_for_menu(request)
+    club = get_object_or_404(Club,pk=club_id)
+    clubs_teams = Team.objects.filter(club=club)
+    seasons = Season.objects.filter(team__in=clubs_teams,active=True)
+    coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams).order_by('coach')
+    upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
+    #attendance
+    seasons_att = []
+    for s in seasons:
+        trainings = Training.objects.filter(season=s,start_datatime__range=[s.date_of_start, date.today()])
+        attendances = Attendance.objects.filter(training__in = trainings)
+        players = s.player.all()
+        present = 0
+        len_attendance=0
+        for att in attendances:
+            if att.training.end_datatime < datetime.now():
+                len_attendance += 1
+                if att.present:
+                    present += 1
+        if len_attendance==0:
+            avg_attendance = 0.00
+        else:
+            avg_attendance = round(present / len_attendance * 100,2)
+        absent = 100-avg_attendance
+        seasons_att.append((s,avg_attendance,absent))
+    places = Place.objects.filter(club=club)    
+    users = UsersClub.objects.filter(club=club, accepted=True)
+    return render(request,'clubs/club_panel.html',{'users':users,'club':club,'places':places,'usersClubs':usersClubs,'teams':teams,'coaching_staff':coaching_staff,'upcoming_trainings':upcoming_trainings, 'seasons':seasons,'clubs_teams':clubs_teams,'seasons_att':seasons_att})
+
+
 
 def user_profile(request):
     usersClubs, teams = get_data_for_menu(request)

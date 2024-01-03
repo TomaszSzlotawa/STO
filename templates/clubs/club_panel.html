@@ -1,0 +1,261 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Panel użytkownika {{user}}{% endblock %}
+{% block header %}Panel użytkownika {{user}}{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+<div class="container-fluid dashboard">
+
+
+    <!-- Content Row -->
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-7 ">
+            <div class="card  mb-4 my-trainings">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row">
+                    <h6 class="m-0 text-uppercase">Nadchodzące treningi</a></h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    {% for training in upcoming_trainings%}
+                    <a href="{%url 'training_details' training.id %}">
+                        <div class="training d-flex p-2 mb-2 ">
+                            <div class="col-4 p-1 ">{{training.season.team.name}}</div>
+                            <div class="col-4 p-1 middle">{{training.start_datatime}}</div>
+                            <div class="col-4 p-1">{{training.place.name}}, {{training.place.addres}}</div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center links">
+                                <h3 class="fw-bolder"><i class="fa-solid fa-angles-right"></i>  Na skróty</h3>
+                                <a class=" fw-bolder text-uppercase py-2 mx-1 d-flex" href="{% url 'club_settings' club.id %}">
+
+                                <div class="col mr-2">
+                                        USTAWIENIA
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa-solid fa-gear mr-2"></i>
+                                </div>
+                                </a>
+
+                                <a class=" fw-bolder text-uppercase py-2 mx-1 d-flex" href="{% url 'clubs_equipment' club.id %}">
+
+                                    <div class="col mr-2">
+                                            SPRZĘT
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa-solid fa-shirt"></i>
+                                    </div>
+                                </a>
+                                <a class=" fw-bolder text-uppercase py-2 mx-1 d-flex" href="{% url 'club_staff' club.id %}">
+
+                                    <div class="col mr-2">
+                                            KADRA
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa-solid fa-person-running"></i>
+                                    </div>
+                                </a>
+    
+                                <a class=" fw-bolder text-uppercase py-2 mx-1 d-flex" href="{% url 'club_coaching_staff' club.id %}">
+    
+                                        <div class="col mr-2">
+                                                SZTAB SZKOLENIOWY
+                                        </div>
+                                        <div class="col-auto">
+                                        <i class="fa-solid fa-people-line"></i>
+                                        </div>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-xl-5 col-lg-5 col-md-5 mb-4">
+                    <div class="card">
+                        <div class="card-header py-3 d-flex flex-row">
+                            <a href="{%url 'places' club.id %}">
+                                <h6 class="m-0">OBIEKTY</h6>
+                            </a>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            {% for place in places%}
+                            <a href="{% url 'place_details' place.id %}">
+                                <div class="training d-flex p-2 mb-2 justify-content-between">
+                                    <div class="">{{place.name}}</div>
+                                    <div class="">{{place.addres}}</div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                            {% if not places %}
+                            <a href="{% url 'create_place' club.id %}">
+                                <div class="add d-flex p-2 mt-2 justify-content-between">
+                                    <div>Dodaj obiekt..</div>
+                                    <div><i class="fa-solid fa-plus"></i></div>
+                                </div>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-header py-3 d-flex flex-row ">
+                            <a href="{%url 'roles_in_club' club.id %}">
+                                <h6 class="m-0 text-uppercase">użytkownicy i role</h6>
+                            </a>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <p class="mb-0 f-w-600">Administratorzy</p>
+                            {% for user in users %}
+                                {% if user.admin %}
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            <p class="mb-0 mt-1 f-w-600">Koordynatorzy szkolenia</p>
+                            {% for user in users %}
+                                {% if user.training_coordinator %}
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            <p class="mb-0 mt-1 f-w-600">Trenerzy</p>
+                            {% for user in users %}
+                                {% if user.coach %}
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            <p class="mb-0 mt-1 f-w-600">Pracownicy administracji</p>
+                            {% for user in users %}
+                                {% if user.employee %}
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                {% endif %}
+                            {% endfor %}
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- user card -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card  mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row justify-content-between">
+                    <h6 class="m-0"> DRUŻYNY</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    {% for team in clubs_teams%}
+                    <div class="row m-l-0 m-r-0">
+                        <div class="col-sm-4">
+                            <div class="text-center">
+                                <h4 class="fw-bolder my-0">{{team.name}}</h4>
+                                {% for s in seasons %}
+                                {% if s.team == team %}
+                                <p class="small my-0">aktywny sezon</p>
+                                <p class="small my-0 fw-bolder">{{s.name}}</p>
+                                {% endif %}
+                                {% endfor %}
+                                <p class="small my-0">kategoria</p>
+                                <p class="small my-0 fw-bolder">{{team.category}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card-block">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <a class="text-decoration-none" href="{% url 'team_staff' team.id %}">
+                                            <p class="mb-0 f-w-600">Kadra</p>
+                                            {% for s in seasons %}
+                                            {% if s.team == team %}
+                                            <p class="small my-0 fw-bolder">{{s.count_players}}</p>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <a class="text-decoration-none" href="{% url 'team_coaching_staff' team.id %}">
+                                            <p class="mb-0 f-w-600">Sztab</p>
+                                            {% for coach in coaching_staff %}
+                                            {% if coach.team == team %}
+                                            <p class="small my-0 fw-bolder">{{coach.coach.last_name}}</p>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <a class="text-decoration-none d-flex"
+                                        href="{% url 'team_attendance_report' team.id %}">
+                                        <div class="col-sm-6">
+                                            {% for season, avg_attendance, absent in seasons_att %}
+                                            {% if season.team == team %}
+                                            <canvas id="pieChart{{ season.team.id }}"></canvas>
+                                            <br>
+                                            <script>
+                                                var ctxP = document.getElementById("pieChart{{ season.team.id }}").getContext('2d');
+                                                var myPieChart = new Chart(ctxP, {
+                                                    type: 'pie',
+                                                    data: {
+                                                        labels: ["Obecnych", "Nieobecnych"],
+                                                        datasets: [{
+                                                            data: [{{ avg_attendance }}, {{ absent }}],
+                                                    backgroundColor: ["#2ecc71", "#e74c3c"],
+                                                    hoverBackgroundColor: ["#2ecc71", "#e74c3c"]
+                                                }]
+                                                            },
+                                                options: {
+                                                    responsive: true,
+                                                            }
+                                                        });
+
+
+                                            </script>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="mb-0 f-w-600">Frekwencja w aktywnym sezonie</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if not clubs_teams %}
+                    <a class="text-decoration-none" href="{% url 'create_team' club.id %}">
+                        <div class="add d-flex p-2 mt-2 justify-content-between">
+                            <div>Stwórz drużynę..</div>
+                            <div><i class="fa-solid fa-plus"></i></div>
+                        </div>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endif %}
+
+{% endblock %}

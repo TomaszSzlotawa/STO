@@ -311,18 +311,14 @@ form input:-internal-autofill-selected {
     transition: all 0.3s;
 }
 .dashboard .add{
-    color: #ffffff;
-    background-color: #FF851B;
+    color: #FF851B;
+    background-color: transparent;
     border-radius: 0.5rem;
     transition: all 0.3s;
 }
 .dashboard .training:hover{
     color: #ffffff;
     background-color: #FF851B;
-    border-radius: 0.5rem;
-}.dashboard .add:hover{
-    color: #ffffff;
-    background-color: #4CAF50;
     border-radius: 0.5rem;
 }
 .dashboard .middle{
@@ -337,6 +333,14 @@ form input:-internal-autofill-selected {
     border: none;
     box-shadow: 0 0 5px #FF851B;
 }
+.dashboard .links a{
+    color: #FF851B;
+    border: none;
+    transition: all 0.3s;
+}
+
+
+
 
 @media(max-width: 767px){
  #side_nav{
