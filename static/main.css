@@ -280,11 +280,12 @@ form input:-internal-autofill-selected {
 
 
 /*User panel*/
+/*
 .dashboard .my-trainings{
     min-height: 40vh;
     max-height: 40vh;
     overflow-y: auto; 
-}
+}*/
 .dashboard .my-trainings::-webkit-scrollbar {
     width: 7px; /* Szerokość paska przewijania */
 }

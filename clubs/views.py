@@ -67,7 +67,7 @@ def user_panel(request):
     coach_in_teams = [coaching_team.team for coaching_team in user_coaching_teams]
     seasons = Season.objects.filter(team__in=coach_in_teams)
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
-    return render(request,'clubs/user_panel.html',{'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings})
+    return render(request,'clubs/user_panel.html',{'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings, 'user_coaching_teams':user_coaching_teams})
 
 def user_profile(request):
     usersClubs, teams = get_data_for_menu(request)

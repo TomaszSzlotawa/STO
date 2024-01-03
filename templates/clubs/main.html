@@ -32,14 +32,14 @@
             {% for club in usersClubs  %}
             <ul class="list-unstyled  components" >
                 <li>
-                    <a href="#{{club.club.name_without_spaces}}-collapse" class="dropdown-toggle text-decoration-none text-uppercase d-flex justify-content-between align-items-center"  data-bs-toggle="collapse" aria-expanded="false">
+                    <a href="#{{club.club.name_without_spaces}}-collapse" class="dropdown-toggle text-wrap text-decoration-none text-uppercase d-flex justify-content-between align-items-center"  data-bs-toggle="collapse" aria-expanded="false">
                         {{club.club}}
                         
                     </a>
                 </li>
                     <ul class="collapse show list-unstyled" id="{{club.club.name_without_spaces}}-collapse">
                         <li>
-                            <a class="text-decoration-none d-block"  href="#" >Kalendarz klubowy</a>
+                            <a class="text-decoration-none d-block"  href="#" >Dashboard</a>
                         </li>
                         <li>
                             <a class="text-decoration-none d-block" href="{% url 'club_staff' club.club.id %}" >Kadra</a>
@@ -52,35 +52,35 @@
                            Drużyny
                             </a>
                         </li>
-                        <ul class="collapse show list-unstyled" id="{{club.club.name_without_spaces}}_teams-collapse">
+                        <ul class="collapse show list-unstyled " id="{{club.club.name_without_spaces}}_teams-collapse">
                                 {% for team in teams  %}
                                     {% if team.club == club.club %}
                                 <li>
-                                    <a href="#{{team.name_without_spaces}}-collapse" class="dropdown-toggle text-uppercase text-decoration-none d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false">
+                                    <a href="#{{team.name_without_spaces}}-collapse" class="dropdown-toggle text-wrap text-uppercase text-decoration-none d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false">
                                 {{team.name}}
                                     </a>
                                 </li>
                                 <ul class="collapse list-unstyled" id="{{team.name_without_spaces}}-collapse">
                                         <li>
-                                            <a class="text-decoration-none d-block" href="#" >Kalendarz {{team.name}}</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="#" >Kalendarz {{team.name}}</a>
                                         </li>
                                         <li>
-                                            <a class="text-decoration-none d-block" href="{% url 'team_staff' team.id %}" >Kadra</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'team_staff' team.id %}" >Kadra</a>
                                         </li>
                                         <li>
-                                            <a class="text-decoration-none d-block" href="{% url 'team_coaching_staff' team.id %}" >Sztab szkoleniowy</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'team_coaching_staff' team.id %}" >Sztab szkoleniowy</a>
                                         </li>
                                         <li>
-                                            <a class="text-decoration-none d-block" href="{% url 'trainings' team.id %}" >Treningi</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'trainings' team.id %}" >Treningi</a>
                                         </li>
                                         <li>
-                                            <a class="text-decoration-none d-block" href="{% url 'mezocycles' team.id %}" >Plan treningowy</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'mezocycles' team.id %}" >Plan treningowy</a>
                                         </li>
                                         <li>
-                                            <a class="text-decoration-none d-block" href="{% url 'team_attendance_report' team.id %}" >Raport obecności</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'team_attendance_report' team.id %}" >Raport obecności</a>
                                         </li>
                                         <li>
-                                            <a class="text-decoration-none d-block" href="{% url 'teams_equipment' team.id %}" >Raport sprzętu drużyny</a>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'teams_equipment' team.id %}" >Raport sprzętu drużyny</a>
                                         </li>
                                 </ul>
                                     {% endif %}
