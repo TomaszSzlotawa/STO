@@ -335,7 +335,7 @@ form input:-internal-autofill-selected {
 }
 .dashboard .card{
     border: none;
-    box-shadow: 0 0 5px #FF851B;
+    box-shadow: 0 0 5px  #FF851B;
 }
 .links a{
     color: #FF851B;
@@ -397,6 +397,22 @@ form input:-internal-autofill-selected {
 }
 
 
+form .btn {
+    color: #fff; /* Kolor tekstu przycisku */
+    border: 3px solid #FF851B;
+    background-color: #FF851B;
+}
+form .btn:hover {
+    color: #FF851B; /* Kolor tekstu przycisku */
+    background-color: #fff;
+    border: 3px solid #FF851B;
+}
+form .btn:focus {
+    color: #FF851B; /* Kolor tekstu przycisku */
+    background-color: #fff;
+    border: 3px solid #FF851B;
+    outline: none; 
+}
 
 @media(max-width: 767px){
  #side_nav{

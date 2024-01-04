@@ -31,7 +31,7 @@ class UserForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     birth_date = forms.DateField(label='Data urodzin',required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','max':date.today(),'class': 'form-control'}))
-    license_expiry_date = forms.DateField(label='Data urodzin', required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01'}))
+    license_expiry_date = forms.DateField(label='Data urodzin', required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
     class Meta:
         model = Profile
         fields = ('birth_date', 'license','license_expiry_date')

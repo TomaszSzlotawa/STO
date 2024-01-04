@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container dashboard">
     
-        <div class="row gutters-sm">
+        <div class="row ">
             <div class="col-md-4 mb-3">
                 <div class="row">
                     <div class="card mb-3">
@@ -122,7 +122,7 @@
                                 </div>
                                 <label for="{{profile_form.license_expiry_date.id_for_label}}" class="col-sm-3 col-form-label">Data wygaśnięcia</label>
                                 <div class="col-sm-3">
-                                    <input  class="form-control" type="date" name="{{profile_form.license_expiry_date.name}}" value="{{profile_form.license_expiry_date.value}}" maxlength="150" id="{{profile_form.license_expiry_date.id_for_label}}">
+                                    {{profile_form.license_expiry_date}}
                                     {% for error in profile_form.license_expiry_date.errors %}
                                         <div class="invalid-feedback d-block">{{ error }}</div>
                                     {% endfor %}     
@@ -138,7 +138,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4 col-md-4 mb-4">
+                <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center links">

@@ -32,6 +32,57 @@
                     {% endfor %}
                 </div>
             </div>
+            <div class="row">
+                <!-- kluby -->
+                <div class="col-xl-5 col-md-5 mb-4">
+                    <div class="card">
+                        <div class="card-header py-3 d-flex flex-row">
+                            <h6 class="m-0 text-uppercase">Moje Kluby</a></h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            {% for club in usersClubs%}
+                            <a href="{% url 'club_settings' club.club.id %}">
+                                <div class="training d-flex p-2 mb-2 justify-content-between">
+                                    <div class="">{{club.club.name}}</div>
+                                    <div class=""><i class="fa-solid fa-gear"></i></div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                            {% if not usersClubs %}
+                            <a class="text-decoration-none" href="{% url 'create_club' %}">
+                                <div class="add d-flex p-2 mt-2 justify-content-between">
+                                    <div>Stwórz klub..</div>
+                                    <div><i class="fa-solid fa-plus"></i></div>
+                                </div>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+        
+                     <!-- drużyny -->
+                <div class="col-xl-7 col-md-7 mb-4">
+                    <div class="card">
+                        <div class="card-header py-3 d-flex flex-row">
+                            <h6 class="m-0 text-uppercase">Moje Zespoły</a></h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body ">
+                            {% for team in user_coaching_teams%}
+                            <a href="{% url 'team_staff' team.id %}">
+                                <div class="training d-flex p-2 mb-2">
+                                    <div class="col-5 p-1 ">{{team.team.name}}</div>
+                                    <div class="col-5 p-1 ">{{team.role_in_team}}</div>
+                                    <div class="col-2 p-1 text-end"><i class="fa-solid fa-gear"></i></div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
         </div>
 
         <!-- user card -->
@@ -120,57 +171,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
-
-        <!-- kluby -->
-        <div class="col-xl-5 col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header py-3 d-flex flex-row">
-                    <h6 class="m-0 text-uppercase">Moje Kluby</a></h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    {% for club in usersClubs%}
-                    <a href="{% url 'club_settings' club.club.id %}">
-                        <div class="training d-flex p-2 mb-2 justify-content-between">
-                            <div class="">{{club.club.name}}</div>
-                            <div class=""><i class="fa-solid fa-gear"></i></div>
-                        </div>
-                    </a>
-                    {% endfor %}
-                    {% if not usersClubs %}
-                    <a class="text-decoration-none" href="{% url 'create_club' %}">
-                        <div class="add d-flex p-2 mt-2 justify-content-between">
-                            <div>Stwórz klub..</div>
-                            <div><i class="fa-solid fa-plus"></i></div>
-                        </div>
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        
-        <!-- drużyny -->
-        <div class="col-xl-5 col-md-5 mb-4">
-            <div class="card">
-                <div class="card-header py-3 d-flex flex-row">
-                    <h6 class="m-0 text-uppercase">Moje Zespoły</a></h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body ">
-                    {% for team in user_coaching_teams%}
-                    <a href="{% url 'team_staff' team.id %}">
-                        <div class="training d-flex p-2 mb-2">
-                            <div class="col-5 p-1 ">{{team.team.name}}</div>
-                            <div class="col-5 p-1 ">{{team.role_in_team}}</div>
-                            <div class="col-2 p-1 text-end"><i class="fa-solid fa-gear"></i></div>
-                        </div>
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
-
-    </div>
+    
 </div>
 
 
