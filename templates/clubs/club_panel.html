@@ -12,7 +12,7 @@
     <!-- Content Row -->
 
     <div class="row">
-        <div class="col-xl-8 col-lg-7 ">
+        <div class="col-xl-8 col-lg-12 ">
             <div class="card  mb-4 my-trainings">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row">
@@ -123,25 +123,25 @@
                             <p class="mb-0 f-w-600">Administratorzy</p>
                             {% for user in users %}
                                 {% if user.admin %}
-                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
                                 {% endif %}
                             {% endfor %}
                             <p class="mb-0 mt-1 f-w-600">Koordynatorzy szkolenia</p>
                             {% for user in users %}
                                 {% if user.training_coordinator %}
-                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
                                 {% endif %}
                             {% endfor %}
                             <p class="mb-0 mt-1 f-w-600">Trenerzy</p>
                             {% for user in users %}
                                 {% if user.coach %}
-                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
                                 {% endif %}
                             {% endfor %}
                             <p class="mb-0 mt-1 f-w-600">Pracownicy administracji</p>
                             {% for user in users %}
                                 {% if user.employee %}
-                                    <p class="small my-0 fw-bolder">{{user.user.first_name}}{{user.user.last_name}}</p>
+                                    <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
                                 {% endif %}
                             {% endfor %}
                             
@@ -154,7 +154,7 @@
 
 
         <!-- user card -->
-        <div class="col-xl-4 col-lg-5">
+        <div class="col-xl-4 col-lg-12">
             <div class="card  mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row justify-content-between">

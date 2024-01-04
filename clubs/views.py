@@ -161,7 +161,32 @@ def create_club(request):
 def club_settings(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
-    seasons = Season.objects.filter(team__in=teams)
+    
+
+    clubs_teams = Team.objects.filter(club=club)
+    seasons = Season.objects.filter(team__in=clubs_teams,active=True)
+    coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams).order_by('coach')
+
+    #attendance
+    seasons_att = []
+    for s in seasons:
+        trainings = Training.objects.filter(season=s,start_datatime__range=[s.date_of_start, date.today()])
+        attendances = Attendance.objects.filter(training__in = trainings)
+        present = 0
+        len_attendance=0
+        for att in attendances:
+            if att.training.end_datatime < datetime.now():
+                len_attendance += 1
+                if att.present:
+                    present += 1
+        if len_attendance==0:
+            avg_attendance = 0.00
+        else:
+            avg_attendance = round(present / len_attendance * 100,2)
+        absent = 100-avg_attendance
+        seasons_att.append((s,avg_attendance,absent))
+
+
     allowed = False
     for usersClub in usersClubs:
         if usersClub.club == club:
@@ -177,9 +202,10 @@ def club_settings(request, club_id):
                 return redirect(club_settings, club.id)
             else:
                 messages.error(request, 'Błąd')
-        return render(request,'clubs/club_settings.html',{'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users,'seasons':seasons})
+        return render(request,'clubs/club_settings.html',{'clubs_teams':clubs_teams, 'seasons_att':seasons_att,'coaching_staff':coaching_staff,'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users,'seasons':seasons})
     else:
-        return redirect(user_panel)
+        return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
+
 def delete_club(request,club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)

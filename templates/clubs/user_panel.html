@@ -101,9 +101,11 @@
                                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
                                     <h4 class="fw-bolder">{{user.username}}</h4>
                                     <p class="small">{{user.email}}</p>
-                                    {% if profile %}
+                                    {% if profile.license %}
                                         <h6 class="fw-bolder mb-0 mt-4">Licencja {{profile.license}}</h4>
+                                        {% if profile.license_expiry_date %}
                                         <p class="small"><i>wygasa {{profile.license_expiry_date}}</i></p>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>

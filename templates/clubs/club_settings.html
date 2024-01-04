@@ -8,25 +8,66 @@
 
 <div class="container dashboard">
 
-  <div class="row ">
-    <div class="col-lg-4 mb-3">
-      <div class="row">
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="d-flex flex-column align-items-center text-center">
-              <img style="width: 75%; height: 75%; display: flex;" class="rounded-circle shadow-4-strong"
-                src="https://us.123rf.com/450wm/andyadi/andyadi1810/andyadi181000127/110848083-pi%C5%82ka-no%C5%BCna-herb-pi%C5%82karski-emblemat-wektor-logo-szablon-projektu-inspiracja-dla-zespo%C5%82u-klubu.jpg"
-                alt="">
-              <div class="mt-3">
-                <h4>{{club.name}}</h4>
-                <p class="text-secondary mb-1">{{club.addres}}</p>
-              </div>
+  <div class="row br-4">
+    <div class="col-xl-4 col-lg-6 mb-3">
+      <div class="card  mb-4">
+        <div class="card-body">
+          <div class="d-flex flex-column align-items-center text-center">
+            <img style="width: 75%; height: 75%; display: flex;" class="rounded-circle shadow-4-strong"
+              src="https://us.123rf.com/450wm/andyadi/andyadi1810/andyadi181000127/110848083-pi%C5%82ka-no%C5%BCna-herb-pi%C5%82karski-emblemat-wektor-logo-szablon-projektu-inspiracja-dla-zespo%C5%82u-klubu.jpg"
+              alt="">
+            <div class="mt-3">
+              <h4>{{club.name}}</h4>
+              <p class="text-secondary mb-1">{{club.addres}}</p>
             </div>
           </div>
         </div>
       </div>
+      <div class="row">
+        <a class="text-decoration-none" href="{% url 'add_user_to_club' club.id %}">
+          <div class="card  mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+              <i class="fa-solid fa-plus"></i>
+              <h6 class="m-0 text-uppercase">dodaj Użytkownika</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="card  mb-4">
+        <div class="card-body">
+          <p class="mb-0 f-w-600">Administratorzy</p>
+          {% for user in users %}
+          {% if user.admin %}
+          <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
+          {% endif %}
+          {% endfor %}
+          <p class="mb-0 mt-1 f-w-600">Koordynatorzy szkolenia</p>
+          {% for user in users %}
+          {% if user.training_coordinator %}
+          <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
+          {% endif %}
+          {% endfor %}
+          <p class="mb-0 mt-1 f-w-600">Trenerzy</p>
+          {% for user in users %}
+          {% if user.coach %}
+          <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
+          {% endif %}
+          {% endfor %}
+          <p class="mb-0 mt-1 f-w-600">Pracownicy administracji</p>
+          {% for user in users %}
+          {% if user.employee %}
+          <p class="small my-0 fw-bolder">{{user.user.first_name}} {{user.user.last_name}}</p>
+          {% endif %}
+          {% endfor %}
+          <a href="{% url 'roles_in_club' club.id %} " class="text-decoration-none " style="color: #FF851B;">
+            <h6 class="mt-3">Zarządzaj rolami...</h6>
+          </a>
+
+        </div>
+      </div>
     </div>
-    <div class="col-lg-4">
+    <div class="col-xl-4 col-lg-6">
       <div class="card mb-3">
         <div class="card-body">
           <form method="POST" class="user-profil data">
@@ -83,7 +124,8 @@
             <hr>
 
             <div class="row">
-              <label for="{{form.year_of_foundation.id_for_label}}" class="col-sm-5 col-form-label">Rok założenia</label>
+              <label for="{{form.year_of_foundation.id_for_label}}" class="col-sm-5 col-form-label">Rok
+                założenia</label>
               <div class="col-sm-7">
                 {{form.year_of_foundation}}
                 {% for error in form.year_of_foundation.errors %}
@@ -100,85 +142,129 @@
           </form>
         </div>
       </div>
+
+      <div class="row mt-5">
+        <a class="text-decoration-none" href="{% url 'delete_club' club.id %}" style="color: #FF851B;">
+          <div class="card  mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-body py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+              <i class="fa-solid fa-trash"></i>
+              <h6 class="m-0 text-uppercase">usuń klub</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'club_panel' club.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; przejdź do panelu
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-xl-4 col-lg-12 ">
+      <a class="text-decoration-none" href="{% url 'create_team' club.id %}">
+        <div class="card  mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+            <i class="fa-solid fa-plus"></i>
+            <h6 class="m-0 text-uppercase">dodaj DRUŻYNę</h6>
+          </div>
+        </div>
+      </a>
+      <div class="card  mb-4">
+        <div class="card-body">
+          {% for team in clubs_teams%}
+          <div class="row m-l-0 m-r-0">
+            <div class="col-sm-4">
+              <div class="text-center">
+                <h4 class="fw-bolder my-0">{{team.name}}</h4>
+                {% for s in seasons %}
+                {% if s.team == team %}
+                <p class="small my-0">aktywny sezon</p>
+                <p class="small my-0 fw-bolder">{{s.name}}</p>
+                {% endif %}
+                {% endfor %}
+                <p class="small my-0">kategoria</p>
+                <p class="small my-0 fw-bolder">{{team.category}}</p>
+                <div class="row text-center">
+                  <p class="justify-content-between">
+                    <a href="{% url 'delete_team' team.id %}"><i class="fa-solid fa-trash mx-2 mt-2"></i></a>
+
+                    <a href="{% url 'edit_team' team.id %}"><i class="fa-solid fa-pen mx-2 mt-2"></i></a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-8">
+              <div class="card-block">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <a class="text-decoration-none" href="{% url 'team_staff' team.id %}">
+                      <p class="mb-0 f-w-600">Kadra</p>
+                      {% for s in seasons %}
+                      {% if s.team == team %}
+                      <p class="small my-0 fw-bolder">{{s.count_players}}</p>
+                      {% endif %}
+                      {% endfor %}
+                    </a>
+                  </div>
+                  <div class="col-sm-6">
+                    <a class="text-decoration-none" href="{% url 'team_coaching_staff' team.id %}">
+                      <p class="mb-0 f-w-600">Sztab</p>
+                      {% for coach in coaching_staff %}
+                      {% if coach.team == team %}
+                      <p class="small my-0 fw-bolder">{{coach.coach.last_name}}</p>
+                      {% endif %}
+                      {% endfor %}
+                    </a>
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <a class="text-decoration-none d-flex" href="{% url 'team_attendance_report' team.id %}">
+                    <div class="col-sm-6">
+                      {% for season, avg_attendance, absent in seasons_att %}
+                      {% if season.team == team %}
+                      <canvas id="pieChart{{ season.team.id }}"></canvas>
+                      <br>
+                      <script>
+                        var ctxP = document.getElementById("pieChart{{ season.team.id }}").getContext('2d');
+                        var myPieChart = new Chart(ctxP, {
+                          type: 'pie',
+                          data: {
+                            labels: ["Obecnych", "Nieobecnych"],
+                            datasets: [{
+                              data: [{{ avg_attendance }}, {{ absent }}],
+                          backgroundColor: ["#2ecc71", "#e74c3c"],
+                          hoverBackgroundColor: ["#2ecc71", "#e74c3c"]
+                        }]
+                                                      },
+                        options: {
+                          responsive: true,
+                                                      }
+                                                  });
+
+
+                      </script>
+                      {% endif %}
+                      {% endfor %}
+                    </div>
+                    <div class="col-sm-6">
+                      <p class="mb-0 f-w-600">Frekwencja w aktywnym sezonie</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-
-
-
-
-
-<form method="post">
-  {% csrf_token %}
-  {{ form }}
-  <button type="submit">Zapisz</button>
-</form>
-<a href="{% url 'delete_club' club.id %}">Usuń klub</a><br>
-<a href="{% url 'user_panel' %}">Wróć</a>
-
-<hr>
-
-<h3>Role w klubie</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Imię i nazwisko</th>
-      <th>Role</th>
-    </tr>
-  </thead>
-  {% for user in users %}
-  <tbody>
-    <tr>
-      <td>{{user.user.first_name}} {{user.user.last_name}}{{user.status}}</td>
-      <td>
-        {{user.roles}}
-      </td>
-    </tr>
-  </tbody>
-  {% endfor %}
-</table>
-<a href="{% url 'roles_in_club' club.id %}">Zarządzaj rolami</a> <br>
-<a href="{% url 'add_user_to_club' club.id %}">Dodaj użytkownika</a>
-
-<hr>
-<h3>Drużyny</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Nazwa</th>
-      <th>Kategoria wiekowa</th>
-      <th>Sezony</th>
-    </tr>
-  </thead>
-  {% for team in teams %}
-
-  {% if team.club == club %}
-  <tbody>
-    <tr>
-      <td>
-        <a href="{% url 'edit_team' team.id %}" style="text-decoration: none;">{{team.name}}</a>
-      </td>
-      <td>
-        {{team.category}}
-      </td>
-      <td>
-        {% for season in seasons %}
-        {% if season.team == team %}
-        {{season.name_and_status}} <br>
-        {% endif %}
-        {% endfor %}
-      </td>
-      <td>
-        <a href="{% url 'delete_team' team.id %}">Usuń</a>
-      </td>
-    </tr>
-  </tbody>
-  {% endif %}
-  {% endfor %}
-</table>
-
-<a href="{% url 'create_team' club.id %}">Stwórz nową drużynę</a>
-
 
 {% endblock %}
