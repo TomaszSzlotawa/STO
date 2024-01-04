@@ -397,20 +397,20 @@ form input:-internal-autofill-selected {
 }
 
 .second-option{
-    color: #FF851B; /* Kolor tekstu przycisku */
-    border: 3px solid #eee;
-    background-color: #eee;
+    color: #FF851B !important; /* Kolor tekstu przycisku */ 
+    border: 3px solid #eee !important;
+    background-color: #eee !important;
 }
 .second-option:hover {
-    color: #eee; /* Kolor tekstu przycisku */
-    background-color: #FF851B;
-    border: 3px solid #eee;
+    color: #eee !important; /* Kolor tekstu przycisku */
+    background-color: #FF851B !important;
+    border: 3px solid #eee !important;
 }
 .second-option:focus {
-    color: #eee; /* Kolor tekstu przycisku */
-    background-color: #FF851B;
-    border: 3px solid #eee;
-    outline: none; 
+    color: #eee !important; /* Kolor tekstu przycisku */
+    background-color: #FF851B !important;
+    border: 3px solid #eee !important;
+    outline: none !important; 
 }
 form .btn {
     color: #fff; /* Kolor tekstu przycisku */

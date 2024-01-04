@@ -300,7 +300,7 @@ class TrainingForm(forms.ModelForm):
         )
     )
     place = forms.ModelChoiceField(queryset=Place.objects.all())
-    implemented_mezocycle = forms.ModelChoiceField(queryset=ImplementedMezocycle.objects.all())
+    implemented_mezocycle = forms.ModelChoiceField(queryset=ImplementedMezocycle.objects.all(),required=False)
     class Meta:
         model = Training
         exclude = ['season', 'end_datatime']

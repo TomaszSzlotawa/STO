@@ -268,13 +268,11 @@ def user_roles(request):
 def user_role_delete(request, club_id):
     club = get_object_or_404(Club, pk = club_id)
     users = UsersClub.objects.filter(club = club)
-    if request.method == 'POST':
-        for user in users: 
-            if user.admin == True and user.user != request.user:
-                if user.accepted==True:
-                    usersclub = UsersClub.objects.filter(user = request.user, club=club)
-                    usersclub.delete()
-
+    for user in users: 
+        if user.admin == True and user.user != request.user:
+            if user.accepted==True:
+                usersclub = UsersClub.objects.filter(user = request.user, club=club)
+                usersclub.delete()
 
     return redirect(user_roles)
 def user_role_answer(request, club_id):
@@ -839,9 +837,7 @@ def player_attendance_report(request, season_id, player_id):
 def mezocycles(request,team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk = team_id)
-    user = request.user
-
-    mezocycles = Mezocycle.objects.filter(Q(team=team) | Q(user=user)).order_by('id')
+    mezocycles = Mezocycle.objects.filter(Q(team=team)).order_by('id')
     implemented_mezocycles = ImplementedMezocycle.objects.filter(team=team ).order_by('id')
     return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles,'implemented_mezocycles':implemented_mezocycles})
 

@@ -139,36 +139,84 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center links">
-                                <a class=" fw-bolder text-uppercase py-2 mx-1 d-flex" href="{% url 'delete_profile' %}">
-
-                                <div class="col mr-2">
-                                        USUŃ KONTO
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header py-3 d-flex flex-row justify-content-between">
+                                <h6 class="m-0 text-uppercase"><i class="fa-solid fa-briefcase"> &nbsp;</i> TWOJE ROLE</h6>
+                                <a class="text-decoration-none" href="{% url 'user_roles' %}"> <h6 class="m-0"><i class="fa-solid fa-pen"></i></h6> </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="mb-0 f-w-600">Administrator</p>
+                                        {% for club in usersClubs %}
+                                        {% if club.admin%}
+                                        <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                        {% endif %}
+                                        {% endfor %}
+                
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="mb-0 f-w-600">Koordynator szkolenia</p>
+                                        {% for club in usersClubs %}
+                                        {% if club.training_coordinator%}
+                                        <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fa-solid fa-trash mr-2"></i>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="mb-0 f-w-600">Trener</p>
+                                        {% for club in usersClubs %}
+                                        {% if club.coach%}
+                                        <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="mb-0 f-w-600">Pracownik administracji klubowej</p>
+                                        {% for club in usersClubs %}
+                                        {% if club.employee%}
+                                        <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                                </a>
-
-                                <a class=" fw-bolder text-uppercase py-2 mt-2 mx-1 d-flex" href="{% url 'user_panel' %}">
-
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center links">
+                                    <a class=" fw-bolder text-uppercase py-2 mx-1 d-flex" href="{% url 'delete_profile' %}">
+    
                                     <div class="col mr-2">
-                                            Wróć do panelu użytkownika
+                                            USUŃ KONTO
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fa-solid fa-arrow-left mr-2"></i>
+                                        <i class="fa-solid fa-trash mr-2"></i>
                                     </div>
                                     </a>
-                                
-
+                                    <a class=" fw-bolder text-uppercase py-2 mt-2 mx-1 d-flex" href="{% url 'user_panel' %}">
+    
+                                        <div class="col mr-2">
+                                                Wróć do panelu użytkownika
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fa-solid fa-arrow-left mr-2"></i>
+                                        </div>
+                                        </a>
+                                    
+    
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+                                
             </div>
         </div>
 

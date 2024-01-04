@@ -3,47 +3,65 @@
 {% block title %}Ustawienia klubu{% endblock %}
 
 {% block content %}
-
-
-
-
-<h3>Role w klubach</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Klub</th>
-          <th>Role</th>
-      </tr>
-  </thead>
-{% for usersClub in usersClubs_roles %}
-{% if usersClub.accepted != False %}
-  <tbody>
-      <tr>
-          <td>{{usersClub.club.name}}</td>
-          <td>
-            {{usersClub.roles}}
-          </td>
-          <td>
+<div class="container-fluid dashboard">
+  <div class="col-xl-6 col-lg-6 ">
+    <div class="card  mb-4 my-trainings">
+      <div class="card-body">
+        <h4 class="m-0 fw-bolder text-uppercase">
+          Twoje role
+        </h4>
+        <p class="small mt-1 pb-2" style="border-bottom: 1px solid #333333;">
+          Pamiętaj że rezygnując z roli w w klubie utracisz do niego dostęp. jeśli jesteś jedynym 
+          administratorem klubu nie będziesz mógł zrezygnować chyba, że usuniesz cały klub lub nadasz komuś innemu rolę administratora.
+        </p>
+        {% for usersClub in usersClubs_roles %}
+          {% if usersClub.accepted != False %}
+          <div class="row d-flex p-2 mb-2 ">
+            <div class="col-4 p-1"> {{usersClub.club.name}}</div>
+            <div class="col-4 p-1">{{usersClub.roles}}</div>
             {% if usersClub.accepted == True %}
-                <a href="{% url 'user_role_delete' usersClub.club.id %}">Zrezygnuj</a> <br>
-            {% elif usersClub.accepted == None  %}
-                <form method="post" action="{% url 'user_role_answer' usersClub.club.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="True">
-                    <button type="submit" class="btn btn-success">Zaakceptuj</button>
-                </form>
-                <form method="post" action="{% url 'user_role_answer' usersClub.club.id %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="False">
-                    <button type="submit" class="btn btn-danger">Odrzuć</button>
-                </form>
+            <div class="col-3 p-1 links">
+              <a href="{% url 'user_role_delete' usersClub.club.id %}" class="text-decoration-none">Zrezygnuj</a>
+            </div>
+            {% elif usersClub.accepted == None %}
+            <div class="col-4 p-1 d-flex">
+              <form method="post" action="{% url 'user_role_answer' usersClub.club.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="True">
+                <input type="submit" class="btn" value="Zaakceptuj">
+              </form>
+              <form method="post" action="{% url 'user_role_answer' usersClub.club.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="False">
+                <input type="submit" class="btn second-option mx-1" value="Odrzuć">
+              </form>
+            </div>
             {% endif %}
-          </td>
-      </tr>
-  </tbody>
-{% endif %}
-{% endfor %}
-</table>
+          </div>
+          {% endif %}
+        {% endfor %}
+
+
+
+
+
+
+      </div>
+    </div>
+    <div class="links ">
+      <a class=" fw-bolder text-uppercase py-2 mt-2 mx-1 d-flex" href="{% url 'user_panel' %}">
+    
+        <div class="col mr-2">
+                Wróć do panelu użytkownika
+        </div>
+        <div class="col-auto">
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+        </div>
+        </a>
+    </div>
+    
+  </div>
+</div>
 
 
 {% endblock %}
