@@ -132,7 +132,7 @@
                                             <p class="mb-0 f-w-600">Administrator</p>
                                             {% for club in usersClubs %}
                                             {% if club.admin%}
-                                            <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                            <h6 class="text-muted f-w-400 mb-1 p-0">{{club.club.name}}</h6>
                                             {% endif %}
                                             {% endfor %}
 
@@ -141,7 +141,7 @@
                                             <p class="mb-0 f-w-600">Koordynator szkolenia</p>
                                             {% for club in usersClubs %}
                                             {% if club.training_coordinator%}
-                                            <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                            <h6 class="text-muted f-w-400 mb-1 p-0">{{club.club.name}}</h6>
                                             {% endif %}
                                             {% endfor %}
                                         </div>
@@ -151,7 +151,7 @@
                                             <p class="mb-0 f-w-600">Trener</p>
                                             {% for club in usersClubs %}
                                             {% if club.coach%}
-                                            <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
+                                            <h6 class="text-muted f-w-400 mb-1">{{club.club.name}}</h6>
                                             {% endif %}
                                             {% endfor %}
                                         </div>
@@ -159,7 +159,7 @@
                                             <p class="mb-0 f-w-600">Pracownik administracji klubowej</p>
                                             {% for club in usersClubs %}
                                             {% if club.employee%}
-                                            <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
+                                            <h6 class="text-muted f-w-400 mb-1">{{club.club.name}}</h6>
                                             {% endif %}
                                             {% endfor %}
                                         </div>

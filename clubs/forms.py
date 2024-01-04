@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Player_data, Profile, Club, Rented_equipment, Training, Training_in_mezocycle, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.core.validators import MinLengthValidator, MinValueValidator
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30,required=True, help_text="wpisz swoje imię")
@@ -41,9 +42,39 @@ class ProfileForm(forms.ModelForm):
 
 
 class ClubCreationForm(forms.ModelForm):
+    addres = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[MinLengthValidator(limit_value=5, message='Adres musi mieć co najmniej 5 znaków')]
+    )
+    regon = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[MinLengthValidator(limit_value=9, message='REGON musi mieć co najmniej 9 znaków')]
+    )
+    nip = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[MinLengthValidator(limit_value=10, message='NIP musi mieć co najmniej 10 znaków')]
+    )
+    legal_form = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[MinLengthValidator(limit_value=2, message='Forma prawna musi mieć co najmniej 2 znaki')]
+    )
+    year_of_foundation = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[MinValueValidator(1800, message='Rok założenia klubu musi być co najmniej 1800')]
+    )
+
     class Meta:
         model = Club
         fields = ('name', 'addres', 'regon', 'nip', 'legal_form', 'year_of_foundation')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
 
 class UsersClubForm(forms.ModelForm):
     email = forms.EmailField(label='Adres email', required=True)
