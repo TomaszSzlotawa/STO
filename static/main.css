@@ -337,7 +337,7 @@ form input:-internal-autofill-selected {
     border: none;
     box-shadow: 0 0 5px #FF851B;
 }
-.dashboard .links a{
+.links a{
     color: #FF851B;
     border: none;
     transition: all 0.3s;
@@ -349,6 +349,53 @@ form input:-internal-autofill-selected {
 .signup .orange{
     color:#FF851B
 }
+/*user profil */
+.user-profil .form-control {
+    border-color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+    color: #333;
+}
+.data .form-control {
+    border-color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+    color: #333;
+
+    outline: 0;
+    border-width: 0 0 2px;
+
+}
+.user-profil .form-control:focus {
+    border-color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+    box-shadow: 0 0 0 0.25rem #4caf4fa9; /* Dodanie zielonego cienia po aktywacji */
+    color: #333;
+}
+
+.user-profil label {
+    color: #333; /* Kolor etykiety (tekstu) */
+}
+
+.user-profil .alert {
+    margin-top: 5px; /* Dodatkowy odstęp dla komunikatów o błędach */
+}
+
+.user-profil .btn {
+    color: #fff; /* Kolor tekstu przycisku */
+    border: 3px solid #FF851B;
+    background-color: #FF851B;
+}
+.user-profil .btn:hover {
+    color: #FF851B; /* Kolor tekstu przycisku */
+    background-color: #fff;
+    border: 3px solid #FF851B;
+}
+.user-profil .btn:focus {
+    color: #FF851B; /* Kolor tekstu przycisku */
+    background-color: #fff;
+    border: 3px solid #FF851B;
+    outline: none; 
+}
+.user-profil hr{
+    color: #333333; /* Kolor tekstu przycisku */
+}
+
 
 
 @media(max-width: 767px){

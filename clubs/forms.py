@@ -30,10 +30,15 @@ class UserForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    birth_date = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','max':date.today()}))
+    birth_date = forms.DateField(label='Data urodzin',required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','max':date.today(),'class': 'form-control'}))
+    license_expiry_date = forms.DateField(label='Data urodzin', required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01'}))
     class Meta:
         model = Profile
         fields = ('birth_date', 'license','license_expiry_date')
+        widgets = {
+            'license': forms.Select(attrs={'class': 'form-control'}),
+        }
+
 
 class ClubCreationForm(forms.ModelForm):
     class Meta:

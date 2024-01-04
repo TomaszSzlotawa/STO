@@ -67,7 +67,8 @@ def user_panel(request):
     coach_in_teams = [coaching_team.team for coaching_team in user_coaching_teams]
     seasons = Season.objects.filter(team__in=coach_in_teams)
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
-    return render(request,'clubs/user_panel.html',{'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings, 'user_coaching_teams':user_coaching_teams})
+    profile = get_object_or_404(Profile,pk=request.user.id)
+    return render(request,'clubs/user_panel.html',{'profile':profile,'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings, 'user_coaching_teams':user_coaching_teams})
 
 def club_panel(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -102,30 +103,41 @@ def club_panel(request, club_id):
 
 
 def user_profile(request):
-    usersClubs, teams = get_data_for_menu(request)
+    print(request.POST)
 
+    usersClubs, teams = get_data_for_menu(request)
     user = request.user
-    user_form = UserForm(request.POST or None, instance = user)
     profile = get_object_or_404(Profile, user = user)
-    profile_form = ProfileForm(request.POST or None, instance = profile)
-    if all((user_form.is_valid(),profile_form.is_valid())):
-        user = user_form.save()
-        profile = profile_form.save()
-        return redirect(user_profile)
+
     if request.method == 'POST':
-        password_form = PasswordChangeForm(request.user, request.POST)
-        if password_form.is_valid():
-            user = password_form.save()
-            update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect(user_profile)
-        else:
-            messages.error(request, 'Please correct the error below.')
+        if "data-submit" in request.POST:
+            user_form = UserForm(request.POST or None, instance=user)
+            profile_form = ProfileForm(request.POST or None, instance=profile)
+            password_form = PasswordChangeForm(request.user)
+            if all((user_form.is_valid(),profile_form.is_valid())):
+                user = user_form.save()
+                profile = profile_form.save()
+        if "password-submit" in request.POST:
+            password_form = PasswordChangeForm(request.user, request.POST)
+            user_form = UserForm(instance=user)
+            profile_form = ProfileForm(instance = profile)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important!
+                messages.success(request, 'Your password was successfully updated!')
+            else:
+                print("err")
+                messages.error(request, 'Please correct the error below.')
     else:
         password_form = PasswordChangeForm(request.user)
+        user_form = UserForm(instance=user)
+        profile_form = ProfileForm(instance = profile)
+
 
     #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
     return render(request, 'clubs/user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams})
+
+
 
 def delete_profile(request):
     usersClubs, teams = get_data_for_menu(request or None)

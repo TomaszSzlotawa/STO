@@ -17,7 +17,7 @@
             <div class="card  mb-4 my-trainings">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row">
-                    <h6 class="m-0">Nadchodzące treningi</a></h6>
+                    <h6 class="m-0 text-uppercase">Nadchodzące treningi</a></h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -39,7 +39,7 @@
             <div class="card  mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row justify-content-between">
-                    <h6 class="m-0"> Twój profil</h6>
+                    <h6 class="m-0 text-uppercase"> Twój profil</h6>
                     <a class="text-decoration-none" href="{% url 'user_profile' %}"> <h6 class="m-0"><i class="fa-solid fa-eye"></i></h6> </a>
                 </div>
                 <!-- Card Body -->
@@ -47,8 +47,13 @@
                         <div class="row m-l-0 m-r-0">
                             <div class="col-sm-4  user-profile" >
                                 <div class="text-center">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
                                     <h4 class="fw-bolder">{{user.username}}</h4>
                                     <p class="small">{{user.email}}</p>
+                                    {% if profile %}
+                                        <h6 class="fw-bolder mb-0 mt-4">Licencja {{profile.license}}</h4>
+                                        <p class="small"><i>wygasa {{profile.license_expiry_date}}</i></p>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-sm-8">
@@ -121,7 +126,7 @@
         <div class="col-xl-5 col-md-4 mb-4">
             <div class="card">
                 <div class="card-header py-3 d-flex flex-row">
-                    <h6 class="m-0">Moje Kluby</a></h6>
+                    <h6 class="m-0 text-uppercase">Moje Kluby</a></h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
@@ -149,7 +154,7 @@
         <div class="col-xl-5 col-md-5 mb-4">
             <div class="card">
                 <div class="card-header py-3 d-flex flex-row">
-                    <h6 class="m-0">Moje Zespoły</a></h6>
+                    <h6 class="m-0 text-uppercase">Moje Zespoły</a></h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body ">
