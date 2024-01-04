@@ -413,8 +413,11 @@ def add_player(request, team_id):
 def delete_player_from_club(request, player_id):
     player = get_object_or_404(Player,pk = player_id)
     club = player.club
-    player.delete()
-    return redirect(club_staff, club.id)
+    usersClubs, teams = get_data_for_menu(request)
+    if request.method == 'POST':
+        player.delete()
+        return redirect(club_staff, club.id)
+    return render(request, 'clubs/confirm_player_from_club.html', {'teams':teams, 'usersClubs':usersClubs,'player':player}) 
 
 def hide_player_in_club(request, player_id):
     player = get_object_or_404(Player,pk = player_id)
@@ -1111,7 +1114,6 @@ def implement_mezocycle(request, mezocycle_id):
     mezocycle_form = ImplementMezocycleForm(request.POST or None,team=team,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'name':mezocycle.name})
     mezocycle_form.fields['weeks'].widget = forms.HiddenInput()
     mezocycle_form.fields['trainings_per_week'].widget = forms.HiddenInput()
-    print(request.POST)
     for tr in trainings_in_mezocycle:
         training = Training(topic=tr.topic,actions=tr.actions,goals=tr.goals,rules=tr.rules)
         form = ImplementTrainingForm(request.POST or None,initial={'topic':tr.topic,'actions':tr.actions,'goals':tr.goals,'rules':tr.rules,'duration':tr.duration}, players = players,season=season, prefix=(str(tr.week_number)+'_'+str(tr.training_number)))
@@ -1143,7 +1145,7 @@ def implement_mezocycle(request, mezocycle_id):
                         training.save()
                     else:
                         print("błąd")
-                return redirect(mezocycles,season.team.id)
+                return redirect(trainings,season.team.id)
         
     return render(request,'clubs/implement_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
 
@@ -1152,14 +1154,13 @@ def delete_implemented_mezocycle(request, mezocycle_id):
     mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
     trainings = Training.objects.filter(implemented_mezocycle=mezocycle)
     team = get_object_or_404(Team, pk=mezocycle.team.id)
-    print(request.POST)
     if request.method == 'POST':
         if 'mezocycle' in request.POST:
             mezocycle.delete()
         if 'trainings' in request.POST:
-            mezocycle.delete()
             for training in trainings:
                 training.delete()
+            mezocycle.delete()
         return redirect(mezocycles, team.id)
     return render(request, 'clubs/confirm_implemented_mezocycle.html', {'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,}) 
 

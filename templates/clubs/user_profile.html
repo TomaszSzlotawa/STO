@@ -1,6 +1,7 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Ustawienia klubu{% endblock %}
+{% block title %}Profil użytkownika {{user.username}}{% endblock %}
+{% block header %}Profil użytkownika {{user.username}}{% endblock %}
 
 {% block content %}
 <div class="container dashboard">

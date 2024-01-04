@@ -396,7 +396,22 @@ form input:-internal-autofill-selected {
     color: #333333; /* Kolor tekstu przycisku */
 }
 
-
+.second-option{
+    color: #FF851B; /* Kolor tekstu przycisku */
+    border: 3px solid #eee;
+    background-color: #eee;
+}
+.second-option:hover {
+    color: #eee; /* Kolor tekstu przycisku */
+    background-color: #FF851B;
+    border: 3px solid #eee;
+}
+.second-option:focus {
+    color: #eee; /* Kolor tekstu przycisku */
+    background-color: #FF851B;
+    border: 3px solid #eee;
+    outline: none; 
+}
 form .btn {
     color: #fff; /* Kolor tekstu przycisku */
     border: 3px solid #FF851B;

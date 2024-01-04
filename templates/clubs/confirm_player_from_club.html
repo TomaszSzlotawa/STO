@@ -1,0 +1,31 @@
+{% extends 'clubs/main.html' %}
+
+{% block title %}Usuń zawodnika{% endblock %}
+{% block header %}Usuń zawodnika{% endblock %}
+
+{% block content %}
+<div class="container dashboard">
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-8 col-md-6 col-lg-5 col-xl-4">
+          <div class="card">
+            <div class="card-body p-4 text-center">
+                <h5 class="card-title">Czy na pewno chcesz usunąć {{player.name}} {{player.surname}} z klubu?</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" class="btn form-control my-3 " value="Tak, usuń">
+                    <div class="d-flex justify-content-end links">
+                        <a href="{% url 'club_staff' player.club.id %}" class="text-decoration-none mt-1 " >
+                            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy zawodników
+                        </a>
+                    </div>
+                    </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+

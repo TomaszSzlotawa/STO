@@ -1,7 +1,7 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Panel użytkownika {{user}}{% endblock %}
-{% block header %}Panel użytkownika {{user}}{% endblock %}
+{% block title %}Panel {{club.name}}{% endblock %}
+{% block header %}Panel {{club.name}}{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}

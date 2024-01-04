@@ -1,17 +1,32 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Usuń sprzęt{% endblock %}
+{% block header %}Usuń sprzęt{% endblock %}
 
 {% block content %}
-    <div class="card" style="width: 28rem;">
-        <div class="card-body">
-            <h5 class="card-title">Czy na pewno chcesz usunąć {{item.name}}?</h5>
-            <form method="post">
+<div class="container dashboard">
+
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-8 col-md-6 col-lg-5 col-xl-4">
+          <div class="card">
+            <div class="card-body p-4 text-center">
+                <h5 class="card-title">Czy na pewno chcesz usunąć "{{item.name}}"?</h5>
+                <form method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Usuń</button>
-                <a href="{% url 'clubs_equipment' club.id %}" class="btn btn-secondary">wróć</a>
-        </form>
-            
+                <input type="submit" class="btn form-control my-3 " value="Tak, usuń">
+                <div class="d-flex justify-content-end links">
+                    <a href="{% url 'clubs_equipment' club.id %}" class="text-decoration-none mt-1 " >
+                        <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy sprzętu
+                    </a>
+                </div>
+                </form>
+
+                </div>
+            </div>
         </div>
     </div>
+
+</div>
 {% endblock %}
+
+
