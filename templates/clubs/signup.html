@@ -1,18 +1,120 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Rejestracja{% endblock %}
+{% block header %}Rejestracja{% endblock %}
 
 {% block signuup/login %}
-    <h2>Zarejestruj się</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="checkbox" value="0" id="consent" name="consent" required="True">
-        <label  for="consent">
-            Akceptuję regulamin serwisu. Wyrażam zgodę na przetwarzanie moich danych osobowych oraz akceptuję politykę prywatności.
-        </label>
-    <button type="submit">Zarejestruj się</button>
-    <a href="{% url 'login' %}" class=" ">wróć</a>
-  </form>
+ <!-- Section: Design Block -->
+<section class="signup shadow">
+  <!-- Jumbotron -->
+  <div class="px-4 py-5 px-md-5 text-center text-lg-start">
+    <div class="container">
+      <div class="row gx-lg-5 align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <h1 class="my-5 display-3 fw-bold ls-tight">
+            Idealne rozwiązanie <br />
+            <span class="orange" >dla twojego klubu</span>
+          </h1>
+          <p style="color: #333333">
+            Szukasz miejsca z którego będziesz mógł zarządzać wszystkimi zasobami swojego klubu? 
+            A może chcesz zoptymalizować planowanie i wdrażanie procesu treningowego? 
+            Sport Training Organizer jest idealnym rozwiązaniem dla Ciebie!
+          </p>
+        </div>
+
+        <div class="col-lg-6 mb-3 mb-lg-0 signup">
+          <div class="card">
+            <div class="card-body py-5 px-md-5">
+              <form method="post" class="form-signin">
+                {% csrf_token %}
+
+                                <!-- username input -->
+                <div class="form-outline mb-2">
+                  <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" maxlength="150" autofocus="" required="" class="form-control" />
+                  <label class="form-label" for="{{ form.username.name }}">Nazwa użytkownika</label>
+                  {% for error in form.username.errors %}
+                      <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Email input -->
+                <div class="form-outline mb-2">
+                  <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" maxlength="254" required="" class="form-control" />
+                  <label class="form-label" for="{{ form.email.name }}">Adres email</label>
+                  {% for error in form.email.errors %}
+                      <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- 2 column grid layout with text inputs for the first and last names -->
+                <div class="row">
+                  <div class="col-md-6 mb-2">
+                    <div class="form-outline">
+                      <input type="text" name="{{ form.first_name.name }}" id="{{ form.first_name.id_for_label }}" maxlength="30" required="" class="form-control" />
+                      <label class="form-label" for="{{ form.first_name.name }}">Imię</label>
+                      {% for error in form.first_name.errors %}
+                          <div class="invalid-feedback d-block">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <div class="form-outline">
+                      <input type="text" name="{{ form.last_name.name }}" id="{{ form.last_name.id_for_label }}" maxlength="30" required="" class="form-control" />
+                      <label class="form-label" for="{{ form.last_name.name }}">Nazwisko</label>
+                      {% for error in form.last_name.errors %}
+                          <div class="invalid-feedback d-block">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <!-- Password input -->
+                <div class="form-outline mb-2">
+                  <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" autocomplete="new-password" required="" class="form-control" />
+                  <label class="form-label" for="{{ form.password1.id_for_label }}">Hasło</label>
+                  {% for error in form.password1.errors %}
+                      <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Password 2 -->
+                <div class="form-outline mb-1">
+                  <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" autocomplete="new-password" required=""  class="form-control" />
+                  <label class="form-label" for="{{ form.password2.id_for_label }}">Powtórz hasło</label>
+                  {% for error in form.password2.errors %}
+                      <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+
+                <!-- Checkbox -->
+                <div class="form-check form-check-inline mb-2">
+                  <input class="form-check-input me-2 d-block" type="checkbox" value="" required="True" id="form2Example33" />
+                  <label class="form-check-label" for="form2Example33">
+                      Akceptuję regulamin serwisu. Wyrażam zgodę na przetwarzanie moich danych osobowych oraz akceptuję politykę prywatności.
+                  </label>
+              </div>
+               
+
+                <!-- Submit  -->
+                <input type="submit" class="btn btn-lg form-control" value="Zarejestruj się">
+                <div class="d-flex justify-content-end">
+                  <a href="{% url 'login' %}" class="text-decoration-none mt-3" >
+                      <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do logowania
+                  </a>
+              </div>
+              
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Jumbotron -->
+</section>
 
   {% endblock %}
+

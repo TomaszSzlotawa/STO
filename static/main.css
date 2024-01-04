@@ -227,9 +227,10 @@ ul ul ul ul a {
 
 
 
-.login .card {
-    border-radius: 1rem;
-    box-shadow: 0 0 10px #4CAF50; /* Dodaj zielony cień */
+.login .card,
+.signup .card {
+    border-radius: 0.6rem;
+    box-shadow: 0 0 10px 0.1em #4CAF50; /* Dodaj zielony cień */
     color: #333;
 }
 .form-signin .form-outline input {
@@ -262,9 +263,12 @@ ul ul ul ul a {
     color: #FF851B; /* Kolor tekstu przycisku */
     background-color: #fff;
     border: 3px solid #FF851B;
+    outline: none; 
 }
-.login a {
-    color: #4CAF50; /* Zmiana koloru obwódki na zielony po aktywacji */
+
+.login a, 
+.signup a{
+    color: #FF851B; 
     text-decoration: none;
 }
 
@@ -338,8 +342,13 @@ form input:-internal-autofill-selected {
     border: none;
     transition: all 0.3s;
 }
-
-
+.signup{
+    border-radius: 0.5rem;
+    background-color: #eeeeee;
+}
+.signup .orange{
+    color:#FF851B
+}
 
 
 @media(max-width: 767px){

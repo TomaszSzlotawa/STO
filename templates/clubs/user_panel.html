@@ -156,8 +156,8 @@
                     {% for team in user_coaching_teams%}
                     <a href="{% url 'team_staff' team.id %}">
                         <div class="training d-flex p-2 mb-2">
-                            <div class="col-5 p-1 text-center">{{team.team.name}}</div>
-                            <div class="col-5 p-1 text-center">{{team.role_in_team}}</div>
+                            <div class="col-5 p-1 ">{{team.team.name}}</div>
+                            <div class="col-5 p-1 ">{{team.role_in_team}}</div>
                             <div class="col-2 p-1 text-end"><i class="fa-solid fa-gear"></i></div>
                         </div>
                     </a>
