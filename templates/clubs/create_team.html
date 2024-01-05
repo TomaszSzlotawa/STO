@@ -1,80 +1,82 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Dadaj drużynę{% endblock %}
+{% block title %}Dodaj drużynę{% endblock %}
 {% block header %}Dodaj drużynę{% endblock %}
 
 {% block content %}
 
 <div class="container py-5 h-100 dashboard">
   <div class="row d-flex justify-content-center align-items-center h-100">
-    <div class="col-8 col-md-8 col-lg-6 col-xl-5">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
       <div class="card mb-3">
         <div class="card-body">
           <form method="POST" class="user-profil data">
             {% csrf_token %}
-            <div class="row">
-              <label for="{{team_form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa</label>
+            {% if team_form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in team_form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="row ">
+              <label for="{{team_form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa drużyny</label>
               <div class="col-sm-7">
                 {{team_form.name}}
-                {% for error in form.name.errors %}
+                {% for error in team_form.name.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
                 {% endfor %}
               </div>
             </div>
-            <hr>
-            <div class="row">
-              <label for="{{form.legal_form.id_for_label}}" class="col-sm-5 col-form-label">Forma prawna</label>
+            <div class="row mt-2">
+              <label for="{{team_form.category.id_for_label}}" class="col-sm-5 col-form-label">Kategoria wiekowa</label>
               <div class="col-sm-7">
-                {{form.legal_form}}
-                {% for error in form.legal_form.errors %}
+                {{team_form.category}}
+                {% for error in team_form.category.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
                 {% endfor %}
               </div>
             </div>
-            <hr>
-            <div class="row">
-              <label for="{{form.addres.id_for_label}}" class="col-sm-5 col-form-label">Adres</label>
-              <div class="col-sm-7">
-                {{form.addres}}
-                {% for error in form.addres.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <label for="{{form.regon.id_for_label}}" class="col-sm-5 col-form-label">REGON</label>
-              <div class="col-sm-7">
-                {{form.regon}}
-                {% for error in form.regon.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <label for="{{form.nip.id_for_label}}" class="col-sm-5 col-form-label">NIP</label>
-              <div class="col-sm-7">
-                {{form.nip}}
-                {% for error in form.nip.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-            <hr>
 
-            <div class="row">
-              <label for="{{form.year_of_foundation.id_for_label}}" class="col-sm-5 col-form-label">Rok
-                założenia</label>
+            {% if season_form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in season_form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="row mt-2">
+              <p class = "small mb-0 mt-1">Nazwa sezonu ma maksymalnie 9 znaków, zalecany system nazewnictwa : xxxx/xxxx </p>
+              <label for="{{season_form.season_name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa sezonu</label>
               <div class="col-sm-7">
-                {{form.year_of_foundation}}
-                {% for error in form.year_of_foundation.errors %}
+                {{season_form.season_name}}
+                {% for error in season_form.season_name.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
                 {% endfor %}
               </div>
             </div>
-            <hr>
-            <div class="row">
+
+            <div class="row mt-2">
+              <label for="{{season_form.date_of_start.id_for_label}}" class="col-sm-5 col-form-label">Początek sezonu</label>
+              <div class="col-sm-7">
+                {{season_form.date_of_start}}
+                {% for error in season_form.date_of_start.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{season_form.date_of_end.id_for_label}}" class="col-sm-5 col-form-label">Koniec sezonu</label>
+              <div class="col-sm-7">
+                {{season_form.date_of_end}}
+                {% for error in season_form.date_of_end.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
               <div class="col-sm-12">
                 <input name="club-submit" type="submit" class="btn " value="Zapisz">
               </div>

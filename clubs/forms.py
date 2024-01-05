@@ -133,6 +133,10 @@ class TeamCreateForm(forms.ModelForm):
     class Meta:
         model = Team
         fields = ['name','category']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+        }
 
     def __init__(self, *args,club=None, **kwargs):
         super(TeamCreateForm, self).__init__(*args, **kwargs)
@@ -147,9 +151,9 @@ class TeamCreateForm(forms.ModelForm):
 
 
 class SeasonCreateForm(forms.ModelForm):
-    season_name = forms.CharField(max_length=9, required=True)
-    date_of_start = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01'}))
-    date_of_end = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01'}))
+    season_name = forms.CharField(max_length=9, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    date_of_start = forms.DateField(label='Data rozpoczęcia', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
+    date_of_end = forms.DateField(label='Data zakończenia', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
 
     class Meta:
         model = Season

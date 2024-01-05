@@ -147,7 +147,7 @@ class Place(models.Model):
         return f"{self.name}, {self.addres}"
 
 class Team(models.Model):
-    categories = {
+    categories = [
         ("U6","JUNIOR G2"),
         ("U7","JUNIOR G1"),
         ("U8","JUNIOR F2"),
@@ -163,7 +163,7 @@ class Team(models.Model):
         ("U18","JUNIOR A2"),
         ("U19","JUNIOR A1"),
         ("SENIOR","SENIOR"),
-    }
+    ]
     name = models.CharField(max_length = 40, null = True, blank = False, help_text='Nazwa drużyny')
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     category = models.CharField(choices=categories, blank=True, default=None)
