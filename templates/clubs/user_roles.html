@@ -4,18 +4,20 @@
 {% block header %}Twoje role w klubach{% endblock %}
 
 {% block content %}
-<div class="container-fluid dashboard">
-  <div class="col-xl-6 col-lg-6 ">
-    <div class="card  mb-4 my-trainings">
-      <div class="card-body">
-        <h4 class="m-0 fw-bolder text-uppercase">
-          Twoje role
-        </h4>
-        <p class="small mt-1 pb-2" style="border-bottom: 1px solid #333333;">
-          Pamiętaj że rezygnując z roli w w klubie utracisz do niego dostęp. jeśli jesteś jedynym 
-          administratorem klubu nie będziesz mógł zrezygnować chyba, że usuniesz cały klub lub nadasz komuś innemu rolę administratora.
-        </p>
-        {% for usersClub in usersClubs_roles %}
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-xl-8 col-lg-8 ">
+      <div class="card  mb-4 my-trainings">
+        <div class="card-body">
+          <h4 class="m-0 fw-bolder text-uppercase">
+            Twoje role
+          </h4>
+          <p class="small mt-1 pb-2" style="border-bottom: 1px solid #FF851B;">
+            Pamiętaj że rezygnując z roli w w klubie utracisz do niego dostęp. jeśli jesteś jedynym
+            administratorem klubu nie będziesz mógł zrezygnować chyba, że usuniesz cały klub lub nadasz komuś innemu
+            rolę administratora.
+          </p>
+          {% for usersClub in usersClubs_roles %}
           {% if usersClub.accepted != False %}
           <div class="row d-flex p-2 mb-2 ">
             <div class="col-4 p-1"> {{usersClub.club.name}}</div>
@@ -40,27 +42,28 @@
             {% endif %}
           </div>
           {% endif %}
-        {% endfor %}
+          {% endfor %}
 
 
 
 
 
 
+        </div>
       </div>
-    </div>
-    <div class="links ">
-      <a class=" fw-bolder text-uppercase py-2 mt-2 mx-1 d-flex" href="{% url 'user_panel' %}">
-    
-        <div class="col mr-2">
-                Wróć do panelu użytkownika
-        </div>
-        <div class="col-auto">
+      <div class="links ">
+        <a class=" fw-bolder text-uppercase py-2 mt-2 mx-1 d-flex" href="{% url 'user_panel' %}">
+
+          <div class="col mr-2">
+            Wróć do panelu użytkownika
+          </div>
+          <div class="col-auto">
             <i class="fa-solid fa-arrow-left mr-2"></i>
-        </div>
+          </div>
         </a>
+      </div>
+
     </div>
-    
   </div>
 </div>
 

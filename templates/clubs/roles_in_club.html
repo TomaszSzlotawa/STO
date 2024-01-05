@@ -1,43 +1,140 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Stwórz klub{% endblock %}
+{% block title %}Zarządzaj rolami użytkowników{% endblock %}
+{% block header %}Zarządzaj rolami użytkowników{% endblock %}
 
 {% block content %}
-<p>W klubie musi być co njmniej jeden administrator.</p>
-<p>Jeśli usuniesz użytkownikowi wszystkie role w klubie zostanie wtedy usunięty z klubu</p>
-<form action="#" method="post" name="roles">
-    {% csrf_token %}
-    <table>
-        <thead>
-            <tr>
-                <th>Imię i Nazwisko</th>
-                <th>Admin</th>
-                <th>Trener</th>
-                <th>Pracownik</th>
-                <th>Koordynator szkolenia</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>{{user.user.first_name}} {{user.user.last_name}}</td>
-                    <td>
-                        <input type="checkbox" id="admin_{{user.id}}" name="admin_{{user.id}}" {% if user.admin %}checked{% endif %}>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="coach_{{user.id}}" name="coach_{{user.id}}" {% if user.coach %}checked{% endif %}>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="employee_{{user.id}}" name="employee_{{user.id}}" {% if user.employee %}checked{% endif %}>
-                    </td>
-                    <td>
-                        <input type="checkbox" id="training_coordinator_{{user.id}}" name="training_coordinator_{{user.id}}" {% if user.training_coordinator %}checked{% endif %}>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
-    <input type="submit" value="Zapisz">
-</form>
+<div class="container py-5 h-100 dashboard">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-12 col-lg-10 col-xl-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bolder">Użytkownicy</h6>
+                    <h6 class="fw-400 small m-0">W klubie musi być co najmniej jeden administrator.</h6>
+                    <h6 class="fw-400 small m-0">Możesz usunąć użytkownika odznaczając wszystkie jego role.</h6>
+
+                    <form action="#" method="post" name="roles" class="mt-3">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-4">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Imię i Nazwisko
+                                </h6>
+                            </div>
+                            <div class="col-2">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Administrator</h6>
+                            </div>
+                            <div class="col-2">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Koordynator
+                                    szkolenia</h6>
+                            </div>
+                            <div class="col-2">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Trener</h6>
+                            </div>
+                            <div class="col-2">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Pracownik
+                                    administracji</h6>
+                            </div>
+                        </div>
+                        {% for user in users %}
+                        {% if user.accepted %}
+                        <div class="row mt-1">
+                            <div class="col-4 ">
+                                <h6 class="" style="border-bottom:1px solid #FF851B ;">{{user.user.first_name}}
+                                    {{user.user.last_name}}</h6>
+                            </div>
+                            <div class="col-2">
+                                <input type="checkbox" id="admin_{{user.id}}" name="admin_{{user.id}}" {% if user.admin %}checked{% endif %}>
+                            </div>
+                            <div class="col-2">
+                                <input type="checkbox" id="coach_{{user.id}}" name="coach_{{user.id}}" {% if user.coach %}checked{% endif %}>
+                            </div>
+                            <div class="col-2">
+                                <input type="checkbox" id="employee_{{user.id}}" name="employee_{{user.id}}" {% if user.employee %}checked{% endif %}>
+                            </div>
+                            <div class="col-2">
+                                <input type="checkbox" id="training_coordinator_{{user.id}}"
+                                    name="training_coordinator_{{user.id}}" {% if user.training_coordinator %}checked{% endif %}>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-sm-12 mt-3">
+                                <input name="add-user--submit" type="submit" class="btn " value="Zapisz">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-6 col-md-6 col-lg-5 col-xl-4 ">
+            <div class="card mb-3">
+                <div class="card-body py-4">
+                    <h5 class="fw-bolder">Oczekujące</h6>
+
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-5">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Imię i Nazwisko
+                                </h6>
+                            </div>
+                            <div class="col-7">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Role</h6>
+                            </div>
+                        </div>
+                        {% for user in users %}
+                            {% if user.accepted == None %}
+                            <div class="row mt-1">
+                                <div class="col-5 ">
+                                    <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{user.user.first_name}} {{user.user.last_name}}</h6>
+                                </div>
+                                
+                                <div class="col-7">
+                                    <h6 class="h-100">{{user.roles}}</h6>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-6 col-lg-5 col-xl-4 ">
+            <div class="card mb-3">
+                <div class="card-body py-4">
+                    <h5 class="fw-bolder">Odrzucone</h6>
+
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-5">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Imię i Nazwisko
+                                </h6>
+                            </div>
+                            <div class="col-7">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Role</h6>
+                            </div>
+                        </div>
+                        {% for user in users %}
+                            {% if user.accepted == False %}
+                            <div class="row mt-1">
+                                <div class="col-5 ">
+                                    <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{user.user.first_name}} {{user.user.last_name}}</h6>
+                                </div>
+                                
+                                <div class="col-7">
+                                    <h6 class="h-100">{{user.roles}}</h6>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
