@@ -526,7 +526,7 @@ def add_season(request, team_id):
         if form.is_valid():
             form.save(team)
             return redirect(edit_team, team.id)
-    return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form,'edit':False})
+    return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'season_form':form,'edit':False})
 
 def edit_active_season(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -538,7 +538,7 @@ def edit_active_season(request, team_id):
         if form.is_valid():
             season = form.save(team)
             return redirect(edit_team,team.id)
-    return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'edit':True})
+    return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'season_form':form, 'edit':True})
 
 def edit_player(request, player_id):
     usersClubs, teams = get_data_for_menu(request)

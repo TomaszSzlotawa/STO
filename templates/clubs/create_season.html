@@ -1,8 +1,77 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Edytuj dane drużyny{% endblock %}
+{% block title %}{% if edit %} Edytuj sezon {% else %} Dodaj sezon {% endif %}{% endblock %}
+{% block header %}{% if edit %} Edytuj sezon {% else %} Dodaj sezon {% endif %}{% endblock %}
 
 {% block content %}
+
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            <h5 class="fw-bolder">{% if edit %} Edytuj sezon {% else %} Dodaj sezon {% endif %}</h6>
+            <h6 class="fw-400 small m-0">Nazwa sezonu ma maksymalnie 9 znaków, zalecany system nazewnictwa : xxxx/xxxx.</h6>
+             
+            <div class="row mt-2">
+                {% csrf_token %}
+                {% if season_form.non_field_errors %}
+                <div class="alert alert-danger my-custom-alert">
+                    {% for error in season_form.non_field_errors %}
+                        {{ error|striptags }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+              <label for="{{season_form.season_name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa sezonu</label>
+              <div class="col-sm-7">
+                {{season_form.season_name}}
+                {% for error in season_form.season_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{season_form.date_of_start.id_for_label}}" class="col-sm-5 col-form-label">Początek sezonu</label>
+              <div class="col-sm-7">
+                {{season_form.date_of_start}}
+                {% for error in season_form.date_of_start.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{season_form.date_of_end.id_for_label}}" class="col-sm-5 col-form-label">Koniec sezonu</label>
+              <div class="col-sm-7">
+                {{season_form.date_of_end}}
+                {% for error in season_form.date_of_end.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="Dodaj">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
 <H3>{% if edit %} Edytuj sezon {% else %} Dodaj sezon {% endif %}</H3>
 
 <form method="post">
