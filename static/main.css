@@ -309,9 +309,11 @@ form input:-internal-autofill-selected {
     color: #ffffff;
 }
 .dashboard .training{
-    color: #ffffff;
-    background-color: #4CAF50;
-    border-radius: 0.5rem;
+    
+    border-bottom: 2px solid #4CAF50;
+    border-top: 2px solid transparent;
+    border-left: 2px solid transparent;
+    border-right: 2px solid transparent;
     transition: all 0.3s;
 }
 .dashboard .add{
@@ -321,14 +323,19 @@ form input:-internal-autofill-selected {
     transition: all 0.3s;
 }
 .dashboard .training:hover{
-    color: #ffffff;
-    background-color: #FF851B;
+    border: 2px solid #4CAF50;
     border-radius: 0.5rem;
 }
-.dashboard .middle{
+.dashboard .training:active{
+    border: 2px solid #4CAF50;
+    background-color: #4CAF50;
+    color: #ffffff;
+    border-radius: 0.5rem;
+}
+/* .dashboard .middle{
     border-left: 2px solid #ffffff;
     border-right: 2px solid #ffffff;
-}
+} */
 .dashboard a{
     text-decoration: none;
     color: inherit;

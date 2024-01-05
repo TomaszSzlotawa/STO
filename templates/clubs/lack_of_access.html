@@ -4,6 +4,23 @@
 
 {% block content %}
 
-Nie masz dostępu
+<div class="container py-5 h-100 dashboard">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-8 col-md-8 col-lg-6 col-xl-5">
+        <div class="card">
+          <div class="card-body p-4 text-center">
+            <p>
+              Nie masz dostępu do tej funkcjonalności. 
+            </p>
+            <div class="d-flex justify-content-end links">
+                <a href="{% url 'user_panel' %}" class="text-decoration-none mt-1 ">
+                  <i class="fa-solid fa-arrow-left"></i> &nbsp; przejdź do panelu użytkownika
+                </a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
