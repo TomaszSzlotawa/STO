@@ -119,11 +119,15 @@ class Rented_equipment(models.Model):
 
 class Player_data(models.Model):
     player = models.OneToOneField(Player, on_delete=models.CASCADE, primary_key=True)
-    pesel = models.CharField(max_length = 11, null = True, blank = True, help_text='Pesel',unique=True)
-    extranet = models.CharField(max_length = 7, null = True, blank = True, help_text='nr extranet',unique=True)
+    pesel = models.CharField(max_length = 11, null = True, blank = True, help_text='Pesel')
+    extranet = models.CharField(max_length = 7, null = True, blank = True, help_text='nr extranet')
     date_of_birth = models.DateField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data urodzenia')
     place_of_birth = models.CharField(max_length = 60, null = True, blank = True, help_text='Miejsce urodzenia',unique=False)
     addres = models.CharField(max_length = 60, null = True, blank = True, help_text='Adres zamieszkania',unique=False)
+    
+
+    def __str__(self):
+        return f"{self.name}, {self.addres}"
     
     def __str__(self):
         return f"{self.player.surname} {self.player.name} [{self.player.club.name}]"
@@ -143,8 +147,7 @@ class Place(models.Model):
     surface = models.CharField(choices=surfaces, default="nt")
     description = models.TextField(null=True, blank=True, help_text='Specyfikacja obiektu')
 
-    def __str__(self):
-        return f"{self.name}, {self.addres}"
+
 
 class Team(models.Model):
     categories = [

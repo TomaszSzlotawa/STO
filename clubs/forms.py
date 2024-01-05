@@ -34,8 +34,8 @@ class UserForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
-    birth_date = forms.DateField(label='Data urodzin',required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','max':date.today(),'class': 'form-control'}))
-    license_expiry_date = forms.DateField(label='Data urodzin', required=False, widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
+    birth_date = forms.DateField(label='Data urodzin',required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date','min':'1900-01-01','max':date.today(),'class': 'form-control'}))
+    license_expiry_date = forms.DateField(label='Data urodzin', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
     class Meta:
         model = Profile
         fields = ('birth_date', 'license','license_expiry_date')
@@ -152,8 +152,8 @@ class TeamCreateForm(forms.ModelForm):
 
 class SeasonCreateForm(forms.ModelForm):
     season_name = forms.CharField(max_length=9, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    date_of_start = forms.DateField(label='Data rozpoczęcia', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
-    date_of_end = forms.DateField(label='Data zakończenia', widget=forms.DateInput(attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
+    date_of_start = forms.DateField(label='Data rozpoczęcia', widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
+    date_of_end = forms.DateField(label='Data zakończenia', widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date','min':'1900-01-01','class': 'form-control'}))
 
     class Meta:
         model = Season
@@ -236,11 +236,13 @@ class SeasonChooseForm(forms.Form):
         return existing_season
 
 class CreatePlayerForm(forms.ModelForm):
-    name = forms.CharField(required=False)
-    surname = forms.CharField(required=False)
+    name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    surname = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
     class Meta:
         model = Player
         fields = ['name','surname']
+
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
@@ -251,14 +253,25 @@ class CreatePlayerForm(forms.ModelForm):
         if not surname:
             error_message+="wpisz nazwisko"
             raise ValidationError(error_message)
+        
+
 
 class CreatePlayerDataForm(forms.ModelForm):
-    date_of_birth = forms.DateField(label='Data urodzin', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    date_of_birth = forms.DateField(required=False, label='Data urodzin', widget = forms.DateInput(format=('%Y-%m-%d'), attrs={'class':'form-control','min':'1900-01-01','max':date.today(),'type': 'date'}))
+    pesel = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        required=False,
+        validators=[MaxLengthValidator(limit_value=11, message='Pesel musi mieć 11 znaków'), 
+                    MinLengthValidator(limit_value=11, message='Pesel musi mieć 11 znaków')]
+    )
     class Meta:
         model = Player_data
         fields = ['pesel', 'extranet', 'date_of_birth', 'place_of_birth', 'addres']
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'extranet': forms.TextInput(attrs={'class':'form-control'}),
+            'place_of_birth': forms.TextInput(attrs={'class':'form-control'}),
+            'addres': forms.TextInput(attrs={'class':'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 

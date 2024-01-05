@@ -382,10 +382,12 @@ def create_player(request, club_id):
     player_data_form = CreatePlayerDataForm(request.POST or None)
     if request.method == 'POST':
         if player_form.is_valid():
+            print('dane')
             player = player_form.save(commit=False)
             player.club = club
             player.save()
         if player_data_form.is_valid():
+            print('profil')
             player_data = player_data_form.save(commit=False)
             player_data.player = player
             player_data.save()
@@ -546,12 +548,13 @@ def edit_player(request, player_id):
     player_form = CreatePlayerForm(request.POST or None, instance=player)
     player_data = get_object_or_404(Player_data, player=player)
     player_data_form = CreatePlayerDataForm(request.POST or None, instance=player_data)
+    print(player_data.date_of_birth)
     if request.method == 'POST':
         if player_form.is_valid():
             player.save()
-        if player_data_form.is_valid():
-            player_data.save()
-        return redirect(club_staff, player.club.id)
+            if player_data_form.is_valid():
+                player_data.save()
+                return redirect(club_staff, player.club.id)
     return render(request,'clubs/create_player.html',{'club':player.club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':True})
 
 

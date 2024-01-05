@@ -1,17 +1,115 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Stwórz zawodnika{% endblock %}
+{% block title %}{% if edit %} Edytuj dane zawodnika {% else %} Dodaj zawodnika do klubu{% endif %}{% endblock %}
+{% block header %}{% if edit %} Edytuj dane zawodnika {% else %} Dodaj zawodnika do klubu{% endif %}{% endblock %}
 
 {% block content %}
 
-<h2>{% if edit %} Edytuj dane zawodnika {% else %} Stwórz zawodnika {% endif %}</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ player_form }}
-  {{ player_data_form }}
-  <button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>
-  <a href="{% url 'club_staff' club.id %}" >wróć</a>
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% csrf_token %}
 
-</form>
+            {% if player_data_form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in player_data_form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if player_form.non_field_errors  %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in player_form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="row ">
+              <label for="{{player_form.name.id_for_label}}" class="col-sm-5 col-form-label">Imię</label>
+              <div class="col-sm-7">
+                {{player_form.name}}
+                {% for error in player_form.name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="row mt-2">
+              <label for="{{player_form.surname.id_for_label}}" class="col-sm-5 col-form-label">Nazwisko</label>
+              <div class="col-sm-7">
+                {{player_form.surname}}
+                {% for error in player_form.category.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+
+            <div class="row mt-2">
+              <label for="{{player_data_form.date_of_birth.id_for_label}}" class="col-sm-5 col-form-label">Data urodzenia</label>
+              <div class="col-sm-7">
+                {{player_data_form.date_of_birth}}
+                {% for error in player_data_form.date_of_birth.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{player_data_form.place_of_birth.id_for_label}}" class="col-sm-5 col-form-label">Miejsce urodzenia</label>
+              <div class="col-sm-7">
+                {{player_data_form.place_of_birth}}
+                {% for error in player_data_form.place_of_birth.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{player_data_form.pesel.id_for_label}}" class="col-sm-5 col-form-label">PESEL</label>
+              <div class="col-sm-7">
+                {{player_data_form.pesel}}
+                {% for error in player_data_form.pesel.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{player_data_form.extranet.id_for_label}}" class="col-sm-5 col-form-label">Numer w ekstranet</label>
+              <div class="col-sm-7">
+                {{player_data_form.extranet}}
+                {% for error in player_data_form.extranet.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{player_data_form.addres.id_for_label}}" class="col-sm-5 col-form-label">Adres zamieszkania</label>
+              <div class="col-sm-7">
+                {{player_data_form.addres}}
+                {% for error in player_data_form.addres.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="{% if edit %} Zapisz {% else %} Dodaj {% endif %}">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
