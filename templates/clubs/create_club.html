@@ -1,13 +1,111 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Stwórz klub{% endblock %}
+
+{% block title %}Dodaj klub{% endblock %}
+{% block header %}Dodaj klub{% endblock %}
 
 {% block content %}
-<h2>Załóż klub</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form }}
-  <button type="submit">Załóż klub</button>
-</form>
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% csrf_token %}
+            <div class="row">
+              <label for="{{form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa</label>
+              <div class="col-sm-7">
+                {{form.name}}
+                {% for error in form.name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <label for="{{form.legal_form.id_for_label}}" class="col-sm-5 col-form-label">Forma prawna</label>
+              <div class="col-sm-7">
+                {{form.legal_form}}
+                {% for error in form.legal_form.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <label for="{{form.addres.id_for_label}}" class="col-sm-5 col-form-label">Adres</label>
+              <div class="col-sm-7">
+                {{form.addres}}
+                {% for error in form.addres.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <label for="{{form.regon.id_for_label}}" class="col-sm-5 col-form-label">REGON</label>
+              <div class="col-sm-7">
+                {{form.regon}}
+                {% for error in form.regon.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <label for="{{form.nip.id_for_label}}" class="col-sm-5 col-form-label">NIP</label>
+              <div class="col-sm-7">
+                {{form.nip}}
+                {% for error in form.nip.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <hr>
+
+            <div class="row">
+              <label for="{{form.year_of_foundation.id_for_label}}" class="col-sm-5 col-form-label">Rok
+                założenia</label>
+              <div class="col-sm-7">
+                {{form.year_of_foundation}}
+                {% for error in form.year_of_foundation.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="Zapisz">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'user_panel'  %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do panelu użytkownika
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 
 {% endblock %}

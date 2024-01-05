@@ -68,7 +68,21 @@ def user_panel(request):
     seasons = Season.objects.filter(team__in=coach_in_teams)
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
     profile = get_object_or_404(Profile,pk=request.user.id)
-    return render(request,'clubs/user_panel.html',{'profile':profile,'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings, 'user_coaching_teams':user_coaching_teams})
+    is_admin = False
+    is_training_coordinator = False
+    is_coach = False
+    is_employee = False
+    for u in usersClubs:
+        if u.admin:
+            is_admin = True
+        if u.training_coordinator:
+            is_training_coordinator = True
+        if u.coach:
+            is_coach = True
+        if u.employee:
+            is_employee = True
+    return render(request,'clubs/user_panel.html',{'profile':profile,'usersClubs':usersClubs,'teams':teams,'upcoming_trainings':upcoming_trainings, 'user_coaching_teams':user_coaching_teams, 
+                                                   'is_admin':is_admin,'is_training_coordinator':is_training_coordinator, 'is_coach':is_coach, 'is_employee':is_employee})
 
 def club_panel(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -103,9 +117,21 @@ def club_panel(request, club_id):
 
 
 def user_profile(request):
-    print(request.POST)
-
     usersClubs, teams = get_data_for_menu(request)
+    is_admin = False
+    is_training_coordinator = False
+    is_coach = False
+    is_employee = False
+    for u in usersClubs:
+        if u.admin:
+            is_admin = True
+        if u.training_coordinator:
+            is_training_coordinator = True
+        if u.coach:
+            is_coach = True
+        if u.employee:
+            is_employee = True
+
     user = request.user
     profile = get_object_or_404(Profile, user = user)
 
@@ -135,7 +161,9 @@ def user_profile(request):
 
 
     #return render(request, 'clubs\signup.html', {'form': form,'profile':profile})
-    return render(request, 'clubs/user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams})
+    return render(request, 'clubs/user_profile.html',{'profile_form': profile_form,'user_form':user_form,'password_form':password_form,'usersClubs':usersClubs,'teams':teams, 
+                                                      'is_admin':is_admin,'is_training_coordinator':is_training_coordinator, 'is_coach':is_coach, 'is_employee':is_employee})
+
 
 
 
@@ -155,7 +183,7 @@ def create_club(request):
         club = form.save()
         users_club = UsersClub(club = club,user = user, admin = True, accepted = True)
         users_club.save()
-        return redirect(user_panel)
+        return redirect(club_panel,club.id)
     return render(request,'clubs/create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
 
 def club_settings(request, club_id):
@@ -476,7 +504,7 @@ def team_coaching_staff(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     team_coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None).order_by('takeover_date')
-    team_historical_coaches = TeamsCoaching_Staff.objects.filter(team=team, leaving_date__isnull=False).order_by('leaving_date')
+    team_historical_coaches = TeamsCoaching_Staff.objects.filter(team=team, leaving_date__isnull=False).order_by('-leaving_date')
     coaches = UsersClub.objects.filter(club=team.club, coach=True, accepted=True)
     coaches_in_team = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
     coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
@@ -502,12 +530,22 @@ def edit_team_coaching_staff(request, team_id, coach_id):
                 role = form.cleaned_data['role_in_team']
                 takeover_date = form.cleaned_data['takeover_date']
                 if role != r:
-                    coach.leaving_date = date.today()
-                    coach.role_in_team = r
-                    coach.takeover_date = take_ovr
-                    coach.save()
-                    new_role = TeamsCoaching_Staff(coach=coach.coach, team=coach.team, takeover_date=takeover_date,  role_in_team=role)
-                    new_role.save()
+                    if take_ovr != takeover_date:
+                        if takeover_date > take_ovr:
+                            coach.leaving_date = takeover_date
+                            coach.role_in_team = r
+                            coach.takeover_date = take_ovr
+                            coach.save()
+                            new_role = TeamsCoaching_Staff(coach=coach.coach, team=coach.team, takeover_date=takeover_date,  role_in_team=role)
+                            new_role.save()
+                        else:
+                            coach.role_in_team = role
+                            coach.takeover_date = takeover_date
+                            coach.save()
+                    else:
+                        coach.role_in_team = role
+                        coach.takeover_date = takeover_date
+                        coach.save()
                 else:
                     coach.takeover_date = takeover_date
                     coach.save()

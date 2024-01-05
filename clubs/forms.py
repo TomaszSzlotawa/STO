@@ -80,7 +80,15 @@ class ClubCreationForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
+    
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        existing_club = Club.objects.filter(name=name).first()
 
+        if existing_club:
+            raise forms.ValidationError('Klub o tej nazwie już istnieje.')
+
+        return name
 
 
 

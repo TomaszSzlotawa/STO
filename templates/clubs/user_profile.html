@@ -171,9 +171,11 @@
                             </a>
                         </div>
                         <div class="card-body">
-                            <div class="row">
                                 <div class="col-sm-6">
-                                    <p class="mb-0 f-w-600">Administrator</p>
+                                    <p class="mb-0 f-w-600">Administrator w:</p>
+                                    {% if not is_admin%}
+                                        <h6 class="text-muted f-w-400 m-0 p-0">-----</h6>
+                                    {% endif %}
                                     {% for club in usersClubs %}
                                     {% if club.admin%}
                                     <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
@@ -182,17 +184,21 @@
 
                                 </div>
                                 <div class="col-sm-6">
-                                    <p class="mb-0 f-w-600">Koordynator szkolenia</p>
-                                    {% for club in usersClubs %}
-                                    {% if club.training_coordinator%}
-                                    <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                    <p class="mb-0 f-w-600">Koordynator szkolenia w:</p>
+                                    {% if not is_training_coordinator%}
+                                    <h6 class="text-muted f-w-400 m-0 p-0">-----</h6>
                                     {% endif %}
+                                    {% for club in usersClubs %}
+                                        {% if club.training_coordinator%}
+                                        <h6 class="text-muted f-w-400 m-0 p-0">{{club.club.name}}</h6>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-sm-6">
-                                    <p class="mb-0 f-w-600">Trener</p>
+                                    <p class="mb-0 f-w-600">Trener w:</p>
+                                    {% if not is_coach%}
+                                    <h6 class="text-muted f-w-400 m-0 p-0">-----</h6>
+                                    {% endif %}
                                     {% for club in usersClubs %}
                                     {% if club.coach%}
                                     <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
@@ -200,14 +206,16 @@
                                     {% endfor %}
                                 </div>
                                 <div class="col-sm-6">
-                                    <p class="mb-0 f-w-600">Pracownik administracji klubowej</p>
+                                    <p class="mb-0 f-w-600">Pracownik administracji klubowej w:</p>
+                                    {% if not is_employee%}
+                                    <h6 class="text-muted f-w-400 m-0 p-0">-----</h6>
+                                    {% endif %}
                                     {% for club in usersClubs %}
                                     {% if club.employee%}
                                     <h6 class="text-muted f-w-400 ">{{club.club.name}}</h6>
                                     {% endif %}
                                     {% endfor %}
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
