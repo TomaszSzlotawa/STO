@@ -209,7 +209,7 @@ class SeasonChooseForm(forms.Form):
     class Meta:
         model = Season
         fields = ['active_season']
-    active_season = forms.ModelChoiceField(queryset=Season.objects.none(), required=False, empty_label="Wybierz sezon")
+    active_season = forms.ModelChoiceField(queryset=Season.objects.none(), required=False, empty_label="Wybierz sezon", widget = forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         team = kwargs.pop('team', None)

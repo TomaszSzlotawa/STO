@@ -78,7 +78,7 @@
 
             <div class="row mt-3">
               <div class="col-sm-12">
-                <input name="club-submit" type="submit" class="btn " value="Zapisz">
+                <input name="club-submit" type="submit" class="btn " value="Dodaj">
               </div>
             </div>
           </form>
@@ -88,25 +88,5 @@
     </div>
   </div>
 </div>
-
-{% if team_errors %}
-  <div class="error">
-    {{ team_errors }}
-  </div>
-{% endif %}
-
-{% if season_errors %}
-  <div class="error">
-    {{ season_errors }}
-  </div>
-{% endif %}
-
-<h2>Utwórz drużynę</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ team_form }}
-  {{ season_form }}
-  <button type="submit">Utwórz drużynę</button>
-</form>
 
 {% endblock %}

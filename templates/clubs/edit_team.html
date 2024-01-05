@@ -1,43 +1,153 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Edytuj dane drużyny{% endblock %}
+{% block header %}Edytuj dane drużyny{% endblock %}
 
 {% block content %}
 
 
+<div class="container-fluid py-5 h-100 dashboard">
+    <div class="row d-flex justify-content-center align-items-top">
+        <div class="col-12 col-md-9 col-lg-6 col-xl-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bolder">Edytuj dane drużyny</h6>
+                        <form method="POST" class="user-profil data">
+                            {% csrf_token %}
+                            {% if team_form.non_field_errors %}
+                            <div class="alert alert-danger my-custom-alert">
+                                {% for error in team_form.non_field_errors %}
+                                {{ error|striptags }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="row ">
+                                <label for="{{team_form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa
+                                    drużyny</label>
+                                <div class="col-sm-7">
+                                    {{team_form.name}}
+                                    {% for error in team_form.name.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <label for="{{team_form.category.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Kategoria wiekowa</label>
+                                <div class="col-sm-7">
+                                    {{team_form.category}}
+                                    {% for error in team_form.category.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
 
-<h2>Edycja danych drużyny</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ team_form }}
-  {{ season_form }}
-  <input  name="data-submit" value="Zapisz" type="submit"/> <br>
-  <a href="{% url 'add_season' team.id %}">Dodaj sezon</a> <br>
-  <a href="{% url 'edit_active_season' team.id %}">Edytuj aktywny sezon</a> <br>
-  <a href="{% url 'club_settings' club.id %}">wróć</a>
-</form>
 
-<hr>
-<h3>Sezony</h3>
-<table>
-  <thead>
-      <tr>
-          <th>Nazwa</th>
-          <th>Data rozpoczęcia</th>
-          <th>Data zakończenia</th>
-      </tr>
-  </thead>
-  <tbody>
-      {% for season in seasons %}
-          <tr>
-              <td>{{ season.name }}</td>
-              <td>{{ season.date_of_start }}</td>
-              <td>{{ season.date_of_end }}</td>
-          </tr>
-      {% endfor %}
-  </tbody>
-</table>
-  
 
+                            <div class="row mt-5">
+                                {% if season_form.non_field_errors %}
+                                <div class="alert alert-danger my-custom-alert">
+                                    {% for error in season_form.non_field_errors %}
+                                    {{ error|striptags }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <label for="{{season_form.active_season.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Aktywny sezon</label>
+                                <div class="col-sm-7">
+                                    {{season_form.active_season}}
+                                    {% for error in season_form.active_season.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    <input name="club-submit" type="submit" class="btn " value="Zapisz">
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex justify-content-end links">
+                  <a href="{% url 'user_panel' %}" class="text-decoration-none mt-1 ">
+                    <i class="fa-solid fa-arrow-left"></i> &nbsp; przejdź do ustawień klubu
+                  </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-9 col-lg-6 col-xl-6">
+            <div class="row">
+                <div class="col-6">
+                      <a class="text-decoration-none" href="{% url 'edit_active_season' team.id %}" style="color: #FF851B;">
+                        <div class="card  mb-4">
+                          <!-- Card Header - Dropdown -->
+                          <div class="card-body py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+                            <i class="fa-solid fa-pen"></i>
+                            <h6 class="m-0 text-uppercase">edytuj aktualny sezon</h6>
+                          </div>
+                        </div>
+                      </a>
+                </div>
+                <div class="col-6">
+                    <a class="text-decoration-none" href="{% url 'add_season' team.id %}">
+                        <div class="card  mb-4">
+                          <!-- Card Header - Dropdown -->
+                          <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+                            <i class="fa-solid fa-plus px-2"></i>
+                            <h6 class="m-0 text-uppercase">dodaj nowy sezon</h6>
+                          </div>
+                        </div>
+                      </a>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bolder mb-4">Wszystkie sezony drużyny</h6>
+                        <div class="row">
+                            <div class="col-3">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Nazwa
+                                </h6>
+                            </div>
+                            <div class="col-3">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Data rozpoczęcia</h6>
+                            </div>
+                            <div class="col-3">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Data zakończenia</h6>
+                            </div>
+                            <div class="col-3">
+                                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Kadra</h6>
+                            </div>
+                        </div>
+                        {% for s in seasons %}
+                            <div class="row mt-1">
+                                <div class="col-3 ">
+                                    <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{s.name}}</h6>
+                                </div>
+                                
+                                <div class="col-3 ">
+                                    <h6 class="h-100" >{{s.date_of_start}}</h6>
+                                </div>
+
+                                <div class="col-3 ">
+                                    <h6 class="h-100" >{{s.date_of_end}}</h6>
+                                </div>
+
+                                <div class="col-3 ">
+                                    <h6 class="h-100" >{{s.count_players}}</h6>
+                                </div>
+
+
+                            </div>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}
