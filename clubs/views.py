@@ -63,7 +63,7 @@ def signup(request):
 
 def user_panel(request):
     usersClubs, teams = get_data_for_menu(request)
-    user_coaching_teams = TeamsCoaching_Staff.objects.filter(coach=request.user)
+    user_coaching_teams = TeamsCoaching_Staff.objects.filter(coach=request.user, leaving_date=None)
     coach_in_teams = [coaching_team.team for coaching_team in user_coaching_teams]
     seasons = Season.objects.filter(team__in=coach_in_teams)
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
@@ -213,8 +213,6 @@ def club_settings(request, club_id):
             avg_attendance = round(present / len_attendance * 100,2)
         absent = 100-avg_attendance
         seasons_att.append((s,avg_attendance,absent))
-        print(type(avg_attendance))
-        print(type(absent))
 
     allowed = False
     for usersClub in usersClubs:
@@ -250,6 +248,8 @@ def roles_in_club(request,club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
+    club_teams = Team.objects.filter(club=club)
+    print(club_teams)
     if role.admin == False:
         return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
     users = UsersClub.objects.filter(club = club)
@@ -272,7 +272,16 @@ def roles_in_club(request,club_id):
                     user.employee = employee
                     user.training_coordinator = training_coordinator
                     user.save()
+                    if not user.coach:
+                        user_in_teams = TeamsCoaching_Staff.objects.filter(team__in = club_teams, leaving_date=None, coach_id=user.user.id)
+                        for u in user_in_teams:
+                            u.leaving_date = date.today()
+                            u.save()
                 else:
+                    user_in_teams = TeamsCoaching_Staff.objects.filter(team__in = club_teams, leaving_date=None, coach_id=user.user.id)
+                    for u in user_in_teams:
+                        u.leaving_date = date.today()
+                        u.save()
                     user.delete()
         else:
             return redirect(roles_in_club,club.id)
