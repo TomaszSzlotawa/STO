@@ -276,12 +276,14 @@ class CreatePlayerDataForm(forms.ModelForm):
 
 
 class AddCoachToTeam(forms.ModelForm):
-    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'class': 'form-control','type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team', 'takeover_date']
-    
-    coach = forms.ModelChoiceField(queryset=None)  
+        widgets = {
+            'role_in_team': forms.Select(attrs={'class':'form-control'})
+        }
+    coach = forms.ModelChoiceField(queryset=None, widget=forms.Select(attrs={'class': 'form-control'}))  
 
     def __init__(self, coaches, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -479,8 +481,8 @@ class AttendanceForm(forms.ModelForm):
         return att
     
 class AttendanceReportFilter(forms.Form):
-    start_date = forms.DateField(format=('%Y-%m-%d'), label='Data początkowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(format=('%Y-%m-%d'), label='Data końcowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    start_date = forms.DateField(label='Data początkowa', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'}))
+    end_date = forms.DateField( label='Data końcowa', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'}))
 
     def __init__(self, *args, season=None, **kwargs):
         super(AttendanceReportFilter, self).__init__(*args, **kwargs)
@@ -579,8 +581,8 @@ class ImplementTrainingForm(forms.ModelForm):
         required=False
     )
     start_datatime = forms.DateTimeField(
-        format=('%Y-%m-%dT%H:%M'), 
         widget=forms.widgets.DateTimeInput(
+            format=('%Y-%m-%dT%H:%M'), 
             attrs={'type': 'datetime-local'},
         ),required=False
     )

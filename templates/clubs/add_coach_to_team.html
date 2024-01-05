@@ -3,14 +3,98 @@
 {% block title %}Edytuj dane drużyny{% endblock %}
 
 {% block content %}
+<div class="container-fluid px-xl-5 dashboard">
 
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
 
-<form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" name="add-coach" value="Dodaj">
-    <a href="{% url 'team_coaching_staff' team.id %}">wróć</a>
-</form>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="fw-bolder">Dodaj członka sztabu</h6>
+                    <form method="POST" class="user-profil data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <label for="{{form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa</label>
+                            <div class="col-sm-7">
+                                {{form.name}}
+                                {% for error in form.name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <label for="{{form.legal_form.id_for_label}}" class="col-sm-5 col-form-label">Forma
+                                prawna</label>
+                            <div class="col-sm-7">
+                                {{form.legal_form}}
+                                {% for error in form.legal_form.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <label for="{{form.addres.id_for_label}}" class="col-sm-5 col-form-label">Adres</label>
+                            <div class="col-sm-7">
+                                {{form.addres}}
+                                {% for error in form.addres.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <label for="{{form.regon.id_for_label}}" class="col-sm-5 col-form-label">REGON</label>
+                            <div class="col-sm-7">
+                                {{form.regon}}
+                                {% for error in form.regon.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <label for="{{form.nip.id_for_label}}" class="col-sm-5 col-form-label">NIP</label>
+                            <div class="col-sm-7">
+                                {{form.nip}}
+                                {% for error in form.nip.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+
+                        <div class="row">
+                            <label for="{{form.year_of_foundation.id_for_label}}" class="col-sm-5 col-form-label">Rok
+                                założenia</label>
+                            <div class="col-sm-7">
+                                {{form.year_of_foundation}}
+                                {% for error in form.year_of_foundation.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <input name="club-submit" type="submit" class="btn " value="Zapisz">
+                            </div>
+                        </div>
+                    </form>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" name="add-coach" value="Dodaj">
+                        <a href="{% url 'team_coaching_staff' team.id %}">wróć</a>
+                    </form>
+                    
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
 
 
 

@@ -474,9 +474,17 @@ def club_coaching_staff(request, club_id):
 def team_coaching_staff(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
-    coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
+    team_coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
+    team_historical_coaches = TeamsCoaching_Staff.objects.filter(team=team, leaving_date__isnull=False)
+    coaches = UsersClub.objects.filter(club=team.club, coach=True, accepted=True)
+    coaches_in_team = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
+    coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
+    form = AddCoachToTeam(coaches_not_in_team, request.POST or None)
+    if request.method == 'POST':
+        form.save(team=team)
+        return redirect(team_coaching_staff,team.id)    
 
-    return render(request,'clubs/team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'coaches':coaches,'team':team})
+    return render(request,'clubs/team_coaching_staff.html',{'team_historical_coaches':team_historical_coaches,'teams':teams,'usersClubs':usersClubs,'form':form, 'team_coaches':team_coaches,'team':team})
 
 def edit_team_coaching_staff(request, team_id, coach_id):
     usersClubs, teams = get_data_for_menu(request)
@@ -508,17 +516,17 @@ def edit_team_coaching_staff(request, team_id, coach_id):
             return redirect(team_coaching_staff,team.id)
     return render(request,'clubs/edit_team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'coach':coach})
 
-def add_coach_to_team(request, team_id):
-    usersClubs, teams = get_data_for_menu(request)
-    team = get_object_or_404(Team, pk=team_id)
-    coaches = UsersClub.objects.filter(club=team.club, coach=True)
-    coaches_in_team = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
-    coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
-    form = AddCoachToTeam(coaches_not_in_team, request.POST or None)
-    if request.method == 'POST':
-        form.save(team=team)
-        return redirect(team_coaching_staff,team.id)
-    return render(request,'clubs/add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
+# def add_coach_to_team(request, team_id):
+#     usersClubs, teams = get_data_for_menu(request)
+#     team = get_object_or_404(Team, pk=team_id)
+#     coaches = UsersClub.objects.filter(club=team.club, coach=True, accepted = True)
+#     coaches_in_team = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
+#     coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
+#     form = AddCoachToTeam(coaches_not_in_team, request.POST or None)
+#     if request.method == 'POST':
+#         form.save(team=team)
+#         return redirect(team_coaching_staff,team.id)
+#     return render(request,'clubs/add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
 
 def add_season(request, team_id):
     usersClubs, teams = get_data_for_menu(request)

@@ -1,37 +1,140 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Kadra{% endblock %}
+
+{% block title %}Sztab drużyny {{team.name}}{% endblock %}
+{% block header %}Sztab drużyny {{team.name}}{% endblock %}
 
 {% block content %}
 
-<table>
-  <thead>
-      <tr>
-          <th>Imię</th>
-          <th>Nazwisko</th>
-          <th>Rola</th>
-      </tr>
-  </thead>
-  {% for coach in coaches %}
-  <tbody>
-      <tr>
-          <td>
-            {{coach.coach.first_name}}
-          </td>
-          <td>
-            {{coach.coach.last_name}}
-          </td>
-          <td>
-            {{ coach.display_role_and_since }}
-          </td>
-          <td>
-            <a href="{% url 'edit_team_coaching_staff' team.id coach.coach.id %}">Edytuj</a>
-          </td>
-      </tr>
-  </tbody>
-  {% endfor %}
-</table>
-<a href="{% url 'add_coach_to_team' team.id %}">Dodaj członka sztabu</a><br>
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center h-100">
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder">Sztab drużyny {{team.name}}</h6>
+
+            <div class="row mt-4">
+              <div class="col-4">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Imię i Nazwisko</h6>
+              </div>
+              <div class="col-4">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Funkcja w sztabie</h6>
+              </div>
+              <div class="col-4">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Od kiedy w sztabie</h6>
+              </div>
+            </div>
+            {% for coach in team_coaches %}
+            <div class="row mt-1">
+              <div class="col-4 ">
+                <h6 class="h-100 m-0" style="border-bottom:1px solid #FF851B ;">{{coach.coach.first_name}}
+                  {{coach.coach.last_name}}</h6>
+              </div>
+              <div class="col-4 ">
+                <h6 class="h-100 m-0">{{ coach.role_in_team }}</h6>
+              </div>
+              <div class="col-4 d-flex flex-row justify-content-between">
+                <h6 class="h-100 m-0">{{coach.takeover_date}}</h6>
+                <a href="{% url 'edit_team_coaching_staff' team.id coach.coach.id %}">
+                  <h6><i class="fa-solid fa-pen"></i></h6>
+                </a>
+              </div>
+
+            </div>
+
+            {% endfor %}
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder">Historia sztabu drużyny</h6>
+
+            <div class="row mt-4">
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Imię i Nazwisko</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Funkcja w sztabie</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Od kiedy w sztabie</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Data usunięcia ze sztabu</h6>
+              </div>
+            </div>
+            {% for coach in team_historical_coaches %}
+            <div class="row mt-1">
+              <div class="col-3 ">
+                <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{coach.coach.first_name}}
+                  {{coach.coach.last_name}}</h6>
+              </div>
+              <div class="col-3 ">
+                <h6 class="h-100">{{ coach.role_in_team }}</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="h-100">{{coach.takeover_date}}</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="h-100">{{coach.leaving_date}}</h6>
+              </div>
+
+            </div>
+
+            {% endfor %}
+        </div>
+      </div>
+      
+    </div>
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder">Dodaj członka sztabu</h6>
+            <form method="POST" class="user-profil data">
+              {% csrf_token %}
+              <div class="row">
+                <label for="{{form.coach.id_for_label}}" class="col-sm-5 col-form-label">Trener</label>
+                <div class="col-sm-7">
+                  {{form.coach}}
+                  {% for error in form.coach.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row">
+                <label for="{{form.role_in_team.id_for_label}}" class="col-sm-5 col-form-label">Funkcja</label>
+                <div class="col-sm-7">
+                  {{form.role_in_team}}
+                  {% for error in form.role_in_team.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row">
+                <label for="{{form.takeover_date.id_for_label}}" class="col-sm-5 col-form-label">Data przejęcia</label>
+                <div class="col-sm-7">
+                  {{form.takeover_date}}
+                  {% for error in form.takeover_date.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12">
+                  <input name="club-submit" type="submit" class="btn " value="Dodaj">
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 
 
