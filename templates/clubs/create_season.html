@@ -54,9 +54,16 @@
 
             <div class="row mt-3">
               <div class="col-sm-12">
-                <input name="club-submit" type="submit" class="btn " value="Dodaj">
+                <input name="club-submit" type="submit" class="btn " value="{% if edit %} Zapisz {% else %} Dodaj {% endif %}">
               </div>
             </div>
+            <div class="row">
+              <div class="d-flex justify-content-end links">
+                <a href="{% url 'edit_team' team.id %}" class="text-decoration-none mt-1 ">
+                  <i class="fa-solid fa-arrow-left"></i> &nbsp; przejdź do edycji drużyny
+                </a>
+              </div>
+          </div>
           </form>
         </div>
       </div>

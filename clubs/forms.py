@@ -276,7 +276,7 @@ class CreatePlayerDataForm(forms.ModelForm):
 
 
 class AddCoachToTeam(forms.ModelForm):
-    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team', 'takeover_date']
@@ -298,7 +298,7 @@ class AddCoachToTeam(forms.ModelForm):
         return coach_in_team
     
 class EditCoachInTeam(forms.ModelForm):
-    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team','takeover_date']
@@ -318,7 +318,7 @@ class CreateEquipment(forms.ModelForm):
         return item
     
 class RentEquipmentForm(forms.ModelForm):
-    date_of_rental = forms.DateField(label='Data wypożyczenia', widget=forms.DateInput(attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    date_of_rental = forms.DateField(label='Data wypożyczenia', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = Rented_equipment
         fields = ['player', 'quantity', 'date_of_rental', 'description']
@@ -359,16 +359,16 @@ class TrainingForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-    start_datatime = forms.DateTimeField(
-        widget=forms.widgets.DateTimeInput(
-            attrs={'type': 'datetime-local'},
-        )
-    )
+
     place = forms.ModelChoiceField(queryset=Place.objects.all())
     implemented_mezocycle = forms.ModelChoiceField(queryset=ImplementedMezocycle.objects.all(),required=False)
     class Meta:
         model = Training
         exclude = ['season', 'end_datatime']
+        widgets = {
+            'start_datatime' : forms.widgets.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs={'type': 'datetime-local'})
+        }
+
         
     def __init__(self, *args, players=None, season, **kwargs):
         super(TrainingForm, self).__init__(*args, **kwargs)
@@ -479,8 +479,8 @@ class AttendanceForm(forms.ModelForm):
         return att
     
 class AttendanceReportFilter(forms.Form):
-    start_date = forms.DateField(label='Data początkowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    end_date = forms.DateField(label='Data końcowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    start_date = forms.DateField(format=('%Y-%m-%d'), label='Data początkowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    end_date = forms.DateField(format=('%Y-%m-%d'), label='Data końcowa', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
 
     def __init__(self, *args, season=None, **kwargs):
         super(AttendanceReportFilter, self).__init__(*args, **kwargs)
@@ -535,6 +535,7 @@ class Training_in_mezocycleForm(forms.ModelForm):
     class Meta:
         model = Training_in_mezocycle
         exclude = ['id','mezocycle','week_number','training_number']
+        
     
     def clean(self):
         cleaned_data = super().clean()
@@ -578,6 +579,7 @@ class ImplementTrainingForm(forms.ModelForm):
         required=False
     )
     start_datatime = forms.DateTimeField(
+        format=('%Y-%m-%dT%H:%M'), 
         widget=forms.widgets.DateTimeInput(
             attrs={'type': 'datetime-local'},
         ),required=False
