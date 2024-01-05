@@ -194,7 +194,7 @@ def club_settings(request, club_id):
                 allowed=True
 
     if allowed:
-        users = UsersClub.objects.filter(club = club)
+        users = UsersClub.objects.filter(club = club, accepted=True)
         form = ClubCreationForm(request.POST or None, instance = club)
         if request.method == 'POST':
             if form.is_valid():
@@ -266,7 +266,7 @@ def add_user_to_club(request,club_id):
             employee = form.cleaned_data['employee']
             training_coordinator = form.cleaned_data['training_coordinator']
 
-            users_club, created = UsersClub.objects.get_or_create(user=user, club=club)
+            users_club,created = UsersClub.objects.get_or_create(user=user, club=club)
 
             # Zaktualizuj dane
             users_club.admin = admin

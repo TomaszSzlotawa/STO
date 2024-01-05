@@ -7,12 +7,15 @@ from django.contrib.auth.models import User
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Player_data, Profile, Club, Rented_equipment, Training, Training_in_mezocycle, UsersClub, Season, Team, Player, TeamsCoaching_Staff
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from django.core.validators import MinLengthValidator, MinValueValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator, EmailValidator
+
+
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30,required=True, help_text="wpisz swoje imię")
     last_name = forms.CharField(max_length=30,required=True, help_text="wpisz swoje nazwisko")
     email = forms.EmailField(max_length=254,help_text="Wprowadź swój adres email")
+
 
     class Meta:
         model = User
@@ -21,7 +24,7 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data["email"]
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("An user with this email already exists!")
+            raise forms.ValidationError("Użytkownik z takim adresem email już istnieje.")
         return email
 
 class UserForm(forms.ModelForm):
@@ -45,27 +48,30 @@ class ClubCreationForm(forms.ModelForm):
     addres = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False,
-        validators=[MinLengthValidator(limit_value=5, message='Adres musi mieć co najmniej 5 znaków')]
+        validators=[MaxLengthValidator(limit_value=100, message='Nazwa może mieć maksymalnie 100 znaków')]
     )
     regon = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False,
-        validators=[MinLengthValidator(limit_value=9, message='REGON musi mieć co najmniej 9 znaków')]
+        validators=[MinLengthValidator(limit_value=9, message='REGON musi mieć co najmniej 9 znaków'), 
+                    MaxLengthValidator(limit_value=14, message='REGON może mieć maksymalnie 14 znaków')]
     )
     nip = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False,
-        validators=[MinLengthValidator(limit_value=10, message='NIP musi mieć co najmniej 10 znaków')]
+        validators=[MinLengthValidator(limit_value=10, message='NIP musi mieć 10 znaków'), 
+                    MaxLengthValidator(limit_value=10, message='NIP musi mieć 10 znaków')]
     )
     legal_form = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         required=False,
-        validators=[MinLengthValidator(limit_value=2, message='Forma prawna musi mieć co najmniej 2 znaki')]
+        validators=[MaxLengthValidator(limit_value=40, message='Forma prawna może mieć maksymalnie 40 znaków')]
     )
     year_of_foundation = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': 'form-control'}),
         required=False,
-        validators=[MinValueValidator(1800, message='Rok założenia klubu musi być co najmniej 1800')]
+        validators=[MinValueValidator(1800, message='Rok założenia klubu musi być co najmniej 1800'),
+                    MaxValueValidator(date.today().year, message='Rok założenia klubu nie może być większy niż obecny rok')]
     )
 
     class Meta:
@@ -76,12 +82,23 @@ class ClubCreationForm(forms.ModelForm):
         }
 
 
+
+
 class UsersClubForm(forms.ModelForm):
-    email = forms.EmailField(label='Adres email', required=True)
-    
+    email = forms.EmailField(
+        label='Adres email',
+        required=True,
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+    )   
     class Meta:
         model = UsersClub
         fields = ['admin', 'coach', 'employee', 'training_coordinator']
+        widgets = {
+            'admin': forms.CheckboxInput(attrs={'class': 'form-check-input col-sm-3 '}),
+            'coach': forms.CheckboxInput(attrs={'class': 'form-check-input col-sm-3 '}),
+            'training_coordinator': forms.CheckboxInput(attrs={'class': 'form-check-input col-sm-3 '}),
+            'employee': forms.CheckboxInput(attrs={'class': 'form-check-input col-sm-3 '}),
+        }
 
     def __init__(self, club, *args, **kwargs):
         self.club = club
@@ -93,7 +110,7 @@ class UsersClubForm(forms.ModelForm):
             user = User.objects.get(email=email)
             return user
         except User.DoesNotExist:
-            raise forms.ValidationError('Użytkownik o podanym adresie email nie istnieje.')
+            raise forms.ValidationError('Użytkownik o podanym adresie email nie istnieje.', code='invalid_email')
         
     def clean(self):
         cleaned_data = super().clean()

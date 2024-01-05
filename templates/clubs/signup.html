@@ -27,7 +27,13 @@
             <div class="card-body py-5 px-md-5">
               <form method="post" class="form-signin">
                 {% csrf_token %}
-
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger my-custom-alert">
+                    {% for error in form.non_field_errors %}
+                        {{ error|striptags }}
+                    {% endfor %}
+                  </div>
+                  {% endif %}
                                 <!-- username input -->
                 <div class="form-outline mb-2">
                   <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" maxlength="150" autofocus="" required="" class="form-control" />

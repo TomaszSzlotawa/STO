@@ -1,8 +1,92 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Dodaj użytkownika do klubu{% endblock %}
+{% block header %}Dodaj użytkownika do klubu{% endblock %}
 
 {% block content %}
+
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-8 col-md-8 col-lg-6 col-xl-5">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% csrf_token %}
+            <div class="row">
+              <div class="pb-2">
+                {{form.admin}}
+                <label class="form-check-label col-sm-9" for="{{form.admin.id_for_label}}">
+                  Nadaj uprawnienia administratora
+                </label>
+              </div>
+                {% for error in form.admin.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="row">
+              <div class="pb-2">
+                {{form.training_coordinator}}
+                <label class="form-check-label col-sm-9" for="{{form.training_coordinator.id_for_label}}">
+                  Nadaj uprawnienia koordynatora szkolenia
+                </label>
+              </div>
+                {% for error in form.training_coordinator.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="row">
+              <div class="pb-2">
+                {{form.coach}}
+                <label class="form-check-label col-sm-9" for="{{form.coach.id_for_label}}">
+                  Nadaj uprawnienia trenera
+                </label>
+              </div>
+                {% for error in form.coach.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="row">
+              <div class="pb-2 ">
+                {{form.employee}}
+                <label class="form-check-label col-sm-9" for="{{form.employee.id_for_label}}">
+                  Nadaj uprawnienia pracownika
+                </label>
+              </div>
+                {% for error in form.employee.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <label for="{{form.email.id_for_label}}">Wpisz adres email użytkownika, którego chcesz zaprosić</label>
+                {{form.email}}
+              </div>
+              {% for error in form.email.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 mt-3">
+                <input name="add-user--submit" type="submit" class="btn " value="Zapisz">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <form method="post">
     {% csrf_token %}
