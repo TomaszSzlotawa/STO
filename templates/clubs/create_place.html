@@ -1,15 +1,118 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Sprzęt w klubie{% endblock %}
+{% block title %}{% if edit %} Edytuj obiekt {% else %} Dodaj obiekt do klubu{% endif %}{% endblock %}
+{% block header %}{% if edit %} Edytuj obiekt {% else %} Dodaj obiekt do klubu{% endif %}{% endblock %}
 
 {% block content %}
-<h2>{% if edit %} Edytuj dane obiektu {% elif details %} Szczegóły obiektu{% else %}Stwórz obiekt {% endif %}</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form }} <br>
-  {% if details == false %}<button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>{% endif %} 
-  <a href="{% url 'places' club.id %}" >wróć</a>
 
-</form>
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="row ">
+              <label for="{{form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa</label>
+              <div class="col-sm-7">
+                {{form.name}}
+                {% for error in form.name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.addres.id_for_label}}" class="col-sm-5 col-form-label">Adres</label>
+              <div class="col-sm-7">
+                {{form.addres}}
+                {% for error in form.addres.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.surface.id_for_label}}" class="col-sm-5 col-form-label">Nawierzchnia</label>
+              <div class="col-sm-7">
+                {{form.surface}}
+                {% for error in form.surface.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.lights.id_for_label}}" class="col-sm-5 col-form-label">Oświetlenie</label>
+              <div class="col-sm-7">
+                {{form.lights}}
+                {% for error in form.lights.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.toilets.id_for_label}}" class="col-sm-5 col-form-label">Toalety</label>
+              <div class="col-sm-7">
+                {{form.toilets}}
+                {% for error in form.toilets.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.changing_rooms.id_for_label}}" class="col-sm-5 col-form-label">Szatnie</label>
+              <div class="col-sm-7">
+                {{form.changing_rooms}}
+                {% for error in form.changing_rooms.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.description.id_for_label}}" class="col-sm-5 col-form-label">Dodatkowe informacje</label>
+              <div class="col-sm-7">
+                {{form.description}}
+                {% for error in form.description.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="{% if edit %} Zapisz {% else %} Dodaj {% endif %}">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'places' club.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy obiektów
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 {% endblock %}

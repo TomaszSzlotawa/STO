@@ -1,18 +1,56 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Kadra{% endblock %}
+{% block title %}Edytuj funkcję w sztabie drużyny{% endblock %}
+{% block header %}Edytuj funkcję w sztabie drużyny{% endblock %}
 
 {% block content %}
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center h-100">
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
 
-<h3>{{coach.coach.first_name}} {{coach.coach.last_name}}</h3>
-<form method="post">
-  {% csrf_token %}
-  {{ form }}
-  <input type="submit" name="edit-role" value="Zapisz">
-  <input type="submit" name="delete-role" value="Usuń z drużyny">
-  <a href="{% url 'team_coaching_staff' team.id %}">wróć</a>
-</form>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder">Edytuj funkcję w sztabie trenera {{coach.coach.first_name}} {{coach.coach.last_name}}
+            </h6>
+            <form method="POST" class="user-profil data">
+              {% csrf_token %}
 
+              <div class="row mt-2">
+                <label for="{{form.role_in_team.id_for_label}}" class="col-sm-5 col-form-label">Funkcja</label>
+                <div class="col-sm-7">
+                  {{form.role_in_team}}
+                  {% for error in form.role_in_team.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row mt-2">
+                <label for="{{form.takeover_date.id_for_label}}" class="col-sm-5 col-form-label">Data przejęcia</label>
+                <div class="col-sm-7">
+                  {{form.takeover_date}}
+                  {% for error in form.takeover_date.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
 
+              <div class="row mt-3">
+                <div class="col-sm-12">
+                  <input name="edit-role" type="submit" class="btn " value="Zapisz">
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'team_coaching_staff' team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do widoku sztabu
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-{% endblock %}
+  {% endblock %}

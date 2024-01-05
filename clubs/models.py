@@ -140,13 +140,38 @@ class Place(models.Model):
     ]
     club = models.ForeignKey(Club, on_delete=models.CASCADE)
     name = models.CharField(max_length = 60, null = True, blank = False, help_text='Nazwa Obiektu',unique=False)
-    addres = models.CharField(max_length = 100, null = True, blank = True, help_text='Adres obiektu',unique=False)
+    addres = models.CharField(max_length = 100, null = True, blank = False, help_text='Adres obiektu',unique=False)
     lights = models.BooleanField(null=True,blank=True, help_text='Oświetlenie')
     toilets = models.BooleanField(null=True,blank=True, help_text='Toalety')
     changing_rooms = models.BooleanField(null=True,blank=True, help_text='Sztanie')
     surface = models.CharField(choices=surfaces, default="nt")
     description = models.TextField(null=True, blank=True, help_text='Specyfikacja obiektu')
 
+    def if_lights(self):
+        if self.lights:
+            return "Tak"
+        else:
+            return "Nie"
+        
+    def if_toilets(self):
+        if self.toilets:
+            return "Tak"
+        else:
+            return "Nie"
+
+    def if_changing_rooms(self):
+        if self.changing_rooms:
+            return "Tak"
+        else:
+            return "Nie"  
+
+    def surface_name(self):
+        if self.surface == 'nt':
+            return "murawa naturalna"
+        elif self.surface == 'at':
+             return "murawa sztuczna"
+        elif self.surface == 'fs':            
+            return "płaska powierzchnia"
 
 
 class Team(models.Model):

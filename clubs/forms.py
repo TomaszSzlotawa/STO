@@ -300,11 +300,13 @@ class AddCoachToTeam(forms.ModelForm):
         return coach_in_team
     
 class EditCoachInTeam(forms.ModelForm):
-    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    takeover_date = forms.DateField(label='Data objęcia drużyny', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'class': 'form-control','type':'date','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = TeamsCoaching_Staff
         fields = ['role_in_team','takeover_date']
-
+        widgets = {
+            'role_in_team': forms.Select(attrs={'class':'form-control'})
+        }
 
 class CreateEquipment(forms.ModelForm):
     class Meta:
@@ -340,8 +342,22 @@ class RentEquipmentForm(forms.ModelForm):
 class PlaceForm(forms.ModelForm):
     class Meta:
         model = Place
-        fields=['name','addres', 'lights', 'surface','description']
+        fields=['name','addres', 'lights','toilets','changing_rooms', 'surface','description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'addres': forms.TextInput(attrs={'class': 'form-control'}),
+            'lights': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'toilets': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'changing_rooms': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'surface': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Opcjonalne'}),
 
+        }
+    def clean_field(self):
+        data = self.cleaned_data["field"]
+        
+        return data
+    
     def save(self,club, commit=True):
         place = super().save(commit=False)
         place.club = club

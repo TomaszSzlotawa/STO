@@ -75,7 +75,7 @@ def club_panel(request, club_id):
     club = get_object_or_404(Club,pk=club_id)
     clubs_teams = Team.objects.filter(club=club)
     seasons = Season.objects.filter(team__in=clubs_teams,active=True)
-    coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams).order_by('coach')
+    coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams,leaving_date=None).order_by('coach')
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
     #attendance
     seasons_att = []
@@ -165,7 +165,7 @@ def club_settings(request, club_id):
 
     clubs_teams = Team.objects.filter(club=club)
     seasons = Season.objects.filter(team__in=clubs_teams,active=True)
-    coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams).order_by('coach')
+    coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams, leaving_date=None).order_by('coach')
 
     #attendance
     seasons_att = []
@@ -185,7 +185,8 @@ def club_settings(request, club_id):
             avg_attendance = round(present / len_attendance * 100,2)
         absent = 100-avg_attendance
         seasons_att.append((s,avg_attendance,absent))
-
+        print(type(avg_attendance))
+        print(type(absent))
 
     allowed = False
     for usersClub in usersClubs:
@@ -469,20 +470,21 @@ def club_coaching_staff(request, club_id):
     roles_in_teams = TeamsCoaching_Staff.objects.filter(team__in=club_teams,leaving_date=None)
     print(roles_in_teams)
     return render(request,'clubs/club_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})
-
+#ty
 
 def team_coaching_staff(request, team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
-    team_coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
-    team_historical_coaches = TeamsCoaching_Staff.objects.filter(team=team, leaving_date__isnull=False)
+    team_coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None).order_by('takeover_date')
+    team_historical_coaches = TeamsCoaching_Staff.objects.filter(team=team, leaving_date__isnull=False).order_by('leaving_date')
     coaches = UsersClub.objects.filter(club=team.club, coach=True, accepted=True)
     coaches_in_team = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None)
     coaches_not_in_team = coaches.exclude(user__in=coaches_in_team.values('coach'))
     form = AddCoachToTeam(coaches_not_in_team, request.POST or None)
     if request.method == 'POST':
         form.save(team=team)
-        return redirect(team_coaching_staff,team.id)    
+        return redirect(team_coaching_staff,team.id)   
+         
 
     return render(request,'clubs/team_coaching_staff.html',{'team_historical_coaches':team_historical_coaches,'teams':teams,'usersClubs':usersClubs,'form':form, 'team_coaches':team_coaches,'team':team})
 
@@ -510,11 +512,21 @@ def edit_team_coaching_staff(request, team_id, coach_id):
                     coach.takeover_date = takeover_date
                     coach.save()
                 return redirect(team_coaching_staff,team.id)
-        if "delete-role" in request.POST:
-            coach.leaving_date = date.today()
-            coach.save()
-            return redirect(team_coaching_staff,team.id)
     return render(request,'clubs/edit_team_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form, 'coach':coach})
+
+
+def delete_coach_from_team(request, team_id, coach_id):
+    usersClubs, teams = get_data_for_menu(request)
+    team = get_object_or_404(Team, pk=team_id)
+    coach = get_object_or_404(TeamsCoaching_Staff, team=team, leaving_date=None, coach_id=coach_id)
+
+    if request.method == 'POST':
+        coach.leaving_date = date.today()
+        coach.save()
+        return redirect(team_coaching_staff,team.id)  
+    else:
+        return render(request, 'clubs/confirm_coach_from_team.html', {'teams':teams, 'usersClubs':usersClubs,'coach':coach, 'team':team}) 
+
 
 # def add_coach_to_team(request, team_id):
 #     usersClubs, teams = get_data_for_menu(request)

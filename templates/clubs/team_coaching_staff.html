@@ -34,11 +34,17 @@
                 <h6 class="h-100 m-0">{{ coach.role_in_team }}</h6>
               </div>
               <div class="col-4 d-flex flex-row justify-content-between">
-                <h6 class="h-100 m-0">{{coach.takeover_date}}</h6>
-                <a href="{% url 'edit_team_coaching_staff' team.id coach.coach.id %}">
-                  <h6><i class="fa-solid fa-pen"></i></h6>
-                </a>
-              </div>
+                <h6 class="h-100 m-0">{{ coach.takeover_date }}</h6>
+                <div class="dropdown">
+                    <h6 class="dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"></h6>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                      <li><a class="dropdown-item"  href="{% url 'edit_team_coaching_staff' team.id coach.coach.id %}"><i class="fa-solid fa-pen"></i>&nbsp;Edytuj</a></li>
+                      <li><a class="dropdown-item"  href="{% url 'delete_coach_from_team' team.id coach.coach.id %}"><i class="fa-solid fa-trash"></i>&nbsp;Usuń trenera ze sztabu</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
 
             </div>
 
@@ -94,7 +100,7 @@
           <h5 class="fw-bolder">Dodaj członka sztabu</h6>
             <form method="POST" class="user-profil data">
               {% csrf_token %}
-              <div class="row">
+              <div class="row mt-2">
                 <label for="{{form.coach.id_for_label}}" class="col-sm-5 col-form-label">Trener</label>
                 <div class="col-sm-7">
                   {{form.coach}}
@@ -103,7 +109,7 @@
                   {% endfor %}
                 </div>
               </div>
-              <div class="row">
+              <div class="row mt-2">
                 <label for="{{form.role_in_team.id_for_label}}" class="col-sm-5 col-form-label">Funkcja</label>
                 <div class="col-sm-7">
                   {{form.role_in_team}}
@@ -112,7 +118,7 @@
                   {% endfor %}
                 </div>
               </div>
-              <div class="row">
+              <div class="row mt-2">
                 <label for="{{form.takeover_date.id_for_label}}" class="col-sm-5 col-form-label">Data przejęcia</label>
                 <div class="col-sm-7">
                   {{form.takeover_date}}
@@ -122,9 +128,9 @@
                 </div>
               </div>
 
-              <div class="row">
+              <div class="row mt-3">
                 <div class="col-sm-12">
-                  <input name="club-submit" type="submit" class="btn " value="Dodaj">
+                  <input name="add-submit" type="submit" class="btn " value="Dodaj">
                 </div>
               </div>
             </form>

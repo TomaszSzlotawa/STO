@@ -1,39 +1,97 @@
 {% extends 'clubs/main.html' %}
 
+
 {% block title %}Obiekty{% endblock %}
+{% block header %}Obiekty{% endblock %}
 
 {% block content %}
-  <h3>Obiekty {{ club.name }}</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Nazwa</th>
-        <th>Adres</th>
-        <th>Nawierzchnia</th>
-        <th>Zarządzaj</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for place in places %}
-        <tr>
-          <td>{{ place.name }}</td>
-          <td>{{ place.addres }}</td>
-          <td>{{ place.surface }}</td>
-          <td>
-            <div class="dropdown">
-                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Zarządzaj
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="{% url 'place_details' place.id %}">Szczegóły</a></li>
-                    <li><a class="dropdown-item" href="{% url 'edit_place' place.id %}">Edytuj</a></li>
-                    <li><a class="dropdown-item" href="{% url 'delete_place' place.id %}">Usuń</a></li>
-                </ul>
+
+
+<div class="container-fluid px-xl-5 dashboard">
+  <div class="row br-4">
+    <div class="col-xl-4 col-lg-6 mb-3">
+      <div class="row">
+        <a class="text-decoration-none" href="{% url 'create_place' club.id %}">
+          <div class="card  mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+              <i class="fa-solid fa-plus"></i>
+              <h6 class="m-0 text-uppercase">dodaj obiekt</h6>
             </div>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-<a href="{% url 'create_place' club.id %}">Dodaj nowy obiekt</a>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="row br-4">
+    {% for place in places %}
+    <div class="col-xl-4 col-lg-6 ">
+      <div class="card  mb-4">
+        <div class="card-body">
+          <div class="row m-l-0 m-r-0">
+            <div class="col-sm-4">
+              <div class="text-center justify-content-center">
+                <img style="width: 100%" class="rounded shadow-4-strong"
+                  src="https://static.vecteezy.com/system/resources/previews/000/203/055/original/isometric-soccer-stadium-vector.png"
+                  alt="">
+
+              </div>
+            </div>
+
+            <div class="col-sm-8">
+              <div class="card-block">
+                <div class="row">
+                  <div class="col-sm-10">
+                    <h6 class="my-0"><small>Nazwa</small></h6>
+                    <h5 class="fw-bolder">{{place.name}}</h5>
+                  </div>
+                  <div class="col-sm-2 py-0 d-flex flex-row justify-content-end">
+                    <a href="{% url 'delete_place' place.id %}"><i class="fa-solid fa-trash mx-2 mt-2"></i></a>
+          
+                    <a href="{% url 'edit_place' place.id %}"><i class="fa-solid fa-pen mx-2 mt-2"></i></a>
+                  </div>
+                </div>
+                <div class="row">
+                  <p class="my-0"><small>Adres</small></p>
+                  <h5 class="">{{place.addres}}</h5>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <p class="my-0"><small>Oświetlenie</small></p>
+                    <h5 class="">{{place.if_lights}}</h5>
+                  </div>
+                  <div class="col-sm-4">
+                    <p class="my-0"><small>Toalety</small></p>
+                    <h5 class="">{{place.if_toilets}}</h5>
+                  </div>
+                  <div class="col-sm-4">
+                    <p class="my-0"><small>Szatnie</small></p>
+                    <h5 class="">{{place.if_changing_rooms}}</h5>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <p class="my-0"><small>Nawierzchnia</small></p>
+                  <h5 class="">{{place.surface_name}}</h5>
+                </div>
+                {% if place.description %}
+                <div class="row">
+                  <h6 class="pt-1" style="border-top: 1px solid #FF851B;">{{place.description}}</h6>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+
+
+
 {% endblock %}

@@ -231,12 +231,15 @@
                       <br>
                       <script>
                         var ctxP = document.getElementById("pieChart{{ season.team.id }}").getContext('2d');
+                        var avg = JSON.parse('{{avg_attendance|safe}}');
+                        var abs = JSON.parse('{{absent|safe}}');
+                        console.log(avg)
                         var myPieChart = new Chart(ctxP, {
                           type: 'pie',
                           data: {
                             labels: ["Obecnych", "Nieobecnych"],
                             datasets: [{
-                              data: [{{ avg_attendance }}, {{ absent }}],
+                              data: [avg,abs],
                           backgroundColor: ["#2ecc71", "#e74c3c"],
                           hoverBackgroundColor: ["#2ecc71", "#e74c3c"]
                         }]
@@ -245,8 +248,6 @@
                           responsive: true,
                                                       }
                                                   });
-
-
                       </script>
                       {% endif %}
                       {% endfor %}
