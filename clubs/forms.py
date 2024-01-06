@@ -446,20 +446,25 @@ class list_of_players(forms.ModelMultipleChoiceField):
         return f"{player.surname} {player.name}" 
 
 class TrainingForm(forms.ModelForm):
-    duration = forms.IntegerField(min_value=1, required=True)
+    duration = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(attrs={'class':'form-control'}))
     player = list_of_players(
         queryset=Player.objects.all().order_by('surname', 'name'),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input col-6'}),
         required=False
     )
 
-    place = forms.ModelChoiceField(queryset=Place.objects.all())
-    implemented_mezocycle = forms.ModelChoiceField(queryset=ImplementedMezocycle.objects.all(),required=False)
+    place = forms.ModelChoiceField(queryset=Place.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
+    implemented_mezocycle = forms.ModelChoiceField(queryset=ImplementedMezocycle.objects.all(),required=False,widget=forms.Select(attrs={'class':'form-control'}))
     class Meta:
         model = Training
         exclude = ['season', 'end_datatime']
         widgets = {
-            'start_datatime' : forms.widgets.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs={'type': 'datetime-local'})
+            'start_datatime' : forms.widgets.DateTimeInput(format=('%Y-%m-%dT%H:%M'), attrs={'type': 'datetime-local','class': 'form-control'}),
+            'topic': forms.TextInput(attrs={'class': 'form-control'}),
+            'goals': forms.TextInput(attrs={'class': 'form-control'}),
+            'rules': forms.TextInput(attrs={'class': 'form-control'}),
+            'actions': forms.TextInput(attrs={'class': 'form-control'}),
+            'motoric_goals': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
         

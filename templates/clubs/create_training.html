@@ -1,24 +1,153 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Utwórz trening{% endblock %}
+{% block title %}{% if edit %} Edytuj dane treningu {% elif details %} Szczegóły treningu{% else %}Utwórz trening {% endif %}{% endblock %}
+{% block header %}{% if edit %} Edytuj dane treningu {% elif details %} Szczegóły treningu{% else %}Utwórz trening {% endif %}{% endblock %}
 
 {% block content %}
-<h2>{% if edit %} Edytuj dane treningu {% elif details %} Szczegóły treningu{% else %}Utwórz trening {% endif %}</h2>
-{% if form.errors %}
-  <ul class="errorlist">
-    {% for field_errors in form.errors.values %}
-      {% for error in field_errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    {% endfor %}
-  </ul>
-{% endif %}
-<form method="post">
-  {% csrf_token %}
-  {{ form }} <br>
-  {% if details == false %}<button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>{% endif %} 
-  <a href="{% url 'trainings' team.id %}" >wróć</a>
 
-</form>
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="row ">
+              <label for="{{form.topic.id_for_label}}" class="col-sm-5 col-form-label">Temat</label>
+              <div class="col-sm-7">
+                {{form.topic}}
+                {% for error in form.topic.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.goals.id_for_label}}" class="col-sm-5 col-form-label">Cele gry</label>
+              <div class="col-sm-7">
+                {{form.goals}}
+                {% for error in form.goals.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.rules.id_for_label}}" class="col-sm-5 col-form-label">Zasady gry</label>
+              <div class="col-sm-7">
+                {{form.rules}}
+                {% for error in form.rules.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.actions.id_for_label}}" class="col-sm-5 col-form-label">Działania</label>
+              <div class="col-sm-7">
+                {{form.actions}}
+                {% for error in form.actions.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.motoric_goals.id_for_label}}" class="col-sm-5 col-form-label">Cel motoryczny</label>
+              <div class="col-sm-7">
+                {{form.motoric_goals}}
+                {% for error in form.motoric_goals.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.place.id_for_label}}" class="col-sm-5 col-form-label">Lokalizacja</label>
+              <div class="col-sm-7">
+                {{form.place}}
+                {% for error in form.place.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.start_datatime.id_for_label}}" class="col-sm-5 col-form-label">Data i godzina rozpoczęcia</label>
+              <div class="col-sm-7">
+                {{form.start_datatime}}
+                {% for error in form.start_datatime.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.duration.id_for_label}}" class="col-sm-5 col-form-label">Czas trwania[min]</label>
+              <div class="col-sm-7">
+                {{form.duration}}
+                {% for error in form.duration.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.implemented_mezocycle.id_for_label}}" class="col-sm-5 col-form-label">Plan treningowy</label>
+              <div class="col-sm-7">
+                {{form.implemented_mezocycle}}
+                {% for error in form.implemented_mezocycle.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <h6 class="col-12 fw-bolder">Powołani zawodnicy</h6>
+              <div class="col-sm-7">
+                {% for player in form.player %}
+                <div class="col-6">
+                  {{ player }}
+                </div>
+                {% endfor %}
+                {% for error in form.player.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                {% if details == false %}
+                  <input name="club-submit" type="submit" class="btn " value="{% if edit %} Zapisz {% else %} Dodaj {% endif %}">
+                {% endif %}
+               
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'trainings' team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy treningów
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}

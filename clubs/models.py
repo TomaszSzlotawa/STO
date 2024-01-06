@@ -252,6 +252,7 @@ class Training(models.Model):
     goals = models.CharField(max_length = 100, null = True, blank = True, help_text='Cele',unique=False)
     rules = models.CharField(max_length = 100, null = True, blank = True, help_text='Zasady ',unique=False)
     actions = models.CharField(max_length = 100, null = True, blank = True, help_text='Działania',unique=False)
+    motoric_goals = models.CharField(max_length = 100, null = True, blank = True, help_text='Cele motoryczne',unique=False)
     start_datatime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data i godzina rozpoczęcia')
     end_datatime = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True, help_text='Data i godzina zakończenia')
     place = models.ForeignKey(Place, on_delete=models.SET_NULL,blank=False, null=True)
@@ -451,6 +452,7 @@ class Training_in_mezocycle(models.Model):
     goals = models.CharField(max_length = 100, null = True, blank = True, help_text='Cele',unique=False)
     rules = models.CharField(max_length = 100, null = True, blank = True, help_text='Zasady ',unique=False)
     actions = models.CharField(max_length = 100, null = True, blank = True, help_text='Działania',unique=False)
+    motoric_goals = models.CharField(max_length = 100, null = True, blank = True, help_text='Cele motoryczne',unique=False)
     duration = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Czas trwania")
 
     class Meta:

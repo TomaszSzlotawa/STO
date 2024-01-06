@@ -782,7 +782,7 @@ def add_training(request,team_id):
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team=team, active=True).first()
-    players = season.player.all()
+    players = season.player.all().order_by('surname')
     form = TrainingForm(request.POST or None, players = players, season=season)
     if request.method =='POST':
         if form.is_valid():
