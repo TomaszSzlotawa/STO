@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
+from django.urls import reverse
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -15,6 +16,7 @@ from datetime import date, datetime, timedelta
 from django.template.defaulttags import register
 from django.db.models import Q
 from sto.utils import render_to_pdf
+from django.contrib.auth import views as auth_views
 
 @register.filter
 def get_item(dictionary, key):
@@ -62,6 +64,9 @@ def signup(request):
 
 
 def user_panel(request):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     user_coaching_teams = TeamsCoaching_Staff.objects.filter(coach=request.user, leaving_date=None)
     coach_in_teams = [coaching_team.team for coaching_team in user_coaching_teams]
@@ -1033,7 +1038,6 @@ def create_mezocycle(request, team_id):
 
 
 def edit_mezocycle(request, mezocycle_id):
-    print(request.POST)
     usersClubs, teams = get_data_for_menu(request)
     mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
     trainings = Training_in_mezocycle.objects.filter(mezocycle = mezocycle)
@@ -1150,10 +1154,15 @@ def edit_mezocycle(request, mezocycle_id):
                     print("brak walidacji")
                     all_forms_valid=False
             if all_forms_valid:
-                new_mezocycle = Mezocycle(name=mezocycle.name, user=mezocycle.user, team=mezocycle.team, weeks=mezocycle.weeks, trainings_per_week=mezocycle.trainings_per_week)
-                mezocycle_in_db = get_object_or_404(Mezocycle,pk = mezocycle_id)
-                if new_mezocycle.name==mezocycle_in_db.name:
-                    new_mezocycle.name+="-kopia"
+                def check_name(name,team):
+                    name_not_awailable = Mezocycle.objects.filter(name=name, team=team)
+                    if name_not_awailable:
+                        name+="-kopia"
+                        return check_name(name,team)
+                    else:
+                        return name
+                n = check_name(mezocycle.name,mezocycle.team)
+                new_mezocycle = Mezocycle(name=n, user=mezocycle.user, team=mezocycle.team, weeks=mezocycle.weeks, trainings_per_week=mezocycle.trainings_per_week)
                 new_mezocycle.save()
                 for form in forms_list:
                     if form.is_valid():
