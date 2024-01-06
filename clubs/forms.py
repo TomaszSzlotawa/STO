@@ -510,7 +510,7 @@ class TrainingForm(forms.ModelForm):
             if start_datatime < season_start or end_datatime > season_end:
                 raise ValidationError("Trening musi odbywać się w ramach trwającego sezonu.")
         else:
-            raise ValidationError("wypełnij temat i długość treningu")
+            raise ValidationError("Wypełnij temat i długość treningu")
 
     def save(self, commit=True):
         training = super().save(commit=False)
@@ -664,7 +664,7 @@ class Training_in_mezocycleForm(forms.ModelForm):
        
         if not topic:
             er = True
-            er_message += "Wprowadź tytuł. "
+            er_message += "Wprowadź temat. "
         if not duration:
             er = True
             er_message +="Wprowadź długość. "
@@ -676,6 +676,9 @@ class ImplementMezocycleForm(forms.ModelForm):
     class Meta:
         model = ImplementedMezocycle
         exclude = ['id','team']
+        widgets = {
+            'name':forms.TextInput(attrs={'class':'form-control'})
+        }
 
     def __init__(self, *args,team=None, **kwargs):
         super(ImplementMezocycleForm, self).__init__(*args, **kwargs)
@@ -687,26 +690,32 @@ class ImplementMezocycleForm(forms.ModelForm):
         mezo = ImplementedMezocycle.objects.filter(name=name, team=self.team)
 
         if mezo:
-            raise ValidationError("taka nazwa już istnieje dla innego obiektu") 
+            raise ValidationError("Taka nazwa już istnieje dla innego mezocyklu") 
         
 class ImplementTrainingForm(forms.ModelForm):
-    duration = forms.IntegerField(min_value=1, required=False)
+    duration = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(attrs={'class':'form-control'}))
     player = list_of_players(
         queryset=Player.objects.all().order_by('surname', 'name'),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input col-6'}),
         required=False
     )
+
+    place = forms.ModelChoiceField(required=False, queryset=Place.objects.all(), widget=forms.Select(attrs={'class':'form-control'}))
     start_datatime = forms.DateTimeField(
         widget=forms.widgets.DateTimeInput(
             format=('%Y-%m-%dT%H:%M'), 
-            attrs={'type': 'datetime-local'},
-        ),required=False
+            attrs={'type': 'datetime-local','class':'form-control'}),required=False
     )
-    topic = forms.CharField(max_length = 100, required=False)
-    place = forms.ModelChoiceField(queryset=Place.objects.all(), required=False)
+    topic = forms.CharField(max_length = 100, required=False,widget = forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Training
         exclude = ['season', 'end_datatime','implemented_mezocycle']
+        widgets = {
+            'goals': forms.TextInput(attrs={'class': 'form-control'}),
+            'rules': forms.TextInput(attrs={'class': 'form-control'}),
+            'actions': forms.TextInput(attrs={'class': 'form-control'}),
+            'motoric_goals': forms.TextInput(attrs={'class': 'form-control'}),
+        }
         
     def __init__(self, *args, players=None, season, **kwargs):
         super(ImplementTrainingForm, self).__init__(*args, **kwargs)
@@ -728,7 +737,7 @@ class ImplementTrainingForm(forms.ModelForm):
         topic = cleaned_data.get('topic')
         place = cleaned_data.get('place')
         er = False
-        er_message = "Błąd walidacji. "
+        er_message = ""
         if start_datatime and duration:
             end_datatime = start_datatime + timedelta(minutes=duration)
             season_start = datetime.combine(self.season.date_of_start, datetime.min.time())
@@ -739,7 +748,7 @@ class ImplementTrainingForm(forms.ModelForm):
                 er_message += "Trening musi odbywać się w ramach trwającego sezonu. "
         if not topic:
             er = True
-            er_message += "Wprowadź tytuł. "
+            er_message += "Wprowadź temat. "
         if not start_datatime:
             er = True
             er_message +="Wprowadź datę i godzinę rozpoczęcia. "
@@ -748,7 +757,7 @@ class ImplementTrainingForm(forms.ModelForm):
             er_message +="Wprowadź długość. "
         if not place:
             er = True
-            er_message +="Wprowadź miejsce. "
+            er_message +="Wprowadź lokalizację. "
         
         if er:
             raise ValidationError(er_message)

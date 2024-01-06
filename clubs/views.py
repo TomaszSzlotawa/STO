@@ -1226,9 +1226,6 @@ def implement_mezocycle(request, mezocycle_id):
         forms_list.append(form) 
     
     if request.method =='POST':
-        if 'mezocycle' in request.POST:
-            if mezocycle_form.is_valid():
-                implemented_mezocycle = mezocycle_form.save(commit=False)
         if 'trainings' in request.POST:
             all_forms_valid = True
             for form in forms_list:
@@ -1242,14 +1239,14 @@ def implement_mezocycle(request, mezocycle_id):
                     implemented_mezocycle = mezocycle_form.save(commit=False)
                     implemented_mezocycle.team = team
                     implemented_mezocycle.save()
-                for form in forms_list:
-                    if form.is_valid():
-                        training = form.save()
-                        training.implemented_mezocycle = implemented_mezocycle
-                        training.save()
-                    else:
-                        print("błąd")
-                return redirect(trainings,season.team.id)
+                    for form in forms_list:
+                        if form.is_valid():
+                            training = form.save()
+                            training.implemented_mezocycle = implemented_mezocycle
+                            training.save()
+                        else:
+                            print("błąd")
+                    return redirect(trainings,season.team.id)
         
     return render(request,'clubs/implement_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
 
