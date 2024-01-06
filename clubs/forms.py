@@ -613,11 +613,14 @@ class AttendanceReportFilter(forms.Form):
 
 
 class MezocycleForm(forms.ModelForm):
-    weeks = forms.IntegerField(min_value=1,max_value=10,required=True)
-    trainings_per_week = forms.IntegerField(min_value=1,max_value=14,required=True)
+    weeks = forms.IntegerField(min_value=1,max_value=10,required=True,widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    trainings_per_week = forms.IntegerField(min_value=1,max_value=14,required=True, widget=forms.NumberInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Mezocycle
         exclude = ['id','team','user']
+        widgets = {
+            'name': forms.TextInput(attrs={'class':'form-control'})
+        }
 
     def __init__(self, *args, team=None, **kwargs):
         # Pobierz instancję z kwargs, jeśli została przekazana
@@ -636,16 +639,21 @@ class MezocycleForm(forms.ModelForm):
 
         # Sprawdź, czy instancja przekazana do formularza jest tą samą instancją, co znaleziony obiekt w bazie danych
         if mezo and mezo[0] != self.original_instance:
-            raise ValidationError("taka nazwa już istnieje dla innego obiektu")
+            raise ValidationError(f"Istnieje już plan treninigowy o takiej nazwie dla drużyny {self.team.name}")
 
 
 class Training_in_mezocycleForm(forms.ModelForm):
-    topic = forms.CharField(required=False)
-    duration = forms.IntegerField(min_value=1, required=False)
+    topic = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    duration = forms.IntegerField(min_value=1, required=False,widget=forms.NumberInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Training_in_mezocycle
         exclude = ['id','mezocycle','week_number','training_number']
-        
+        widgets = {
+            'goals': forms.TextInput(attrs={'class': 'form-control'}),
+            'rules': forms.TextInput(attrs={'class': 'form-control'}),
+            'actions': forms.TextInput(attrs={'class': 'form-control'}),
+            'motoric_goals': forms.TextInput(attrs={'class': 'form-control'}),
+        }
     
     def clean(self):
         cleaned_data = super().clean()

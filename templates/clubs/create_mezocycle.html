@@ -4,61 +4,21 @@
 {% block header %}{% if edit %} Edytuj plan treningowy {% else %} Dodaj plan treningowy {% endif %}{% endblock %}
 
 {% block content %}
-<h2>{% if edit %} Edytuj mezocykl {% else %} Utwórz mezocykl {% endif %}</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ mezocycle_form }}
-  <input type="submit" name="mezocycle" value="{% if edit %}Zapisz{% else %}Utwórz{% endif %}">
-{% if mezocycle_set %}
-<table>
-  <thead>
-    <th>Tydzień</th>
-    {% for t in for_t %}
-      <th>Trening {{ t }}</th>
-    {% endfor %}
-  </thead>
-  <tbody>
-    {% for w in for_w %}
-      <tr>
-        <td>{{ w }}</td>
-        {% for t in for_t %}
-          {% for wt, form in forms_list %}
-            {% if wt.week == w and wt.training == t%}
-            <td>
-              <input type="hidden" name="{{ form.prefix }}-week_number" value="{{ w }}">
-              <input type="hidden" name="{{ form.prefix }}-training_number" value="{{ t }}">
-              {% if form.is_bound %}
-                {{ form.as_p }}
-              {% endif %}
-            </td>
-            {% endif %}
-          {% endfor %}
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% csrf_token %}
-<input type="submit" name="mezocycle_details" value="Utwórz">
-</form>
-{% endif %}
-<a href="{% url 'mezocycles' team.id %}" >wróć</a>
 
-
-<div class="container py-5 h-100 dashboard">
-  <div class="row d-flex justify-content-center align-items-center h-100">
-    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-      <div class="card mb-3">
-        <div class="card-body">
-          <form method="POST" class="user-profil data">
+<div class="container-fluid py-5 h-100 dashboard">
+  <form method="POST" class="user-profil data">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+        <div class="card mb-3">
+          <div class="card-body">
             {% csrf_token %}
 
-            {% if form.non_field_errors %}
-              <div class="alert alert-danger my-custom-alert">
-                {% for error in form.non_field_errors %}
-                    {{ error|striptags }}
-                {% endfor %}
-              </div>
+            {% if mezocycle_form.non_field_errors %}
+            <div class="alert alert-danger my-custom-alert">
+              {% for error in mezocycle_form.non_field_errors %}
+              {{ error|striptags }}
+              {% endfor %}
+            </div>
             {% endif %}
 
             <div class="row mt-2">
@@ -70,20 +30,20 @@
                 {% endfor %}
               </div>
             </div>
-
             <div class="row mt-2">
-              <label for="{{mezocycle_form.weeks.id_for_label}}" class="col-sm-5 col-form-label">Ile trwa tygodni</label>
-              <div class="col-sm-7">
+
+              <label for="{{mezocycle_form.weeks.id_for_label}}" class="col-4 col-form-label text-wrap">Ile trwa
+                tygodni</label>
+              <div class="col-2">
                 {{mezocycle_form.weeks}}
                 {% for error in mezocycle_form.weeks.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
                 {% endfor %}
               </div>
-            </div>
 
-            <div class="row mt-2">
-              <label for="{{mezocycle_form.trainings_per_week.id_for_label}}" class="col-sm-5 col-form-label">Data wypożyczenia</label>
-              <div class="col-sm-7">
+              <label for="{{mezocycle_form.trainings_per_week.id_for_label}}"
+                class="col-4 col-form-label text-wrap">Ilość treningów w tygodniu</label>
+              <div class="col-2 ">
                 {{mezocycle_form.trainings_per_week}}
                 {% for error in mezocycle_form.trainings_per_week.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
@@ -91,113 +51,145 @@
               </div>
             </div>
 
-            <div class="row mt-2">
-              <label for="{{form.description.id_for_label}}" class="col-sm-5 col-form-label">Dodatkowe informacje</label>
-              <div class="col-sm-7">
-                {{form.description}}
-                {% for error in form.description.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
+            <div class="row mt-3 ">
+              <div class="col-sm-4">
+                <input name="mezocycle" type="submit" class="btn "
+                  value="{% if mezocycle_set %}Aktualizuj ilość treningów{% else %}Dodaj treningi do wypełnienia{% endif %}">
               </div>
+              {% if mezocycle_set %}
+              <div class="col-sm-4"> </div>
+              <div class="col-sm-4 d-flex justify-content-end">
+                <input name="mezocycle_details" type="submit" class="btn "
+                  value="Utwórz plan treningowy">
+              </div>
+              {% endif %}
             </div>
 
-            <div class="row mt-3">
-              <div class="col-sm-12">
-                <input name="club-submit" type="submit" class="btn " value="Wypożycz">
-              </div>
-            </div>
-          </form>
-
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="d-flex justify-content-end links">
-          <a href="{% url 'mezocycles' team.id %}" class="text-decoration-none mt-1 ">
-            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy planów treningowych
-          </a>
+        <div class="row mb-2">
+          <div class="d-flex justify-content-end links">
+            <a href="{% url 'mezocycles' team.id %}" class="text-decoration-none mt-1 ">
+              <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy planów treningowych
+            </a>
+          </div>
         </div>
-      </div>
       </div>
     </div>
+    {% if mezocycle_set %}
 
     <div class="col-12 col-md-12 col-lg-12 col-xl-12">
-      <div class="card mb-3">
-        <div class="card-body">
-          <form method="POST" class="user-profil data">
-            {% csrf_token %}
 
-            {% if form.non_field_errors %}
-              <div class="alert alert-danger my-custom-alert">
-                {% for error in form.non_field_errors %}
-                    {{ error|striptags }}
-                {% endfor %}
-              </div>
-            {% endif %}
-
-            <div class="row mt-2">
-              <label for="{{form.player.id_for_label}}" class="col-sm-5 col-form-label">Zawodnik</label>
-              <div class="col-sm-7">
-                {{form.player}}
-                {% for error in form.player.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <label for="{{form.quantity.id_for_label}}" class="col-sm-5 col-form-label">Ilość[szt]</label>
-              <div class="col-sm-7">
-                {{form.quantity}}
-                {% for error in form.quantity.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <label for="{{form.date_of_rental.id_for_label}}" class="col-sm-5 col-form-label">Data wypożyczenia</label>
-              <div class="col-sm-7">
-                {{form.date_of_rental}}
-                {% for error in form.date_of_rental.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <label for="{{form.description.id_for_label}}" class="col-sm-5 col-form-label">Dodatkowe informacje</label>
-              <div class="col-sm-7">
-                {{form.description}}
-                {% for error in form.description.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            </div>
-
-            <div class="row mt-3">
-              <div class="col-sm-12">
-                <input name="club-submit" type="submit" class="btn " value="Wypożycz">
-              </div>
-            </div>
-          </form>
-
+      {% csrf_token %}
+      {% for w in for_w %}
+      <div class="col-xl-12 col-lg-12 ">
+        <div class="card  mb-4">
+          <div class="card-header py-3 d-flex flex-row justify-content-center" style="border-radius: 0.5rem;">
+            <h6 class="m-0 text-uppercase">tydzień {{w}}</h6>
+          </div>
         </div>
       </div>
       <div class="row">
-        <div class="d-flex justify-content-end links">
-          <a href="{% url 'mezocycles' team.id %}" class="text-decoration-none mt-1 ">
-            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy planów treningowych
-          </a>
+        {% for t in for_t %}
+        {% for wt, form in forms_list %}
+        {% if wt.week == w and wt.training == t%}
+        <input type="hidden" name="{{ form.prefix }}-week_number" value="{{ w }}">
+        <input type="hidden" name="{{ form.prefix }}-training_number" value="{{ t }}">
+        {% if form.is_bound %}
+
+
+        <div class="col-xl-4 col-lg-6 col-12">
+          <div class="card mb-3">
+            <div class="card-body">
+              {% csrf_token %}
+              <h5 class="fw-bolder">Trening {{t}}</h5>
+              {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                {{ error|striptags }}
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <div class="row ">
+                <label for="{{form.topic.id_for_label}}" class="col-sm-5 col-form-label">Temat</label>
+                <div class="col-sm-7">
+                  {{form.topic}}
+                  {% for error in form.topic.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <label for="{{form.goals.id_for_label}}" class="col-sm-5 col-form-label">Cele gry</label>
+                <div class="col-sm-7">
+                  {{form.goals}}
+                  {% for error in form.goals.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <label for="{{form.rules.id_for_label}}" class="col-sm-5 col-form-label">Zasady gry</label>
+                <div class="col-sm-7">
+                  {{form.rules}}
+                  {% for error in form.rules.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <label for="{{form.actions.id_for_label}}" class="col-sm-5 col-form-label">Działania</label>
+                <div class="col-sm-7">
+                  {{form.actions}}
+                  {% for error in form.actions.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <label for="{{form.motoric_goals.id_for_label}}" class="col-sm-5 col-form-label">Cel motoryczny</label>
+                <div class="col-sm-7">
+                  {{form.motoric_goals}}
+                  {% for error in form.motoric_goals.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="row mt-2">
+                <label for="{{form.duration.id_for_label}}" class="col-sm-5 col-form-label">Czas trwania[min]</label>
+                <div class="col-sm-7">
+                  {{form.duration}}
+                  {% for error in form.duration.errors %}
+                  <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
       </div>
-      </div>
+      {% endfor %}
     </div>
 
-  </div>
+
+    {% endif %}
+
+
+
+  </form>
 </div>
 
 
 {% endblock %}
-
-
-
