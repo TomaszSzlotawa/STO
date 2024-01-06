@@ -651,7 +651,7 @@ def edit_equipment(request, item_id):
     if request.method == 'POST':
         if form.is_valid():
             form.save(club=club)
-        return redirect(clubs_equipment, club.id)
+            return redirect(clubs_equipment, club.id)
     return render(request,'clubs/create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form, 'edit':True})
 
 def delete_equipment(request, item_id):
@@ -667,7 +667,7 @@ def rent_equipment(request, item_id):
     usersClubs, teams = get_data_for_menu(request)
     item = get_object_or_404(Equipment, pk=item_id)
     club = item.club
-    form = RentEquipmentForm(club, request.POST or None)
+    form = RentEquipmentForm(club, item, request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             form.save(item)

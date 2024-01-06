@@ -8,6 +8,7 @@ from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Plac
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator, EmailValidator
+from django.db.models import Sum
 
 
 
@@ -327,6 +328,40 @@ class CreateEquipment(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Opcjonalne'}),
         }
 
+from django import forms
+from django.db.models import Sum
+from .models import Rented_equipment, Equipment
+
+class CreateEquipment(forms.ModelForm):
+    class Meta:
+        model = Equipment
+        fields = ['name', 'producer', 'all_quantity', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '50'}),
+            'producer': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '50'}),
+            'all_quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Opcjonalne'}),
+        }
+
+    def clean_all_quantity(self):
+        all_quantity = self.cleaned_data['all_quantity']
+        if self.instance:
+            rented_quantity = Rented_equipment.objects.filter(equipment=self.instance, date_of_return=None).aggregate(Sum('quantity'))['quantity__sum'] or 0
+            available_quantity = all_quantity - rented_quantity
+
+            if available_quantity < 0:
+                raise forms.ValidationError(f'Wybrana ilość jest mniejsza niż ilość wypożyczonych sztuk ({rented_quantity}).')
+
+        return all_quantity
+
+    def save(self, club, commit=True):
+        item = super().save(commit=False)
+        item.club = club
+
+        if commit:
+            item.save()
+        return item
+
 
     def save(self,club, commit=True):
         item = super().save(commit=False)
@@ -343,13 +378,33 @@ class RentEquipmentForm(forms.ModelForm):
         fields = ['player', 'quantity', 'date_of_rental', 'description']
         widgets = {
             'player': forms.Select(attrs={'class': 'form-control'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Opcjonalne'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'description': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Opcjonalne. (np. Rozmiar, numer)'}),
         }
 
-    def __init__(self, club, *args, **kwargs):
+    def __init__(self, club, item, *args, **kwargs):
         super(RentEquipmentForm, self).__init__(*args, **kwargs)
         self.fields['player'].queryset = Player.objects.filter(club=club).order_by('surname')
+        self.item = item
+
+    
+    def clean_quantity(self):
+        quantity = self.cleaned_data['quantity']
+        if quantity < 1:
+            raise forms.ValidationError('Musisz wybrać minimum jedną sztukę.')
+        else:
+            if self.item:
+
+                all_quantity = Equipment.objects.get(pk=self.item.pk).all_quantity
+                rented_quantity = Rented_equipment.objects.filter(equipment=self.item, date_of_return=None).aggregate(Sum('quantity'))['quantity__sum'] or 0
+
+                available_quantity = all_quantity-rented_quantity
+                print(available_quantity)
+
+                if quantity > available_quantity:
+                    raise forms.ValidationError(f'Wybrana ilość przekracza dostępną ilość w magazynie. Dostępne {available_quantity} sztuk.')
+
+        return quantity
 
     def save(self, item, commit=True):
         rent = super().save(commit=False)
