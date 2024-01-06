@@ -90,6 +90,9 @@ def user_panel(request):
                                                    'is_admin':is_admin,'is_training_coordinator':is_training_coordinator, 'is_coach':is_coach, 'is_employee':is_employee})
 
 def club_panel(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     clubs_teams = Team.objects.filter(club=club)
@@ -122,6 +125,9 @@ def club_panel(request, club_id):
 
 
 def user_profile(request):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     is_admin = False
     is_training_coordinator = False
@@ -173,6 +179,9 @@ def user_profile(request):
 
 
 def delete_profile(request):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request or None)
     user = request.user
     if request.method == 'POST':
@@ -181,6 +190,9 @@ def delete_profile(request):
     return render(request,'clubs/confirm.html',{'user':user,'usersClubs':usersClubs,'teams':teams})
 
 def create_club(request):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     form = ClubCreationForm(request.POST or None)
     if form.is_valid():
@@ -192,6 +204,9 @@ def create_club(request):
     return render(request,'clubs/create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
 
 def club_settings(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     
@@ -239,6 +254,9 @@ def club_settings(request, club_id):
         return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
 
 def delete_club(request,club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
@@ -250,6 +268,9 @@ def delete_club(request,club_id):
     return render(request,'clubs/confirm_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams})
 
 def roles_in_club(request,club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
@@ -295,6 +316,9 @@ def roles_in_club(request,club_id):
     return render(request,'clubs/roles_in_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'users':users})
 
 def add_user_to_club(request,club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     role = UsersClub.objects.filter(club=club, user=request.user).first()
@@ -330,11 +354,17 @@ def add_user_to_club(request,club_id):
     return render(request,'clubs/add_user_to_club.html',{'club':club,'usersClubs':usersClubs,'teams':teams,'form':form})
 
 def user_roles(request):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     usersClubs_roles = UsersClub.objects.filter(user = request.user)
     return render(request,'clubs/user_roles.html',{'usersClubs':usersClubs,'teams':teams,'usersClubs_roles':usersClubs_roles})
 
 def user_role_delete(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     club = get_object_or_404(Club, pk = club_id)
     users = UsersClub.objects.filter(club = club)
     for user in users: 
@@ -345,6 +375,9 @@ def user_role_delete(request, club_id):
 
     return redirect(user_roles)
 def user_role_answer(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     if request.method == 'POST':
         club = get_object_or_404(Club, pk = club_id)
         form = UserRoleAnswerForm(request.POST)
@@ -356,6 +389,9 @@ def user_role_answer(request, club_id):
     return redirect(user_roles)
 
 def create_team(request,club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk = club_id)
     if request.method == 'POST':
@@ -375,6 +411,9 @@ def create_team(request,club_id):
         'teams':teams,'team_form':team_form, 'season_form':season_form})
 
 def delete_team(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     club = team.club
@@ -384,6 +423,9 @@ def delete_team(request, team_id):
     return render(request,'clubs/confirm_team.html',{'team':team,'club':club,'usersClubs':usersClubs,'teams':teams})
 
 def edit_team(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
 
     team = get_object_or_404(Team,pk=team_id)
@@ -409,6 +451,9 @@ def edit_team(request, team_id):
         'teams':teams,'team_form':team_form, 'season_form':season_form, 'team':team, 'seasons':seasons})
 
 def club_staff(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     players = Player.objects.filter(club=club)
@@ -419,6 +464,9 @@ def club_staff(request, club_id):
     return render(request,'clubs/club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons,'show_hidden':show_hidden})
 
 def create_player(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     player_form = CreatePlayerForm(request.POST or None)
@@ -438,6 +486,9 @@ def create_player(request, club_id):
     return render(request,'clubs/create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':False})
 
 def team_staff(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team = team, active = True).first()
@@ -448,6 +499,9 @@ def team_staff(request, team_id):
     return render(request,'clubs/team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team, 'season':season})
 
 def add_player(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     players = Player.objects.filter(club=team.club)
@@ -480,6 +534,9 @@ def add_player(request, team_id):
             
     return render(request,'clubs/add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})
 def delete_player_from_club(request, player_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     player = get_object_or_404(Player,pk = player_id)
     club = player.club
     usersClubs, teams = get_data_for_menu(request)
@@ -489,6 +546,9 @@ def delete_player_from_club(request, player_id):
     return render(request, 'clubs/confirm_player_from_club.html', {'teams':teams, 'usersClubs':usersClubs,'player':player}) 
 
 def hide_player_in_club(request, player_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     player = get_object_or_404(Player,pk = player_id)
     club = player.club
     player.hidden = not player.hidden
@@ -497,6 +557,9 @@ def hide_player_in_club(request, player_id):
 
 
 def delete_player_from_team(request, season_id, player_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     player = get_object_or_404(Player, pk = player_id)
     season = get_object_or_404(Season, pk=season_id)
     season.player.remove(player)
@@ -505,6 +568,9 @@ def delete_player_from_team(request, season_id, player_id):
 
 
 def club_coaching_staff(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk=club_id)
     coaches = UsersClub.objects.filter(club=club, coach=True)
@@ -512,9 +578,12 @@ def club_coaching_staff(request, club_id):
     roles_in_teams = TeamsCoaching_Staff.objects.filter(team__in=club_teams,leaving_date=None)
     print(roles_in_teams)
     return render(request,'clubs/club_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})
-#ty
+
 
 def team_coaching_staff(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     team_coaches = TeamsCoaching_Staff.objects.filter(team=team,leaving_date=None).order_by('takeover_date')
@@ -531,6 +600,9 @@ def team_coaching_staff(request, team_id):
     return render(request,'clubs/team_coaching_staff.html',{'team_historical_coaches':team_historical_coaches,'teams':teams,'usersClubs':usersClubs,'form':form, 'team_coaches':team_coaches,'team':team})
 
 def edit_team_coaching_staff(request, team_id, coach_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     coach = get_object_or_404(TeamsCoaching_Staff, team=team, leaving_date=None, coach_id=coach_id)
@@ -568,6 +640,9 @@ def edit_team_coaching_staff(request, team_id, coach_id):
 
 
 def delete_coach_from_team(request, team_id, coach_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     coach = get_object_or_404(TeamsCoaching_Staff, team=team, leaving_date=None, coach_id=coach_id)
@@ -593,6 +668,9 @@ def delete_coach_from_team(request, team_id, coach_id):
 #     return render(request,'clubs/add_coach_to_team.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'form':form})
 
 def add_season(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     form = SeasonCreateForm(request.POST or None,team=team)
@@ -603,6 +681,9 @@ def add_season(request, team_id):
     return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'season_form':form,'edit':False})
 
 def edit_active_season(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     season = Season.objects.filter(team=team, active = True).first()
@@ -615,6 +696,9 @@ def edit_active_season(request, team_id):
     return render(request,'clubs/create_season.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'season_form':form, 'edit':True})
 
 def edit_player(request, player_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     player = get_object_or_404(Player,pk=player_id)
     player_form = CreatePlayerForm(request.POST or None, instance=player)
@@ -631,12 +715,18 @@ def edit_player(request, player_id):
 
 
 def clubs_equipment(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk=club_id)
     equipment = Equipment.objects.filter(club=club)
     return render(request,'clubs/equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'equipment':equipment})
 
 def create_equipment(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk=club_id)
     form = CreateEquipment(request.POST or None)
@@ -649,6 +739,9 @@ def create_equipment(request, club_id):
 
 
 def edit_equipment(request, item_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     item = get_object_or_404(Equipment, pk=item_id)
     club = get_object_or_404(Club, pk=item.club.id)
@@ -660,6 +753,9 @@ def edit_equipment(request, item_id):
     return render(request,'clubs/create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form, 'edit':True})
 
 def delete_equipment(request, item_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     item = get_object_or_404(Equipment, pk=item_id)
     club = get_object_or_404(Club, pk=item.club.id)
@@ -669,6 +765,9 @@ def delete_equipment(request, item_id):
     return render(request,'clubs/confirm_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'item':item})
 
 def rent_equipment(request, item_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     item = get_object_or_404(Equipment, pk=item_id)
     club = item.club
@@ -680,6 +779,9 @@ def rent_equipment(request, item_id):
     return render(request,'clubs/rent_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'form':form})
 
 def rented_equipment(request, item_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     item = get_object_or_404(Equipment, pk=item_id)
     equipment_holders = Rented_equipment.objects.filter(equipment = item, date_of_return = None)
@@ -691,12 +793,18 @@ def rented_equipment(request, item_id):
     return render(request,'clubs/rented_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'sum':sum, 'rest':rest})
 
 def return_equipment(request, rent_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     rent = get_object_or_404(Rented_equipment,pk=rent_id)
     rent.date_of_return = date.today()
     rent.save()
     return redirect(rented_equipment, rent.equipment.id)
 
 def players_equipment(request, player_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     player = get_object_or_404(Player, pk = player_id)
     items = Rented_equipment.objects.filter(player=player, date_of_return__isnull=True)
@@ -704,6 +812,9 @@ def players_equipment(request, player_id):
     return render(request, 'clubs/players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})
 
 def teams_equipment(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team, pk=team_id)
     season = Season.objects.filter(team = team, active = True).first()
@@ -727,6 +838,9 @@ def teams_equipment(request, team_id):
     return render(request,'clubs/teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
 
 def places(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     places = Place.objects.filter(club=club)
@@ -734,6 +848,9 @@ def places(request, club_id):
     return render(request,'clubs/places.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'places':places})
 
 def create_place(request, club_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     form = PlaceForm(request.POST or None)
@@ -744,6 +861,9 @@ def create_place(request, club_id):
     return render(request,'clubs/create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
 
 def delete_place(request, place_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     place = get_object_or_404(Place, pk=place_id)
     club = get_object_or_404(Club, pk=place.club.id)
@@ -753,6 +873,9 @@ def delete_place(request, place_id):
     return render(request,'clubs/confirm_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'place':place})
 
 def edit_place(request,place_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     place = get_object_or_404(Place, pk=place_id)
     club = get_object_or_404(Club,pk=place.club.id)
@@ -764,6 +887,9 @@ def edit_place(request,place_id):
     return render(request,'clubs/create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'edit':True})
 
 def place_details(request, place_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     place = get_object_or_404(Place, pk=place_id)
     club = get_object_or_404(Club,pk=place.club.id)
@@ -772,7 +898,11 @@ def place_details(request, place_id):
         form.fields[field_name].widget.attrs['disabled'] = True
     
     return render(request,'clubs/create_place.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form,'details':True})
+
 def trainings(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team=team, active=True).first()
@@ -784,6 +914,9 @@ def trainings(request, team_id):
     return render(request,'clubs/trainings.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'schedueled_trainings':schedueled_trainings, 'finished_trainings':finished_trainings})
 
 def add_training(request,team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team=team, active=True).first()
@@ -796,6 +929,9 @@ def add_training(request,team_id):
     return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form})
 
 def edit_training(request,training_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training,pk=training_id)
     team = get_object_or_404(Team,pk=training.season.team.id)
@@ -809,6 +945,9 @@ def edit_training(request,training_id):
     return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form,'edit':True})
 
 def training_details(request,training_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training,pk=training_id)
     team = get_object_or_404(Team,pk=training.season.team.id)
@@ -820,6 +959,9 @@ def training_details(request,training_id):
     return render(request,'clubs/create_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team, 'form':form,'details':True})
 
 def delete_training(request,training_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training,pk=training_id)
     team = get_object_or_404(Team,pk=training.season.team.id)
@@ -829,6 +971,9 @@ def delete_training(request,training_id):
     return render(request,'clubs/confirm_training.html',{'teams':teams,'usersClubs':usersClubs,'team':team,'training':training})
 
 def training_attendance(request, training_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training, pk=training_id)
     attendance = Attendance.objects.filter(training=training).order_by('player__surname')
@@ -848,6 +993,9 @@ def training_attendance(request, training_id):
     return render(request, 'clubs/training_attendance.html', {'teams': teams, 'usersClubs': usersClubs, 'attendance': attendance, 'training': training, 'forms_list': forms_list})
 
 def training_attendance_report(request, training_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training, pk=training_id)
     attendance = Attendance.objects.filter(training=training).order_by('player')
@@ -862,6 +1010,9 @@ def training_attendance_report(request, training_id):
     return render(request, 'clubs/training_attendance_report.html', {'teams': teams, 'usersClubs': usersClubs,'attendance':attendance, 'training': training,'avg_attendance':avg_attendance})
 
 def team_attendance_report(request,team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
     season = Season.objects.filter(team = team, active = True).first()
@@ -908,6 +1059,9 @@ def team_attendance_report(request,team_id):
 
 
 def player_attendance_report(request, season_id, player_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     player = get_object_or_404(Player,pk=player_id)
     season = get_object_or_404(Season,pk=season_id)
@@ -939,6 +1093,9 @@ def player_attendance_report(request, season_id, player_id):
 
 
 def mezocycles(request,team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk = team_id)
     mezocycles = Mezocycle.objects.filter(Q(team=team)).order_by('id')
@@ -946,6 +1103,9 @@ def mezocycles(request,team_id):
     return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles,'implemented_mezocycles':implemented_mezocycles})
 
 def create_mezocycle(request, team_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     print(request.POST)
 
     class Training_in_week:
@@ -1015,6 +1175,7 @@ def create_mezocycle(request, team_id):
                         training_in_mezocycle.week_number = request.POST.get(str(w)+'_'+str(t)+"-week_number", "")
                         training_in_mezocycle.training_number = request.POST.get(str(w)+'_'+str(t)+"-training_number", "")
                         training_in_mezocycle.goals = request.POST.get(str(w)+'_'+str(t)+"-goals", "")
+                        training_in_mezocycle.motoric_goals = request.POST.get(str(w)+'_'+str(t)+"-motoric_goals", "")
                         training_in_mezocycle.rules = request.POST.get(str(w)+'_'+str(t)+"-rules", "")
                         training_in_mezocycle.actions = request.POST.get(str(w)+'_'+str(t)+"-actions", "")
                         training_in_mezocycle.duration = request.POST.get(str(w)+'_'+str(t)+"-duration", "")
@@ -1038,6 +1199,9 @@ def create_mezocycle(request, team_id):
 
 
 def edit_mezocycle(request, mezocycle_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
     trainings = Training_in_mezocycle.objects.filter(mezocycle = mezocycle)
@@ -1090,6 +1254,7 @@ def edit_mezocycle(request, mezocycle_id):
                             training_in_mezocycle.week_number = w
                             training_in_mezocycle.training_number = t
                             training_in_mezocycle.goals = request.POST.get(str(w)+'_'+str(t)+"-goals", "")
+                            training_in_mezocycle.motoric_goals = request.POST.get(str(w)+'_'+str(t)+"-motoric_goals", "")
                             training_in_mezocycle.rules = request.POST.get(str(w)+'_'+str(t)+"-rules", "")
                             training_in_mezocycle.actions = request.POST.get(str(w)+'_'+str(t)+"-actions", "")
                             training_in_mezocycle.duration = request.POST.get(str(w)+'_'+str(t)+"-duration", "")
@@ -1138,6 +1303,7 @@ def edit_mezocycle(request, mezocycle_id):
                         training_in_mezocycle.week_number = w
                         training_in_mezocycle.training_number = t
                         training_in_mezocycle.goals = request.POST.get(str(w)+'_'+str(t)+"-goals", "")
+                        training_in_mezocycle.motoric_goals = request.POST.get(str(w)+'_'+str(t)+"-motoric_goals", "")
                         training_in_mezocycle.rules = request.POST.get(str(w)+'_'+str(t)+"-rules", "")
                         training_in_mezocycle.actions = request.POST.get(str(w)+'_'+str(t)+"-actions", "")
                         training_in_mezocycle.duration = request.POST.get(str(w)+'_'+str(t)+"-duration", "")
@@ -1173,6 +1339,7 @@ def edit_mezocycle(request, mezocycle_id):
                         new_training.week_number = training.week_number
                         new_training.training_number = training.training_number
                         new_training.goals = training.goals
+                        new_training.motoric_goals = training.motoric_goals
                         new_training.rules = training.rules
                         new_training.actions = training.actions
                         new_training.duration = training.duration
@@ -1197,6 +1364,9 @@ def edit_mezocycle(request, mezocycle_id):
     return render(request,'clubs/edit_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
 
 def delete_mezocycle(request, mezocycle_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
     team = get_object_or_404(Team, pk=mezocycle.team.id)
@@ -1206,6 +1376,9 @@ def delete_mezocycle(request, mezocycle_id):
     return render(request, 'clubs/confirm_mezocycle.html', {'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,}) 
 
 def implement_mezocycle(request, mezocycle_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     mezocycle = get_object_or_404(Mezocycle,pk = mezocycle_id)
     team = mezocycle.team
@@ -1216,16 +1389,19 @@ def implement_mezocycle(request, mezocycle_id):
     for_w = range(1, mezocycle.weeks + 1)
     for_t = range(1, mezocycle.trainings_per_week + 1)
     mezocycle_form = ImplementMezocycleForm(request.POST or None,team=team,initial={'weeks':mezocycle.weeks,'trainings_per_week':mezocycle.trainings_per_week,'name':mezocycle.name})
+    mezocycle_form.fields['weeks'].required = False
+    mezocycle_form.fields['trainings_per_week'].required = False
     mezocycle_form.fields['weeks'].widget = forms.HiddenInput()
     mezocycle_form.fields['trainings_per_week'].widget = forms.HiddenInput()
     for tr in trainings_in_mezocycle:
-        training = Training(topic=tr.topic,actions=tr.actions,goals=tr.goals,rules=tr.rules)
-        form = ImplementTrainingForm(request.POST or None,initial={'topic':tr.topic,'actions':tr.actions,'goals':tr.goals,'rules':tr.rules,'duration':tr.duration}, players = players,season=season, prefix=(str(tr.week_number)+'_'+str(tr.training_number)))
+        training = Training(topic=tr.topic,actions=tr.actions,goals=tr.goals,rules=tr.rules, motoric_goals=tr.motoric_goals)
+        form = ImplementTrainingForm(request.POST or None,initial={'topic':tr.topic,'actions':tr.actions,'motoric_goals':tr.motoric_goals,'goals':tr.goals,'rules':tr.rules,'duration':tr.duration}, players = players,season=season, prefix=(str(tr.week_number)+'_'+str(tr.training_number)))
         form.week_number = tr.week_number
         form.training_number =  tr.training_number
         forms_list.append(form) 
     
     if request.method =='POST':
+
         if 'trainings' in request.POST:
             all_forms_valid = True
             for form in forms_list:
@@ -1235,6 +1411,8 @@ def implement_mezocycle(request, mezocycle_id):
                     all_forms_valid=False
                     break
             if all_forms_valid:
+                print(mezocycle_form)
+
                 if mezocycle_form.is_valid():
                     implemented_mezocycle = mezocycle_form.save(commit=False)
                     implemented_mezocycle.team = team
@@ -1251,6 +1429,9 @@ def implement_mezocycle(request, mezocycle_id):
     return render(request,'clubs/implement_mezocycle.html',{'mezocycle_form':mezocycle_form,'for_t':for_t,'for_w':for_w,'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,'forms_list':forms_list})
 
 def delete_implemented_mezocycle(request, mezocycle_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
     trainings = Training.objects.filter(implemented_mezocycle=mezocycle)
@@ -1266,6 +1447,9 @@ def delete_implemented_mezocycle(request, mezocycle_id):
     return render(request, 'clubs/confirm_implemented_mezocycle.html', {'teams':teams, 'usersClubs':usersClubs, 'mezocycle':mezocycle,}) 
 
 def review_implemented_mezocycle(request, mezocycle_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
     trainings = Training.objects.filter(implemented_mezocycle=mezocycle).order_by('start_datatime')
@@ -1280,6 +1464,9 @@ def review_implemented_mezocycle(request, mezocycle_id):
     return render(request,'clubs/review_implemented_mezocycle.html',{'for_t':for_t,'for_w':for_w,'teams':teams,'usersClubs':usersClubs,'mezocycle':mezocycle, 'team':mezocycle.team, 'trainings_list':trainings_list})
 
 def pdf_view(request,mezocycle_id):
+    if not request.user.is_authenticated:
+        login = reverse('login')
+        return redirect(login)
     mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
     trainings = Training.objects.filter(implemented_mezocycle=mezocycle).order_by('start_datatime')
     date_of_start_mezocycle = trainings.first().start_datatime.date()
