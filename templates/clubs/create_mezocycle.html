@@ -1,6 +1,7 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Utwórz mezocykl{% endblock %}
+{% block title %}{% if edit %} Edytuj plan treningowy {% else %} Dodaj plan treningowy {% endif %}{% endblock %}
+{% block header %}{% if edit %} Edytuj plan treningowy {% else %} Dodaj plan treningowy {% endif %}{% endblock %}
 
 {% block content %}
 <h2>{% if edit %} Edytuj mezocykl {% else %} Utwórz mezocykl {% endif %}</h2>
@@ -42,4 +43,161 @@
 </form>
 {% endif %}
 <a href="{% url 'mezocycles' team.id %}" >wróć</a>
+
+
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="row mt-2">
+              <label for="{{mezocycle_form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa</label>
+              <div class="col-sm-7">
+                {{mezocycle_form.name}}
+                {% for error in mezocycle_form.name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{mezocycle_form.weeks.id_for_label}}" class="col-sm-5 col-form-label">Ile trwa tygodni</label>
+              <div class="col-sm-7">
+                {{mezocycle_form.weeks}}
+                {% for error in mezocycle_form.weeks.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{mezocycle_form.trainings_per_week.id_for_label}}" class="col-sm-5 col-form-label">Data wypożyczenia</label>
+              <div class="col-sm-7">
+                {{mezocycle_form.trainings_per_week}}
+                {% for error in mezocycle_form.trainings_per_week.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.description.id_for_label}}" class="col-sm-5 col-form-label">Dodatkowe informacje</label>
+              <div class="col-sm-7">
+                {{form.description}}
+                {% for error in form.description.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="Wypożycz">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'mezocycles' team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy planów treningowych
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="row mt-2">
+              <label for="{{form.player.id_for_label}}" class="col-sm-5 col-form-label">Zawodnik</label>
+              <div class="col-sm-7">
+                {{form.player}}
+                {% for error in form.player.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.quantity.id_for_label}}" class="col-sm-5 col-form-label">Ilość[szt]</label>
+              <div class="col-sm-7">
+                {{form.quantity}}
+                {% for error in form.quantity.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.date_of_rental.id_for_label}}" class="col-sm-5 col-form-label">Data wypożyczenia</label>
+              <div class="col-sm-7">
+                {{form.date_of_rental}}
+                {% for error in form.date_of_rental.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.description.id_for_label}}" class="col-sm-5 col-form-label">Dodatkowe informacje</label>
+              <div class="col-sm-7">
+                {{form.description}}
+                {% for error in form.description.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="Wypożycz">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'mezocycles' team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy planów treningowych
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 {% endblock %}
+
+
+

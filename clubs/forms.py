@@ -538,9 +538,21 @@ class TrainingForm(forms.ModelForm):
         return training
     
 class AttendanceForm(forms.ModelForm):
-    present = forms.BooleanField(label="Obecny", required=False)
-    not_specified = forms.BooleanField(label="Nieokreślono", required=False)
-    absent = forms.BooleanField(label="Nieobecny", required=False)
+    present = forms.BooleanField(
+        label="Obecny",
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'mx-auto form-check-input'})
+    )
+    not_specified = forms.BooleanField(
+        label="Nieokreślono",
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'mx-auto form-check-input'})
+    )
+    absent = forms.BooleanField(
+        label="Nieobecny",
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'mx-auto form-check-input'})
+    )
 
     class Meta:
         model = Attendance
@@ -577,8 +589,8 @@ class AttendanceForm(forms.ModelForm):
         return att
     
 class AttendanceReportFilter(forms.Form):
-    start_date = forms.DateField(label='Data początkowa', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'}))
-    end_date = forms.DateField( label='Data końcowa', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'}))
+    start_date = forms.DateField(label='Data początkowa', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date','class': 'form-control'}))
+    end_date = forms.DateField( label='Data końcowa', required=False, widget=forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date','class': 'form-control'}))
 
     def __init__(self, *args, season=None, **kwargs):
         super(AttendanceReportFilter, self).__init__(*args, **kwargs)
@@ -640,7 +652,7 @@ class Training_in_mezocycleForm(forms.ModelForm):
         duration = cleaned_data.get('duration')
         topic = cleaned_data.get('topic')
         er = False
-        er_message = "Błąd walidacji. "
+        er_message = ""
        
         if not topic:
             er = True

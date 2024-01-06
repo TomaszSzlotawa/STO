@@ -1,70 +1,136 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Sprawdź obecność{% endblock %}
+{% block header %}Sprawdzanie obecności {{training.start_datatime}}{% endblock %}
 
 {% block content %}
-<h2>Sprawdź obecność</h2>
-{% if form.errors %}
-  <ul class="errorlist">
-    {% for field_errors in form.errors.values %}
-      {% for error in field_errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    {% endfor %}
-  </ul>
-{% endif %}
-<form method="post" id="attendance-form">
-  <table>
-    <thead>
-      <th>Imię</th>
-      <th>Nazwisko</th>
-      <th>Obecny</th>
-      <th>Nie określono</th>
-      <th>Nieobecny</th>
-    </thead>
-    <tbody>
-      {% for att, form in forms_list %}
-          <tr>
-            <td>{{ att.player.name }}</td>
-            <td>{{ att.player.surname }}</td>
-            <td>
-                {{ form.present }} 
-                <label for="id_{{att.player.id}}-present">{{ form.present.label }}</label>
-            </td>
-            <td>
-                {{ form.not_specified }} 
-                <label for="id_{{att.player.id}}-not_specified">{{ form.not_specified.label }}</label>
-            </td>
-            <td>
-                {{ form.absent }} 
-                <label for="id_{{att.player.id}}-absent">{{ form.absent.label }}</label>
-              </td>
-          </tr>
-        {% endfor %}
-    </tbody>
-  </table>
 
-  {% csrf_token %}
-  <input type="submit" value="Zapisz">
-</form>
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-12 col-lg-10 col-xl-8">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            <h5 class="fw-bolder">Sprawdź obecność</h6>
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger my-custom-alert">
+                  {% for error in form.non_field_errors %}
+                      {{ error|striptags }}
+                  {% endfor %}
+                </div>
+               {% endif %}
+               <div class="row mt-4">
+                <div class="col-3 " >
+                    <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Imię i Nazwisko</h6>
+                </div>
+                <div class="col-3 d-flex justify-content-center form-check" >
+                    <button type="button" class="" id="btn-present" style="background: transparent; border:none; color: #333;">Obecny</button>
+                </div>
+                <div class="col-3 d-flex justify-content-center form-check" >
+                    <button type="button" class="" id="btn-not-specified" style="background: transparent; border:none; color: #333;">Nieokreślono</button>
+                </div>
+                <div class="col-3 d-flex justify-content-center form-check" >
+                    <button type="button" class="btn-style" id="btn-absent" style="background: transparent; border:none; color: #333;">Nieobecny</button>
+                </div>
+            </div>
+            
+            
+            
+            {% csrf_token %}
+
+
+            {% for att, form in forms_list %}
+
+              <div class="row mt-2">
+                <div class="col-3 ">
+                  <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">
+                    {{ att.player.name }} {{ att.player.surname }}
+                  </h6>
+                </div>
+
+                <div class="col-3 d-flex justify-content-center form-check">
+                  <h6 class="h-100">{{ form.present }} </h6>
+                </div>
+                
+                <div class="col-3 d-flex justify-content-center form-check">
+                    <h6 class="h-100">{{ form.not_specified }} </h6>
+                </div>
+                
+                <div class="col-3 d-flex justify-content-center form-check">
+                    <h6 class="h-100">{{ form.absent }} </h6>
+                </div>
+              
+              </div>
+
+            {% endfor %}
+            
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="Zapisz">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'trainings' training.season.team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy treningów
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var rows = document.querySelectorAll('#attendance-form tbody tr');
+document.addEventListener('DOMContentLoaded', function () {
+    var rows = document.querySelectorAll('.row.mt-2');
 
-    rows.forEach(function(row) {
+    function toggleColumnCheckboxes(checkboxes, checked) {
+        checkboxes.forEach(function (cb) {
+            cb.checked = checked;
+        });
+    }
+
+    document.getElementById('btn-present').addEventListener('click', function () {
+        rows.forEach(function (row) {
+            var checkboxes = row.querySelectorAll('input[type="checkbox"]');
+            toggleColumnCheckboxes(checkboxes, false);
+            checkboxes[0].checked = true;  // Indeks 0 odpowiada za checkbox "Obecny"
+        });
+    });
+
+    document.getElementById('btn-not-specified').addEventListener('click', function () {
+        rows.forEach(function (row) {
+            var checkboxes = row.querySelectorAll('input[type="checkbox"]');
+            toggleColumnCheckboxes(checkboxes, false);
+            checkboxes[1].checked = true;  // Indeks 1 odpowiada za checkbox "Nieokreślono"
+        });
+    });
+
+    document.getElementById('btn-absent').addEventListener('click', function () {
+        rows.forEach(function (row) {
+            var checkboxes = row.querySelectorAll('input[type="checkbox"]');
+            toggleColumnCheckboxes(checkboxes, false);
+            checkboxes[2].checked = true;  // Indeks 2 odpowiada za checkbox "Nieobecny"
+        });
+    });
+
+    rows.forEach(function (row) {
         var checkboxes = row.querySelectorAll('input[type="checkbox"]');
-        
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
                 var checkedCheckboxes = row.querySelectorAll('input[type="checkbox"]:checked');
-                
+
                 if (checkedCheckboxes.length === 0) {
-                    // Jeśli żaden checkbox nie jest zaznaczony, zaznacz aktualny checkbox
                     checkbox.checked = true;
                 } else {
-                    // Odznacz pozostałe checkboxy
-                    checkboxes.forEach(function(otherCheckbox) {
+                    checkboxes.forEach(function (otherCheckbox) {
                         if (otherCheckbox !== checkbox) {
                             otherCheckbox.checked = false;
                         }
@@ -74,6 +140,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
 </script>
 
+
+
+
 {% endblock %}
+
+
+
+
+

@@ -43,18 +43,18 @@
                                 <h6 class="" style="border-bottom:1px solid #FF851B ;">{{user.user.first_name}}
                                     {{user.user.last_name}}</h6>
                             </div>
-                            <div class="col-2">
-                                <input type="checkbox" id="admin_{{user.id}}" name="admin_{{user.id}}" {% if user.admin %}checked{% endif %}>
+                            <div class="col-2 d-flex justify-content-center form-check" >
+                                <input type="checkbox" class="form-check-input" id="admin_{{user.id}}" name="admin_{{user.id}}" {% if user.admin %}checked{% endif %}>
                             </div>
-                            <div class="col-2">
-                                <input type="checkbox" id="training_coordinator_{{user.id}}"
+                            <div class="col-2 d-flex justify-content-center form-check" >
+                                <input type="checkbox" class="form-check-input" id="training_coordinator_{{user.id}}"
                                     name="training_coordinator_{{user.id}}" {% if user.training_coordinator %}checked{% endif %}>
                             </div>
-                            <div class="col-2">
-                                <input type="checkbox" id="coach_{{user.id}}" name="coach_{{user.id}}" {% if user.coach %}checked{% endif %}>
+                            <div class="col-2 d-flex justify-content-center form-check" >
+                                <input class="form-check-input" type="checkbox" id="coach_{{user.id}}" name="coach_{{user.id}}" {% if user.coach %}checked{% endif %}>
                             </div>
-                            <div class="col-2">
-                                <input type="checkbox" id="employee_{{user.id}}" name="employee_{{user.id}}" {% if user.employee %}checked{% endif %}>
+                            <div class="col-2 d-flex justify-content-center form-check" >
+                                <input class="form-check-input" type="checkbox" id="employee_{{user.id}}" name="employee_{{user.id}}" {% if user.employee %}checked{% endif %}>
                             </div>
                         </div>
                         {% endif %}

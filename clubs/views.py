@@ -826,7 +826,7 @@ def delete_training(request,training_id):
 def training_attendance(request, training_id):
     usersClubs, teams = get_data_for_menu(request)
     training = get_object_or_404(Training, pk=training_id)
-    attendance = Attendance.objects.filter(training=training).order_by('player')
+    attendance = Attendance.objects.filter(training=training).order_by('player__surname')
     forms_list = []
     for att in attendance:
         form = AttendanceForm(request.POST or None, instance=att, prefix=str(att.player.id))
@@ -850,7 +850,10 @@ def training_attendance_report(request, training_id):
     for att in attendance:
         if att.present:
             present += 1
-    avg_attendance = round(present / len(attendance) *100,2)
+    if len(attendance) != 0:
+        avg_attendance = round(present / len(attendance) *100,2)
+    else: 
+        avg_attendance = 0
     return render(request, 'clubs/training_attendance_report.html', {'teams': teams, 'usersClubs': usersClubs,'attendance':attendance, 'training': training,'avg_attendance':avg_attendance})
 
 def team_attendance_report(request,team_id):
