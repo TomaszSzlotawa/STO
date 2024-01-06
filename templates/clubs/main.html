@@ -83,6 +83,9 @@
                                         <li>
                                             <a class="text-decoration-none text-wrap d-block" href="{% url 'teams_equipment' team.id %}" >Raport sprzętu drużyny</a>
                                         </li>
+                                        <li>
+                                            <a class="text-decoration-none text-wrap d-block" href="{% url 'edit_team' team.id %}">Ustawienia drużyny</a>
+                                        </li>
                                 </ul>
                                     {% endif %}
                                 {% endfor %}

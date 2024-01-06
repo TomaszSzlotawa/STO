@@ -638,7 +638,7 @@ def create_equipment(request, club_id):
     if request.method == 'POST':
         if form.is_valid():
             form.save(club=club)
-        return redirect(clubs_equipment, club.id)
+            return redirect(clubs_equipment, club.id)
     return render(request,'clubs/create_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'form':form})
 
 

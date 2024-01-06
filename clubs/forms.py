@@ -320,6 +320,13 @@ class CreateEquipment(forms.ModelForm):
     class Meta:
         model = Equipment
         fields = ['name','producer','all_quantity','description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '50'}),
+            'producer': forms.TextInput(attrs={'class': 'form-control', 'maxlength': '50'}),
+            'all_quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Opcjonalne'}),
+        }
+
 
     def save(self,club, commit=True):
         item = super().save(commit=False)
@@ -330,14 +337,19 @@ class CreateEquipment(forms.ModelForm):
         return item
     
 class RentEquipmentForm(forms.ModelForm):
-    date_of_rental = forms.DateField(label='Data wypożyczenia', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','min':'1900-01-01','max':date.today()}))
+    date_of_rental = forms.DateField(label='Data wypożyczenia', widget=forms.DateInput(format=('%Y-%m-%d'), attrs={'type':'date','class': 'form-control','min':'1900-01-01','max':date.today()}))
     class Meta:
         model = Rented_equipment
         fields = ['player', 'quantity', 'date_of_rental', 'description']
+        widgets = {
+            'player': forms.Select(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control','placeholder': 'Opcjonalne'}),
+        }
 
     def __init__(self, club, *args, **kwargs):
         super(RentEquipmentForm, self).__init__(*args, **kwargs)
-        self.fields['player'].queryset = Player.objects.filter(club=club)
+        self.fields['player'].queryset = Player.objects.filter(club=club).order_by('surname')
 
     def save(self, item, commit=True):
         rent = super().save(commit=False)

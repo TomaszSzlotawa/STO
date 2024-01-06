@@ -83,7 +83,7 @@ class Sponsorship(models.Model):
         return f"[{self.start_date}] {self.sponsor}"
 
 class Equipment(models.Model):
-    name = models.CharField(max_length = 50, null = True, blank = False, help_text='Nazwa Sprzętu',unique=True)
+    name = models.CharField(max_length = 50, null = True, blank = False, help_text='Nazwa Sprzętu',unique=False)
     producer = models.CharField(max_length = 50, null = True, blank = False, help_text='Nazwa producenta',unique=False)
     all_quantity = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Ilość sprzętu")
     #quantity_available = models.PositiveSmallIntegerField(null=True,blank=False, help_text="Dostępna ilość sprzętu")
@@ -102,7 +102,7 @@ class Player(models.Model):
     joining_date = models.DateField(auto_now=True, auto_now_add=False, null=True, blank=False, help_text='Data dołącznia do klubu')
     hidden = models.BooleanField(null=False,blank=False, default=False)
     def __str__(self):
-        return f"{self.surname} {self.name} [{self.club.name}]"
+        return f"{self.surname} {self.name}"
 
 
 class Rented_equipment(models.Model):
@@ -172,7 +172,9 @@ class Place(models.Model):
              return "murawa sztuczna"
         elif self.surface == 'fs':            
             return "płaska powierzchnia"
-
+        
+    def __str__(self):
+        return f"{self.name} [{self.addres}]"
 
 class Team(models.Model):
     categories = [

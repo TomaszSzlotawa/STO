@@ -1,15 +1,94 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Sprzęt w klubie{% endblock %}
+{% block title %}{% if edit %} Edytuj sprzęt {% else %} Dodaj sprzęt do klubu{% endif %}{% endblock %}
+{% block header %}{% if edit %} Edytuj sprzęt {% else %} Dodaj sprzęt do klubu{% endif %}{% endblock %}
 
 {% block content %}
-<h2>{% if edit %} Edytuj dane sprzętu {% else %} Stwórz sprzęt {% endif %}</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form }}
-  <button type="submit">{% if edit %}Zapisz{% else %}Dodaj{% endif %}</button>
-  <a href="{% url 'clubs_equipment' club.id %}" >wróć</a>
 
-</form>
+
+<div class="container py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form method="POST" class="user-profil data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger my-custom-alert">
+                {% for error in form.non_field_errors %}
+                    {{ error|striptags }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="row ">
+              <label for="{{form.name.id_for_label}}" class="col-sm-5 col-form-label">Nazwa</label>
+              <div class="col-sm-7">
+                {{form.name}}
+                {% for error in form.name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.producer.id_for_label}}" class="col-sm-5 col-form-label">Producent</label>
+              <div class="col-sm-7">
+                {{form.producer}}
+                {% for error in form.producer.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.all_quantity.id_for_label}}" class="col-sm-5 col-form-label">Ilość[szt]</label>
+              <div class="col-sm-7">
+                {{form.all_quantity}}
+                {% for error in form.all_quantity.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <label for="{{form.description.id_for_label}}" class="col-sm-5 col-form-label">Dodatkowe informacje</label>
+              <div class="col-sm-7">
+                {{form.description}}
+                {% for error in form.description.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-sm-12">
+                <input name="club-submit" type="submit" class="btn " value="{% if edit %} Zapisz {% else %} Dodaj {% endif %}">
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'clubs_equipment' club.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy sprzętów
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 {% endblock %}
+
+
+
+
+
