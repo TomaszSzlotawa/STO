@@ -1,44 +1,142 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Utwórz mezocykl{% endblock %}
+{% block title %}Sczegóły planu treningowego{% endblock %}
+{% block header %}Sczegóły planu treningowego{% endblock %}
 
 {% block content %}
-<h2>Szczegóły mezocyklu </h2>
+<div class="container-fluid py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
 
-<table>
-  <thead>
-    <th>Tydzień</th>
-    {% for t in for_t %}
-      <th>Trening {{ t }}</th>
-    {% endfor %}
-  </thead>
-  <tbody>
+
+          <div class="row mt-2 justify-content-center text-center">
+            <h4 class="fw-bolder">{{mezocycle.name}}</h4>
+          </div>
+
+          <div class="row mt-3 justify-content-center user-profil">
+            <div class="col-xl-8">
+              <div class="d-grid">
+                <a class="btn " href="{% url 'pdf_view' mezocycle.id %}">Wygeneruj PDF</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'mezocycles' mezocycle.team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy planów treningowych
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-12 col-md-12 col-lg-12 col-xl-12">
+
     {% for w in for_w %}
-      <tr>
-        <td>{{ w }}</td>
-        {% for t in for_t %}
-        <td>
-          {% for wt, training in trainings_list %}
-            {% if wt.0 == w and wt.1 == t %}
-            <b>Data:</b>{{ training.start_datatime }} - {{ training.end_datatime }}<br>
-            <b>Lokalizacja:</b>{{ training.place }}<br>
-            <b>Temat:</b>{{ training.topic }}<br>
-            <b>Cele:</b>{{ training.goals }}<br>
-            <b>Zasady:</b>{{ training.rules }}<br>
-            <b>Działania:</b> {{ training.actions }}<br>
-            <a href="{% url 'edit_training' training.id %}" >edytuj</a>
-            
-            {% endif %}
-          {% endfor %}
-        </td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <div class="col-xl-12 col-lg-12 ">
+      <div class="card  mb-4">
+        <div class="card-header py-3 d-flex flex-row justify-content-center" style="border-radius: 0.5rem;">
+          <h6 class="m-0 text-uppercase">tydzień {{w}}</h6>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      {% for t in for_t %}
+      {% for wt, training in trainings_list %}
+      {% if wt.0 == w and wt.1 == t %}
+      <div class="col-xl-4 col-lg-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-10">
+                <h5 class="fw-bolder">Trening {{t}}</h5>
+              </div>
+              <div class="col-sm-2 py-0 d-flex flex-row justify-content-end">
+                <a href="{% url 'edit_training' training.id %}"><i class="fa-solid fa-pen mx-2 mt-2"></i></a>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Zaplanowany</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.start_datatime }}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Lokalizacja</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.place }}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Temat</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.topic }}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Cele gry</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.goals }}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Zasady gry</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.rules }}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Działania</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.actions }}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-sm-4 h-100">
+                <h6>Cele motoryczne</h6>
+              </div>
+              <div class="col-sm-8 h-100">
+                {{ training.motoric_goals }}
+              </div>
+            </div>
 
 
-<a href="{% url 'mezocycles' team.id %}" >wróć</a>
-<a href="{% url 'pdf_view' mezocycle.id %}" >Wygeneruj PDF</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+      {% endfor %}
+
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}

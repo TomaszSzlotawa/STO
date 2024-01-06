@@ -1,9 +1,8 @@
 body{
- background: #EEEEEE;
- overflow: hidden; /* Prevent page scrolling */
- font-family: 'Roboto', sans-serif;
- color: #333;
-
+    background: #EEEEEE;
+    overflow: hidden; /* Prevent page scrolling */
+    font-family: 'Roboto', sans-serif;
+    color: #333;
 }
 
 #side_nav{
@@ -448,4 +447,7 @@ form .btn:focus {
  #side_nav.active{
    margin-left: 0;
   }
+.main-content{
+    padding-bottom: 10vh;
+}
 }
