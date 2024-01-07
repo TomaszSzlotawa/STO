@@ -434,21 +434,23 @@ form .btn:focus {
     border: 3px solid #FF851B;
     outline: none; 
 }
-
 @media(max-width: 767px){
- #side_nav{
-    overflow-y: auto; /* Add vertical scrollbar for sidebar */
-    margin-left: -180px;
-    position: absolute;
-    min-height: 100vh;
-    z-index: 1;
-    padding-bottom: 5vh;
-    max-height: 100vh;
- }
- #side_nav.active{
-   margin-left: 0;
-  }
-.main-content{
-    padding-bottom: 10vh;
-}
+    #side_nav {
+        overflow-y: auto;
+        margin-left: -180px;
+        position: absolute;
+        min-height: 100vh;
+        z-index: 1;
+        padding-bottom: 15vh !important;
+        max-height: 100vh;
+    }
+
+    #side_nav.active {
+        margin-left: 0;
+        margin-bottom: 15vh !important;
+    }
+
+    .main-content {
+        padding-bottom: 10vh;
+    }
 }

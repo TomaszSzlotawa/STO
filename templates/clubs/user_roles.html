@@ -51,17 +51,14 @@
 
         </div>
       </div>
-      <div class="links ">
-        <a class=" fw-bolder text-uppercase py-2 mt-2 mx-1 d-flex" href="{% url 'user_panel' %}">
-
-          <div class="col mr-2">
-            Wróć do panelu użytkownika
-          </div>
-          <div class="col-auto">
-            <i class="fa-solid fa-arrow-left mr-2"></i>
-          </div>
-        </a>
+      <div class="row">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'user_panel' %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; Wróć do panelu użytkownika
+          </a>
+        </div>
       </div>
+
 
     </div>
   </div>

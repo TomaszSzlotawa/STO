@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       {% for t in for_t %}
       {% for wt, training in trainings_list %}
       {% if wt.0 == w and wt.1 == t %}
@@ -54,10 +54,10 @@
         <div class="card mb-3">
           <div class="card-body">
             <div class="row">
-              <div class="col-sm-10">
+              <div class="col-10">
                 <h5 class="fw-bolder">Trening {{t}}</h5>
               </div>
-              <div class="col-sm-2 py-0 d-flex flex-row justify-content-end">
+              <div class="col-2 py-0 d-flex flex-row justify-content-end">
                 <a href="{% url 'edit_training' training.id %}"><i class="fa-solid fa-pen mx-2 mt-2"></i></a>
               </div>
             </div>

@@ -33,12 +33,12 @@ def get_data_for_menu(request):
     else:
         usersClubs=[]
         teams = []
-    
     return usersClubs, teams
 
 def signup(request):
+    form = SignUpForm(request.POST or None)
+
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             user.refresh_from_db()
@@ -54,10 +54,8 @@ def signup(request):
             "welcome@sto.com",
             [f"{user.email}"],
             fail_silently=False,
-)
-            return redirect(user_panel)
-    else:
-        form = SignUpForm()
+            )
+            return redirect(user_panel)            
     return render(request, 'clubs/signup.html', {'form': form})
 
 
@@ -95,7 +93,7 @@ def club_panel(request, club_id):
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
-    clubs_teams = Team.objects.filter(club=club)
+    clubs_teams = Team.objects.filter(club=club).order_by('name')
     seasons = Season.objects.filter(team__in=clubs_teams,active=True)
     coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams,leaving_date=None).order_by('coach')
     upcoming_trainings = Training.objects.filter(season__in=seasons, start_datatime__gt=datetime.now(), end_datatime__lt=datetime.now() + timedelta(days=7)).order_by('start_datatime')
@@ -211,7 +209,7 @@ def club_settings(request, club_id):
     club = get_object_or_404(Club,pk=club_id)
     
 
-    clubs_teams = Team.objects.filter(club=club)
+    clubs_teams = Team.objects.filter(club=club).order_by('name')
     seasons = Season.objects.filter(team__in=clubs_teams,active=True)
     coaching_staff = TeamsCoaching_Staff.objects.filter(team__in=clubs_teams, leaving_date=None).order_by('coach')
 
@@ -455,13 +453,15 @@ def club_staff(request, club_id):
         login = reverse('login')
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
+    print(teams)
+
     club = get_object_or_404(Club,pk=club_id)
     players = Player.objects.filter(club=club)
-    teams = Team.objects.filter(club = club)
-    seasons = Season.objects.filter(team__in = teams, active = True)
+    club_teams = Team.objects.filter(club = club)
+    seasons = Season.objects.filter(team__in = club_teams, active = True)
     show_hidden = request.GET.get('show_hidden', False) == 'on'
 
-    return render(request,'clubs/club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players, 'seasons':seasons,'show_hidden':show_hidden})
+    return render(request,'clubs/club_staff.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players,'club_teams':club_teams, 'seasons':seasons,'show_hidden':show_hidden})
 
 def create_player(request, club_id):
     if not request.user.is_authenticated:
@@ -1416,6 +1416,8 @@ def implement_mezocycle(request, mezocycle_id):
                 if mezocycle_form.is_valid():
                     implemented_mezocycle = mezocycle_form.save(commit=False)
                     implemented_mezocycle.team = team
+                    implemented_mezocycle.weeks = mezocycle.weeks
+                    implemented_mezocycle.trainings_per_week = mezocycle.trainings_per_week
                     implemented_mezocycle.save()
                     for form in forms_list:
                         if form.is_valid():

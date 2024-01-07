@@ -41,11 +41,11 @@
             <div class="col-sm-8">
               <div class="card-block">
                 <div class="row">
-                  <div class="col-sm-10">
+                  <div class="col-10">
                     <h6 class="my-0"><small>Nazwa</small></h6>
                     <h5 class="fw-bolder">{{place.name}}</h5>
                   </div>
-                  <div class="col-sm-2 py-0 d-flex flex-row justify-content-end">
+                  <div class="col-2 py-0 d-flex flex-row justify-content-end">
                     <a href="{% url 'delete_place' place.id %}"><i class="fa-solid fa-trash mx-2 mt-2"></i></a>
           
                     <a href="{% url 'edit_place' place.id %}"><i class="fa-solid fa-pen mx-2 mt-2"></i></a>
