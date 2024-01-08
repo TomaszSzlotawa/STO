@@ -13,6 +13,6 @@ class PlayerDataTable(tables.Table):
     actions = tables.TemplateColumn(template_name='clubs/player_actions_column.html', orderable=False, verbose_name='Zarządzaj')
 
     class Meta:
-        template_name = 'django_tables2/bootstrap_htmx.html'
+        template_name = 'tables/bootstrap_htmx.html'
         #attrs = {'class': 'table table-striped'}
         

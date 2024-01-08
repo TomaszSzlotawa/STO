@@ -485,16 +485,8 @@ def club_staff(request, club_id):
         }
         data.append(row_data)
 
-
-
-
-
-
     table = PlayerDataTable(data)
     RequestConfig(request,paginate={"per_page": 10}).configure(table)
-
-
-
 
     if request.htmx:
         template_name = "clubs/club_staff_table_partial.html"
