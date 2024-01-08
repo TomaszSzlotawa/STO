@@ -1,8 +1,15 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Sprzęt zawodnika{% endblock %}
+{% block title %}Raport sprzętu {{player.name}} {{player.surname}}{% endblock %}
+{% block header %}Raport sprzętu {{player.name}} {{player.surname}}{% endblock %}
+
 
 {% block content %}
+  {% block table %}
+
+  {% endblock %}
+
+{% endblock %}
 
 <table>
     <thead>
@@ -41,4 +48,3 @@
     {% endfor %}
 </table>
 
-{% endblock %}

@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_tables2 import RequestConfig
 
 from .filters import ShowHiddenFilter
-from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, RentedEquipmentTable
+from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, PlayersEquipmentTable, RentedEquipmentTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -887,8 +887,15 @@ def players_equipment(request, player_id):
     usersClubs, teams = get_data_for_menu(request)
     player = get_object_or_404(Player, pk = player_id)
     items = Rented_equipment.objects.filter(player=player, date_of_return__isnull=True)
+    table = PlayersEquipmentTable(items)
+    RequestConfig(request,paginate={"per_page": 20}).configure(table)
 
-    return render(request, 'clubs/players_equipment.html',{'usersClubs':usersClubs, 'teams':teams, 'items':items})
+    if request.htmx:
+        template_name = "clubs/table_partial.html"
+    else:
+        template_name = "clubs/players_equipment_table.html"
+
+    return render(request, template_name,{'table':table,'usersClubs':usersClubs, 'teams':teams, 'items':items,'player':player})
 
 def teams_equipment(request, team_id):
     if not request.user.is_authenticated:

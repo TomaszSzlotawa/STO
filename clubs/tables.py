@@ -49,10 +49,10 @@ class ClubEquipmentTable(tables.Table):
 
 
 class RentedEquipmentTable(tables.Table):
-    player = tables.Column(verbose_name='Gracz')
+    player = tables.Column(verbose_name='Nazwisko Imię')
     quantity = tables.Column(verbose_name='Ilość')
     date_of_rental = tables.Column(verbose_name='Data wypożyczenia')
-    description = tables.Column(verbose_name='Opis')
+    description = tables.Column(verbose_name='Dodatkowe informacje')
 
     actions = tables.TemplateColumn(template_name='clubs/rented_equipment_actions_column.html', orderable=False, verbose_name='')
 
@@ -61,6 +61,18 @@ class RentedEquipmentTable(tables.Table):
         template_name = 'tables/bootstrap_htmx.html'
         exclude = ['id', 'date_of_return', 'equipment']
 
+class PlayersEquipmentTable(tables.Table):
+    equipment = tables.Column(accessor='equipment__name',verbose_name='Sprzęt')
+    quantity = tables.Column(verbose_name='Ilość')
+    date_of_rental = tables.Column(verbose_name='Data wypożyczenia')
+    description = tables.Column(verbose_name='Dodatkowe informacje')
+
+    actions = tables.TemplateColumn(template_name='clubs/rented_equipment_actions_column.html', orderable=False, verbose_name='')
+
+    class Meta:
+        model = Rented_equipment
+        template_name = 'tables/bootstrap_htmx.html'
+        exclude = ['id', 'date_of_return', 'player']
 
 
 
