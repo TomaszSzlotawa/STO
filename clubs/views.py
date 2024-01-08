@@ -8,6 +8,9 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django_tables2 import RequestConfig
+
+from .filters import ShowHiddenFilter
+from .tables import PlayerDataTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -449,50 +452,50 @@ def edit_team(request, team_id):
     return render(request,'clubs/edit_team.html',{'club':club,'usersClubs':usersClubs,
         'teams':teams,'team_form':team_form, 'season_form':season_form, 'team':team, 'seasons':seasons})
 
-from .tables import PlayerDataTable
-
 
 def club_staff(request, club_id):
     if not request.user.is_authenticated:
         login = reverse('login')
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
+    print(teams)
 
     club = get_object_or_404(Club,pk=club_id)
-
     club_teams = Team.objects.filter(club=club)
-    players = Player.objects.filter(club=club)
     seasons = Season.objects.filter(team__in = club_teams, active = True)
+    
     show_hidden = request.GET.get('show_hidden', False) == 'on'
+    if show_hidden:
+        players = Player.objects.filter(club=club)
+    else:
+        players = Player.objects.filter(club=club,hidden=False)
 
     data = []
     for p in players:
-        teams = ""
+        p_teams = ""
         for s in seasons:
             if p in s.player.all():
                 if not teams:
-                    teams += f"{s.team.name}[{s.name}]"
+                    p_teams += f"{s.team.name}[{s.name}]"
                 else:
-                    teams += f"\n{s.team.name}[{s.name}]"
-        
-        
+                    p_teams += f"\n{s.team.name}[{s.name}]"
         row_data = {
             'name': p.name,
             'surname': p.surname,
             'date_of_birth': p.player_data.date_of_birth,
-            'teams': teams,
+            'teams': p_teams,
             'id': p.id,
+            'hidden': p.hidden,
         }
         data.append(row_data)
 
     table = PlayerDataTable(data)
-    RequestConfig(request,paginate={"per_page": 10}).configure(table)
+    RequestConfig(request,paginate={"per_page": 50}).configure(table)
 
     if request.htmx:
         template_name = "clubs/club_staff_table_partial.html"
     else:
         template_name = "clubs/club_staff_table.html"
-
 
     return render(request,template_name,{'table': table,'club':club,'teams':teams,'usersClubs':usersClubs, 'players':players,'club_teams':club_teams, 'seasons':seasons,'show_hidden':show_hidden})
 

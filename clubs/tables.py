@@ -10,9 +10,11 @@ class PlayerDataTable(tables.Table):
     teams = tables.Column(accessor='teams', verbose_name='Drużyny')
     
 
-    actions = tables.TemplateColumn(template_name='clubs/player_actions_column.html', orderable=False, verbose_name='Zarządzaj')
+    actions = tables.TemplateColumn(template_name='clubs/player_actions_column.html', orderable=False, verbose_name='')
 
     class Meta:
         template_name = 'tables/bootstrap_htmx.html'
         #attrs = {'class': 'table table-striped'}
-        
+        row_attrs = {
+            'class': lambda record: 'hidden-row' if record['hidden'] else ''
+        }

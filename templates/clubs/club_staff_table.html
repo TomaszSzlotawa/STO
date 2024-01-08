@@ -4,19 +4,47 @@
 {% load i18n %}
 
 {% block table %}
-
-
-<h1>Product table</h1>
-
-    {# Search form #}
-
-
-    {# Progress indicator #}
-    <div class="progress">
-        <div class="indeterminate"></div>
+<div class="container-fluid h-100 dashboard">
+    <div class="row">
+        <div class="col-md-6">
+            <a class="text-decoration-none" href="{% url 'create_player' club.id %}">
+                <div class="card  mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+                    <i class="fa-solid fa-plus px-2"></i>
+                    <h6 class="m-0 text-uppercase">dodaj Zawodnika</h6>
+                  </div>
+                </div>
+              </a>
+        </div>
     </div>
-
-    {# The actual table #}
-    {% render_table table %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card  mb-4">
+                <div class="card-body">
+                    <h4 class="fw-bolder">ZAWODNICY W KLUBIE</h4>
+                    <div class="row py-2">
+                        <form method="get" action="">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="show_hidden" id="show_hidden" {% if show_hidden %}checked{% endif %}>
+                                <label class="form-check-label" for="show_hidden">Pokazuj ukrytych zawodników</label>
+                            </div>
+                            <button class="btn" type="submit">Filtruj</button>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="progress">
+                            <div class="indeterminate"></div>
+                        </div>
+                    </div>
+                    <div class="row table-overwidth">
+                        {# The actual table #}
+                        {% render_table table %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

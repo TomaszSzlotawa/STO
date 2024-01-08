@@ -439,25 +439,25 @@ form .btn:focus {
 /* Styl dla pierwszej kolumny (name) */
 th:nth-child(1),
 td:nth-child(1) {
-    width: 30%;
+    width: 22%;
 }
 
 /* Styl dla drugiej kolumny (surname) */
 th:nth-child(2),
 td:nth-child(2) {
-    width: 30%;
+    width: 22%;
 }
 
 /* Styl dla trzeciej kolumny (date_of_birth) */
 th:nth-child(3),
 td:nth-child(3) {
-    width: 30%;
+    width: 22%;
 }
 
 /* Styl dla czwartej kolumny (actions) */
 th:nth-child(4),
 td:nth-child(4) {
-    width: 10%;
+    width: 22%;
 }
 
 
@@ -506,7 +506,7 @@ td:nth-child(4) {
 }
 
 .progress .indeterminate {
-    background-color: blue;
+    background-color: #FF851B;
 }
 
 .progress .indeterminate:before {
@@ -562,6 +562,38 @@ td:nth-child(4) {
         left: 107%;
         right: -8%;
     }
+}
+
+.table-overwidth td{
+    padding-top: 0.5rem;
+    padding-bottom: 0rem;
+}
+.table-overwidth {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Dodatkowe stylowanie dla przewiniętego paska przewijania */
+.table-overwidth::-webkit-scrollbar {
+    height: 12px;
+}
+
+.table-overwidth::-webkit-scrollbar-thumb {
+    background-color: #FF851B; /* Twój niestandardowy kolor dla paska przewijania */
+    border-radius: 6px;
+}
+
+.table-overwidth::-webkit-scrollbar-track {
+    background-color: #f5f5f5; /* Kolor tła dla paska przewijania */
+    border-radius: 6px;
+}
+
+.hidden-row {
+    background-color: #ff851b8d; /* Dla przykładu: jasny kolor tła dla wierszy z hidden=True */
+}
+
+.dropdown-toggle,.dropdown-toggle:active,.dropdown-toggle:focus{
+    border: none;
 }
 
 @media(max-width: 767px){

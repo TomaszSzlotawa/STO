@@ -1,79 +1,12 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Kadra{% endblock %}
+{% block title %}Kadra {{club.name}}{% endblock %}
+{% block header %}Kadra {{club.name}}{% endblock %}
 
 {% block content %}
 
-{% block table %}
+    {% block table %}
 
-{% endblock %}
+    {% endblock table %}
 
-
-
-<h3>Kadra klubu</h3>
-
-<!-- Dodaj formularz do wyboru opcji -->
-<form method="get" action="">
-    <input type="checkbox" name="show_hidden" id="show_hidden" {% if show_hidden %}checked{% endif %}>
-    <label for="show_hidden">Pokazuj ukrytych zawodników</label>
-    <button type="submit">Filtruj</button>
-</form>
-
-<table>
-    <thead>
-        <tr>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>Data urodzin</th>
-            <th>Drużyny</th>
-            <th>Zarządzaj</th>
-        </tr>
-    </thead>
-    {% for player in players %}
-    {% if not player.hidden or show_hidden %}
-    <tbody>
-        <tr {% if player.hidden %} style="color: red"{% endif %}>
-            <td>
-                {{player.name}}
-            </td>
-            <td>
-                {{player.surname}}
-            </td>
-            <td>
-                {{player.player_data.date_of_birth}}
-            </td>
-            <td>
-                {% for season in seasons %}
-                    {% if player in season.player.all %}
-                        {{ season.team }}<br>
-                    {% endif %}
-                {% endfor %}
-            </td>
-            <td>
-                <div class="dropdown">
-                    <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        Zarządzaj
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="{% url 'delete_player_from_club' player.id %}">Usuń zawodnika z klubu</a></li>
-                        <li><a class="dropdown-item" href="{% url 'hide_player_in_club' player.id %}">
-                            {% if player.hidden %}
-                                Pokazuj zawodnika
-                            {% else %}
-                                Ukryj zawodnika
-                            {% endif %}
-                        </a></li>
-                        <li><a class="dropdown-item" href="{% url 'edit_player' player.id %}">Edytuj dane zawodnika</a></li>
-                        <li><a class="dropdown-item" href="{% url 'players_equipment' player.id %}">Raport posiadanego sprzętu</a></li>
-                    </ul>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    {% endif %}
-    {% endfor %}
-</table>
-
-<a href="{% url 'create_player' club.id %}">Dodaj zawodnika</a>
-
-{% endblock %}
+{% endblock content%}
