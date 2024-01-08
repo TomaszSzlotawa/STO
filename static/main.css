@@ -435,54 +435,20 @@ form .btn:focus {
     outline: none; 
 }
 
-/* Stylowanie dla tabeli kadry klubu
-/* Styl dla pierwszej kolumny (name) */
-th:nth-child(1),
-td:nth-child(1) {
-    width: 22%;
-}
 
-/* Styl dla drugiej kolumny (surname) */
-th:nth-child(2),
-td:nth-child(2) {
-    width: 22%;
-}
-
-/* Styl dla trzeciej kolumny (date_of_birth) */
-th:nth-child(3),
-td:nth-child(3) {
-    width: 22%;
-}
-
-/* Styl dla czwartej kolumny (actions) */
-th:nth-child(4),
-td:nth-child(4) {
-    width: 22%;
-}
 
 
 /* Table style */
 .table-container th.asc:after {
-    content: '\0000a0\0025b2';
+    content: '\02C4';
     float: right;
 }
 
 .table-container th.desc:after {
-    content: '\0000a0\0025bc';
+    content: '\02C5';
     float: right;
 }
 
-.table-container table td:nth-child(1) {
-    width: 5%;
-}
-
-.table-container table td:nth-child(2) {
-    width: 20%;
-}
-
-.table-container table td:nth-child(3) {
-    width: 50%;
-}
 
 /* Progress bar */
 .progress {

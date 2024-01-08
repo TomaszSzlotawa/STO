@@ -221,7 +221,9 @@ class Team(models.Model):
         return f"{self.name} [{self.club.name}]"
     def name_without_spaces(self):
         return f"{self.name.replace(' ','_')}"
-    
+    def active_season(self):
+        active_season = Season.objects.filter(team=self,active=True).first()
+        return active_season
 
 class Season(models.Model):
     name = models.CharField(max_length = 9, null = True, blank = False, help_text='Nazwa sezonu',unique=False)
@@ -255,6 +257,7 @@ class Season(models.Model):
     
     def count_players(self):
         return self.player.count()
+
 
 
 

@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_tables2 import RequestConfig
 
 from .filters import ShowHiddenFilter
-from .tables import PlayerDataTable
+from .tables import CoachingStaffTable, PlayerDataTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -475,7 +475,7 @@ def club_staff(request, club_id):
         p_teams = ""
         for s in seasons:
             if p in s.player.all():
-                if not teams:
+                if not p_teams:
                     p_teams += f"{s.team.name}[{s.name}]"
                 else:
                     p_teams += f"\n{s.team.name}[{s.name}]"
@@ -609,11 +609,38 @@ def club_coaching_staff(request, club_id):
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk=club_id)
-    coaches = UsersClub.objects.filter(club=club, coach=True)
+    coaches = UsersClub.objects.filter(club=club, coach=True,accepted=True)
     club_teams = Team.objects.filter(club=club)
     roles_in_teams = TeamsCoaching_Staff.objects.filter(team__in=club_teams,leaving_date=None)
-    print(roles_in_teams)
-    return render(request,'clubs/club_coaching_staff.html',{'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})
+    data = []
+    for c in coaches:
+        c_teams = ""
+        for r in roles_in_teams:
+            if r.coach == c.user:
+                if not c_teams:
+                    c_teams += f"{r.team.name}[{r.team.active_season()}]"
+                else:
+                    c_teams += f"\n{r.team.name}[{r.team.active_season()}]"
+        print(c)
+        coach_profile_data = Profile.objects.filter(user=c.user).first()
+        row_data = {
+            'name': c.user.first_name,
+            'surname': c.user.last_name,
+            'license': coach_profile_data.license,
+            'license_expiry_date': coach_profile_data.license_expiry_date,
+            'teams': c_teams,
+        }
+        data.append(row_data)
+
+    table = CoachingStaffTable(data)
+    RequestConfig(request,paginate={"per_page": 20}).configure(table)
+    print(data)
+    if request.htmx:
+        template_name = "clubs/club_coaching_staff_table_partial.html"
+    else:
+        template_name = "clubs/club_coaching_staff_table.html"
+
+    return render(request,template_name,{'table':table,'teams':teams,'usersClubs':usersClubs, 'club':club, 'coaches':coaches,'roles_in_teams':roles_in_teams})
 
 
 def team_coaching_staff(request, team_id):
