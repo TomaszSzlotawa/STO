@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_tables2 import RequestConfig
 
 from .filters import ShowHiddenFilter
-from .tables import CoachingStaffTable, PlayerDataTable
+from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -478,7 +478,7 @@ def club_staff(request, club_id):
                 if not p_teams:
                     p_teams += f"{s.team.name}[{s.name}]"
                 else:
-                    p_teams += f"\n{s.team.name}[{s.name}]"
+                    p_teams += f",\n{s.team.name}[{s.name}]"
         row_data = {
             'name': p.name,
             'surname': p.surname,
@@ -620,7 +620,7 @@ def club_coaching_staff(request, club_id):
                 if not c_teams:
                     c_teams += f"{r.team.name}[{r.team.active_season()}]"
                 else:
-                    c_teams += f"\n{r.team.name}[{r.team.active_season()}]"
+                    c_teams += f",\n{r.team.name}[{r.team.active_season()}]"
         print(c)
         coach_profile_data = Profile.objects.filter(user=c.user).first()
         row_data = {
@@ -784,7 +784,18 @@ def clubs_equipment(request, club_id):
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club, pk=club_id)
     equipment = Equipment.objects.filter(club=club)
-    return render(request,'clubs/equipment.html',{'teams':teams,'usersClubs':usersClubs, 'club':club,'equipment':equipment})
+    table = ClubEquipmentTable(equipment)
+    RequestConfig(request,paginate={"per_page": 20}).configure(table)
+
+    if request.htmx:
+        template_name = "clubs/equipment_table_partial.html"
+    else:
+        template_name = "clubs/equipment_table.html"
+
+    for e in equipment:
+        print(e.available_quantity())
+    
+    return render(request,template_name,{'table':table,'teams':teams,'usersClubs':usersClubs, 'club':club,'equipment':equipment})
 
 def create_equipment(request, club_id):
     if not request.user.is_authenticated:

@@ -534,10 +534,12 @@ form .btn:focus {
     padding-top: 0.5rem;
     padding-bottom: 0rem;
 }
-.table-overwidth {
-    overflow-x: auto;
-    white-space: nowrap;
+
+
+.table-overwidth table {
+    margin-bottom: 0;
 }
+
 
 /* Dodatkowe stylowanie dla przewiniętego paska przewijania */
 .table-overwidth::-webkit-scrollbar {
@@ -580,5 +582,8 @@ form .btn:focus {
 
     .main-content {
         padding-bottom: 10vh;
+    }
+    .table-overwidth {
+        overflow-x: auto;
     }
 }

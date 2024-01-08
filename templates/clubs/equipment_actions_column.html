@@ -1,0 +1,11 @@
+<div class="dropdown">
+        <h6 class="btn my-0 dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            
+        </h6>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li><a class="dropdown-item" href="{% url 'edit_equipment' record.id %}">Edytuj</a></li>
+            <li><a class="dropdown-item" href="{% url 'delete_equipment' record.id %}">Usuń</a></li>
+            <li><a class="dropdown-item" href="{% url 'rent_equipment' record.id %}">Wypożycz sprzęt</a></li>
+            <li><a class="dropdown-item" href="{% url 'rented_equipment' record.id %}">Raport</a></li>
+        </ul>
+</div>

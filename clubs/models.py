@@ -5,6 +5,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date
+from django.db.models import Sum
+
 
 def current_year():
     return datetime.date.today().year
@@ -98,6 +100,11 @@ class Equipment(models.Model):
 
     def __str__(self):
         return f"{self.name} [{self.club.name}]"
+    
+    def available_quantity(self):
+        rented_items = Rented_equipment.objects.filter(equipment=self, date_of_return__isnull=True)
+        available_quantity = rented_items.aggregate(Sum('quantity'))['quantity__sum'] or 0
+        return available_quantity
 
 class Player(models.Model):
     name = models.CharField(max_length = 60, null = True, blank = False, help_text='Imię',unique=False)
@@ -223,7 +230,7 @@ class Team(models.Model):
         return f"{self.name.replace(' ','_')}"
     def active_season(self):
         active_season = Season.objects.filter(team=self,active=True).first()
-        return active_season
+        return active_season.name
 
 class Season(models.Model):
     name = models.CharField(max_length = 9, null = True, blank = False, help_text='Nazwa sezonu',unique=False)
