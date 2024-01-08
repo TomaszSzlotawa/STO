@@ -1,22 +1,82 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Raport obecności{% endblock %}
+{% block title %}Raport obecności treningu{% endblock %}
+{% block header %}Raport obecności {{training.start_datatime}}{% endblock %}
 
 {% block content %}
-<h2>Raport obecności na treningu, który odbył się {{training.start_datatime}}</h2><br>
-<h3>Frekwencja wyniosła {{avg_attendance}}%</h3>
-<h4>Obecni:</h4>
-  {% for att in attendance %}
-    {% if att.present %}
-      {{ att.player.name }} {{ att.player.surname }},
-    {% endif %}
-  {% endfor %}
-<br>
-<h4>Nieobecni:</h4>
-  {% for att in attendance %}
-    {% if not att.present %}
-      {{ att.player.name }} {{ att.player.surname }},
-    {% endif %}
-  {% endfor %}
+
+
+<div class="container-fluid dashboard">
+
+  <div class="row br-4">
+    <div class="col-md-9 mb-3">
+      <a class="text-decoration-none" href="{%url 'training_attendance' training.id %}">
+        <h4 class="fw-bolder">Trening {{training.start_datatime}} &nbsp; <i class="fa-solid fa-people-group"></i></h4>
+      </a>
+      <div class="card  mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="fw-bolder">Obecni</h4>
+              {% for att in attendance %}
+                {% if att.present %}
+                  <p class="my-0">{{ att.player.name }} {{ att.player.surname }}</p>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+              <h4 class="fw-bolder">Nieobecni</h4>
+              {% for att in attendance %}
+                {% if not att.present %}
+                  <p class="my-0">{{ att.player.name }} {{ att.player.surname }}</p>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="d-flex justify-content-end links">
+          <a href="{% url 'trainings' training.season.team.id %}" class="text-decoration-none mt-1 ">
+            <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy treningów
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+      <div class="card  mb-4">
+        <div class="card-body text-center">
+          <p class="mb-0 f-w-600">Frekwencja na treningu[%]</p>
+          <canvas id="pieChart" style="width: 100%; height: 100%;"></canvas>
+                                                     
+          <br>
+          <script>
+              var ctxP = document.getElementById("pieChart{{ season.team.id }}").getContext('2d');
+              var avg = JSON.parse('{{avg_attendance|safe}}');
+              var abs = 100-avg
+              console.log(avg)
+              var myPieChart = new Chart(ctxP, {
+                type: 'pie',
+                data: {
+                  labels: ["Obecnych", "Nieobecnych"],
+                  datasets: [{
+                    data: [avg,abs],
+                backgroundColor: ["#2ecc71", "#e74c3c"],
+                hoverBackgroundColor: ["#2ecc71", "#e74c3c"]
+              }]
+                                            },
+              options: {
+                responsive: true,
+                                            }
+                                        });
+            </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
