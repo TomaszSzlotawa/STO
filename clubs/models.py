@@ -51,6 +51,11 @@ class Club(models.Model):
         return f"{self.name}"
     def name_without_spaces(self):
         return f"{self.name.replace(' ','_').replace('-','_')}"
+    def teams(self):
+        teams = Team.objects.filter(club=self)
+        return teams
+    
+    teams.short_description = "Drużyny"
 
 
 class Sponsor(models.Model):
@@ -103,6 +108,13 @@ class Player(models.Model):
     hidden = models.BooleanField(null=False,blank=False, default=False)
     def __str__(self):
         return f"{self.surname} {self.name}"
+    class Meta:
+        ordering = ("surname","name")
+
+    def teams(self):
+        active_seasons = Season.objects.filter(team__in=self.teams, active=True, player=self)
+        return '\n '.join([season.team.name for season in active_seasons])
+
 
 
 class Rented_equipment(models.Model):

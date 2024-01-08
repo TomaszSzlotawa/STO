@@ -1,0 +1,17 @@
+<div class="dropdown">
+        <h6 class="btn my-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Zarządzaj
+        </h6>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="{% url 'delete_player_from_club' record.id %}">Usuń zawodnika z klubu</a></li>
+                <li><a class="dropdown-item" href="{% url 'hide_player_in_club' record.id %}">
+                    {% if record.hidden %}
+                        Pokazuj zawodnika
+                    {% else %}
+                        Ukryj zawodnika
+                    {% endif %}
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'edit_player' record.id %}">Edytuj dane zawodnika</a></li>
+                <li><a class="dropdown-item" href="{% url 'players_equipment' record.id %}">Raport posiadanego sprzętu</a></li>
+        </ul>
+</div>

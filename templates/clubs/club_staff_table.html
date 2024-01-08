@@ -1,0 +1,22 @@
+{% extends 'clubs/club_staff.html' %}
+
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block table %}
+
+
+<h1>Product table</h1>
+
+    {# Search form #}
+
+
+    {# Progress indicator #}
+    <div class="progress">
+        <div class="indeterminate"></div>
+    </div>
+
+    {# The actual table #}
+    {% render_table table %}
+
+{% endblock %}
