@@ -103,8 +103,15 @@ class Equipment(models.Model):
     
     def available_quantity(self):
         rented_items = Rented_equipment.objects.filter(equipment=self, date_of_return__isnull=True)
-        available_quantity = rented_items.aggregate(Sum('quantity'))['quantity__sum'] or 0
-        return available_quantity
+        unavailable_quantity = rented_items.aggregate(Sum('quantity'))['quantity__sum'] or 0
+        
+        return self.all_quantity - unavailable_quantity
+    def rented_quantity(self):
+        rented_items = Rented_equipment.objects.filter(equipment=self, date_of_return__isnull=True)
+        rented_quantity = rented_items.aggregate(Sum('quantity'))['quantity__sum'] or 0
+        
+        return rented_quantity
+
 
 class Player(models.Model):
     name = models.CharField(max_length = 60, null = True, blank = False, help_text='Imię',unique=False)

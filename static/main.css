@@ -585,5 +585,6 @@ form .btn:focus {
     }
     .table-overwidth {
         overflow-x: auto;
+        white-space: nowrap;
     }
 }

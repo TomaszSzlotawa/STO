@@ -43,11 +43,24 @@ class ClubEquipmentTable(tables.Table):
         model = Equipment
         template_name = 'tables/bootstrap_htmx.html'
         exclude = ['id', 'club']
+        sequence = ('name', 'producer', 'all_quantity', 'available_quantity', 'description', 'actions')
+
+
+
 
 class RentedEquipmentTable(tables.Table):
-    
+    player = tables.Column(verbose_name='Gracz')
+    quantity = tables.Column(verbose_name='Ilość')
+    date_of_rental = tables.Column(verbose_name='Data wypożyczenia')
+    description = tables.Column(verbose_name='Opis')
+
+    actions = tables.TemplateColumn(template_name='clubs/rented_equipment_actions_column.html', orderable=False, verbose_name='')
+
     class Meta:
         model = Rented_equipment
         template_name = 'tables/bootstrap_htmx.html'
-        exclude = ['id']
+        exclude = ['id', 'date_of_return', 'equipment']
+
+
+
 

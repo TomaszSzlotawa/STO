@@ -1,0 +1,155 @@
+{% extends 'clubs/rented_equipment.html' %}
+
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block table %}
+<div class="container-fluid h-100 dashboard">
+    <div class="row">
+        <div class="col-md-6">
+            <a class="text-decoration-none" href="{% url 'rent_equipment' item.id %}">
+                <div class="card  mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+                    <i class="fa-solid fa-plus px-2"></i>
+                    <h6 class="m-0 text-uppercase">wypożycz Sprzęt</h6>
+                  </div>
+                </div>
+              </a>
+        </div>
+        <div class="col-md-6 mx-auto">
+            <div class="card  mb-4 ">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4 text-center">
+                            <p>Ogólnie[szt]</p>
+                            <p class="fw-bolder">{{item.all_quantity}}</p>
+                        </div>
+                        <div class="col-4 text-center">
+                            <p>Wypożyczone[szt]</p>
+                            <p class="fw-bolder">{{rented}}</p>
+                        </div>
+                        <div class="col-4 text-center">
+                            <p>Dostępne[szt]</p>
+                            <p class="fw-bolder">{{available}}</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card  mb-4 ">
+                <div class="card-body">
+                    <h4 class="fw-bolder text-uppercase">raport</h4>
+                    <div class="row">
+                        <div class="progress">
+                            <div class="indeterminate"></div>
+                        </div>
+                    </div>
+                    <div class="row table-overwidth">
+                        {# The actual table #}
+                        {% render_table table %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-3">
+        <div class="card-body text_wrap">
+          <h5 class="fw-bolder">Historia wypożyczeń sprzętu</h6>
+
+            <div class="row mt-4">
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Nazwisko Imię</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Ilość</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Data wypożyczenia</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Data zwrotu</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Dodatkowe informacje</h6>
+              </div>
+            </div>
+            {% for holder in historical_holders %}
+            <div class="row mt-1">
+              <div class="col-3 ">
+                <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">
+                    {{holder.player.surname}} {{holder.player.name}}</h6>
+              </div>
+              <div class="col-2 ">
+                <h6 class="h-100">{{ holder.quantity }}</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="h-100">{{holder.date_of_rental}}</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="h-100">{{holder.date_of_return}}</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="h-100">{{holder.description}}</h6>
+              </div>
+
+            </div>
+
+            {% endfor %}
+        </div>
+      </div>
+
+
+</div>
+
+{% endblock %}
+
+
+{% if historical_holders %}
+    
+<br><hr>
+<h3>Historia wypożyczeń</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Ilość</th>
+            <th>Data wypożyczenia</th>
+            <th>Opis</th>
+            <th>Data zwrotu</th>
+        </tr>
+    </thead>
+    {% for holder in historical_holders %}
+    <tbody>
+        <tr>
+            <td>
+                {{holder.player.name}}
+            </td>
+            <td>
+                {{holder.player.surname}}
+            </td>
+            <td>
+                {{holder.quantity}}
+            </td>
+            <td>
+                {{holder.date_of_rental}}
+            </td>
+            <td>
+                {{holder.description}}
+            </td>
+            <td>
+                {{holder.date_of_return}}
+            </td>
+
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+{% endif %}

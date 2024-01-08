@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_tables2 import RequestConfig
 
 from .filters import ShowHiddenFilter
-from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable
+from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, RentedEquipmentTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -493,7 +493,7 @@ def club_staff(request, club_id):
     RequestConfig(request,paginate={"per_page": 50}).configure(table)
 
     if request.htmx:
-        template_name = "clubs/club_staff_table_partial.html"
+        template_name = "clubs/table_partial.html"
     else:
         template_name = "clubs/club_staff_table.html"
 
@@ -636,7 +636,7 @@ def club_coaching_staff(request, club_id):
     RequestConfig(request,paginate={"per_page": 20}).configure(table)
     print(data)
     if request.htmx:
-        template_name = "clubs/club_coaching_staff_table_partial.html"
+        template_name = "clubs/table_partial.html"
     else:
         template_name = "clubs/club_coaching_staff_table.html"
 
@@ -788,7 +788,7 @@ def clubs_equipment(request, club_id):
     RequestConfig(request,paginate={"per_page": 20}).configure(table)
 
     if request.htmx:
-        template_name = "clubs/equipment_table_partial.html"
+        template_name = "clubs/table_partial.html"
     else:
         template_name = "clubs/equipment_table.html"
 
@@ -859,12 +859,17 @@ def rented_equipment(request, item_id):
     usersClubs, teams = get_data_for_menu(request)
     item = get_object_or_404(Equipment, pk=item_id)
     equipment_holders = Rented_equipment.objects.filter(equipment = item, date_of_return = None)
-    historical_holders = Rented_equipment.objects.filter(equipment = item, date_of_return__isnull=False)
-    sum = 0
-    for holder in equipment_holders:
-        sum += holder.quantity
-    rest = item.all_quantity - sum
-    return render(request,'clubs/rented_equipment.html',{'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'sum':sum, 'rest':rest})
+    historical_holders = Rented_equipment.objects.filter(equipment = item, date_of_return__isnull=False).order_by('-date_of_return')
+    
+    table = RentedEquipmentTable(equipment_holders)
+    RequestConfig(request,paginate={"per_page": 20}).configure(table)
+
+    if request.htmx:
+        template_name = "clubs/table_partial.html"
+    else:
+        template_name = "clubs/rented_equipment_table.html"
+
+    return render(request,template_name,{'table':table,'teams':teams,'usersClubs':usersClubs, 'item':item, 'equipment_holders':equipment_holders, 'historical_holders':historical_holders,'rented':item.rented_quantity(), 'available':item.available_quantity()})
 
 def return_equipment(request, rent_id):
     if not request.user.is_authenticated:
