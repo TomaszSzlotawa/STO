@@ -1576,8 +1576,24 @@ def pdf_view(request,mezocycle_id):
         return redirect(login)
     mezocycle = get_object_or_404(ImplementedMezocycle,pk = mezocycle_id)
     trainings = Training.objects.filter(implemented_mezocycle=mezocycle).order_by('start_datatime')
+
     date_of_start_mezocycle = trainings.first().start_datatime.date()
-    date_of_end_mezocycle = trainings.last().start_datatime.date()
+
+    def set_dates(date_of_start_mezocycle, weeks):
+        # Make sure date_of_start_mezocycle is a valid date
+        if not isinstance(date_of_start_mezocycle, date):
+            raise ValueError("date_of_start_mezocycle should be a valid datetime.")
+
+        # Adjust the start date to the nearest Monday
+        while date_of_start_mezocycle.weekday() != 0:  # 0 corresponds to Monday
+            date_of_start_mezocycle -= timedelta(days=1)
+
+        # Calculate the end date
+        date_of_end_mezocycle = date_of_start_mezocycle + timedelta(weeks=weeks) - timedelta(days=1)
+
+        return date_of_start_mezocycle, date_of_end_mezocycle
+
+    start, end = set_dates(date_of_start_mezocycle, mezocycle.weeks)
 
     for_w = range(1, mezocycle.weeks + 1)
     for_t = range(1, mezocycle.trainings_per_week + 1)
@@ -1588,6 +1604,6 @@ def pdf_view(request,mezocycle_id):
             trainings_list.append(((w,t),trainings[0]))
             trainings = trainings[1:]
 
-    response = render_to_pdf('pdf/mezocycle_report.html',{'date_of_end_mezocycle':date_of_end_mezocycle,'date_of_start_mezocycle':date_of_start_mezocycle,'for_t':for_t,'for_w':for_w,'mezocycle':mezocycle, 'team':mezocycle.team, 'trainings_list':trainings_list})
+    response = render_to_pdf('pdf/mezocycle_report.html',{'date_of_end_mezocycle':end,'date_of_start_mezocycle':start,'for_t':for_t,'for_w':for_w,'mezocycle':mezocycle, 'team':mezocycle.team, 'trainings_list':trainings_list})
     response['Content-Type'] = 'application/pdf; charset=utf-8'
     return response
