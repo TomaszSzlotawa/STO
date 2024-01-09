@@ -40,6 +40,8 @@ def get_data_for_menu(request):
     return usersClubs, teams
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect(user_panel)
     form = SignUpForm(request.POST or None)
 
     if request.method == 'POST':
@@ -204,10 +206,12 @@ def create_club(request):
         return redirect(club_panel,club.id)
     return render(request,'clubs/create_club.html',{'form':form,'usersClubs':usersClubs,'teams':teams})
 
+
 def club_settings(request, club_id):
     if not request.user.is_authenticated:
         login = reverse('login')
         return redirect(login)
+    
     usersClubs, teams = get_data_for_menu(request)
     club = get_object_or_404(Club,pk=club_id)
     
@@ -559,6 +563,7 @@ def add_player(request, team_id):
     team = get_object_or_404(Team,pk=team_id)
     players = Player.objects.filter(club=team.club,hidden=False)
     season = Season.objects.filter(team = team, active = True).first()    
+    trainings = Training.objects.filter(season=season,start_datatime__gt = datetime.now())
     if season:
         players_in_team = season.player.all()
     else:
@@ -585,6 +590,8 @@ def add_player(request, team_id):
                 player_data.save()
                 player_data_form = CreatePlayerDataForm(None)
             season.player.add(player)
+            for t in trainings:
+                Attendance(training = t, player = player, present = None).save()
             return redirect(team_staff, team.id)
             
     return render(request,'clubs/add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})

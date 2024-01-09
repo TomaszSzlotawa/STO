@@ -86,7 +86,7 @@ class ClubCreationForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         existing_club = Club.objects.filter(name=name).first()
 
-        if existing_club:
+        if existing_club and existing_club != self.instance:
             raise forms.ValidationError('Klub o tej nazwie już istnieje.')
 
         return name
