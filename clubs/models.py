@@ -511,3 +511,10 @@ class ImplementedMezocycle(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+    def is_available(self):
+        all = self.weeks * self.trainings_per_week
+        implemented_trainings = len(Training.objects.filter(implemented_trainings=self))
+        if all - implemented_trainings > 0:
+            return True
+        else:
+            return False

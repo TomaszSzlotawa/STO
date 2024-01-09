@@ -1,73 +1,124 @@
 {% extends 'clubs/main.html' %}
 
+{% block title %}Plany treningowe {{team.name}}{% endblock %}
+{% block header %}Plany treningowe {{team.name}}{% endblock %}
 
-{% block title %}Mezocykle drużyny {{team.name}}{% endblock %}
 {% block content %}
-  <h3>Mezocykle drużyny {{team.name}}</h3>
-  <a href="{% url 'create_mezocycle' team.id %}">Utwórz nowy mezocykl</a>
-  <h5>Szablony mezocykil drużyny {{team.name}}</h5>
-  <table>
-    <thead>
-      <tr>
-        <th>Nazwa</th>
-        <th>Długość[tygodnie]</th>
-        <th>Ilość jednostek w tygodniu</th>
-        <th>Zarządzaj</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in mezocycles %}
-        <tr>
-          <td>{{ item.name }}</td>
-          <td>{{ item.weeks }}</td>
-          <td>{{ item.trainings_per_week }}</td>
-          <td>
-            <div class="dropdown">
-                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Zarządzaj
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+<div class="container-fluid py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-top">
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder mb-3">Szablony planów treningowych</h6>
+            <div class="row">
+              <div class="col-5">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Nazwa</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Tygodnie</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Treningi na tydzień</h6>
+              </div>
+              <div class="col-1">
+              </div>
+            </div>
+            {% for item in mezocycles %}
+            <div class="row mt-1">
+              <div class="col-5 ">
+                <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{item.name}}</h6>
+              </div>
+
+              <div class="col-3 ">
+                <h6 class="h-100">{{item.weeks}}</h6>
+              </div>
+
+              <div class="col-3 ">
+                <h6 class="h-100">{{item.trainings_per_week}}</h6>
+              </div>
+
+              <div class="col-1 ">
+                  <button class="btn dropdown-toggle py-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'edit_mezocycle' item.id %}">Edytuj</a></li>
                     <li><a class="dropdown-item" href="{% url 'implement_mezocycle' item.id %}">Wdróż mezocykl</a></li>
                     <li><a class="dropdown-item" href="{% url 'delete_mezocycle' item.id %}">Usuń mezocykl</a></li>
-                </ul>
+                  </ul>
+              </div>
             </div>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+            {% endfor %}
+        </div>
+      </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nazwa</th>
-        <th>Długość[tygodnie]</th>
-        <th>Ilość jednostek w tygodniu</th>
-        <th>Zarządzaj</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in implemented_mezocycles %}
-        <tr>
-          <td>{{ item.name }}</td>
-          <td>{{ item.weeks }}</td>
-          <td>{{ item.trainings_per_week }}</td>
-          <td>
-            <div class="dropdown">
-                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Zarządzaj
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    </div>
+
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="row">
+        <div class="col-12">
+          <a class="text-decoration-none" href="{% url 'create_mezocycle' team.id %}">
+            <div class="card  mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+                <i class="fa-solid fa-plus px-2"></i>
+                <h6 class="m-0 text-uppercase">dodaj nowy plan treningowy</h6>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder mb-3">Wdrożone plany treningowe</h6>
+            <div class="row">
+              <div class="col-5">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Nazwa</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Tygodnie</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Treningi na tydzień</h6>
+              </div>
+              <div class="col-1">
+              </div>
+            </div>
+            {% for item in implemented_mezocycles %}
+            <div class="row mt-1">
+              <div class="col-5 ">
+                <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{item.name}}</h6>
+              </div>
+
+              <div class="col-3 ">
+                <h6 class="h-100">{{item.weeks}}</h6>
+              </div>
+
+              <div class="col-3 ">
+                <h6 class="h-100">{{item.trainings_per_week}}</h6>
+              </div>
+
+              <div class="col-1 ">
+                  <button class="btn dropdown-toggle py-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'review_implemented_mezocycle' item.id %}">Podgląd</a></li>
                     <li><a class="dropdown-item" href="{% url 'pdf_view' item.id %}">Wygeneruj PDF</a></li>
                     <li><a class="dropdown-item" href="{% url 'delete_implemented_mezocycle' item.id %}">Usuń mezocykl</a></li>
-                </ul>
+                  </ul>
+              </div>
             </div>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}
