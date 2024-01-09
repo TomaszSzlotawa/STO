@@ -91,3 +91,14 @@ class AttendanceTable(tables.Table):
             self.base_columns[date.strftime('%Y-%m-%d')] = tables.Column(verbose_name=date.strftime('%Y-%m-%d'))
         self.base_columns['average'] = tables.Column(verbose_name='Average')
         super(AttendanceTable, self).__init__(*args, **kwargs)
+
+class TeamStaffTable(tables.Table):
+    name = tables.Column(verbose_name='Imię')
+    surname = tables.Column(verbose_name='Nazwisko')
+    date_of_birth = tables.Column(verbose_name='Data urodzin')
+
+    actions = tables.TemplateColumn(template_name='clubs/team_player_actions_column.html', orderable=False, verbose_name='')
+
+    class Meta:
+        template_name = 'tables/bootstrap_htmx.html'
+        order_by = ('surname',)  

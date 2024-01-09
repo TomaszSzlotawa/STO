@@ -1,53 +1,10 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Kadra{% endblock %}
+{% block title %}Kadra {{team.name}}{% endblock %}
+{% block header %}Kadra {{team.name}}{% endblock %}
 
 {% block content %}
-
-<h3>Kadra zespołu {{team.name}}</h3>
-<a href="{% url 'add_player' team.id %}">Dodaj zawodnika do drużyny</a>
-<table>
-    <thead>
-        <tr>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            <th>Data urodzin</th>
-
-        </tr>
-    </thead>
-  {% for player in players %}
-  <tbody>
-    <tr>
-        <td>
-            {{player.name}}
-        </td>
-        <td>
-            {{player.surname}}
-        </td>
-        <td>
-            {{player.player_data.date_of_birth}}
-        </td>
-        <td>
-            <div class="dropdown">
-                <button class="btn btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Zarządzaj
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="{% url 'player_attendance_report' season.id player.id %}">Raport frekwencji</a></li>
-                    <li><a class="dropdown-item" href="{% url 'delete_player_from_team' season.id player.id %}">Usuń zawodnika z drużyny</a></li>
-                    <li><a class="dropdown-item" href="{% url 'edit_player' player.id %}">Edytuj dane zawodnika</a></li>
-                </ul>
-            </div>
-
-
-
-            
-        </td>
-    </tr>
-  </tbody>
-  {% endfor %}
-  </table>
-
-
+    {% block table %}
+    {% endblock table %}
 
 {% endblock %}

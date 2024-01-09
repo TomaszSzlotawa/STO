@@ -10,7 +10,7 @@ from django.urls import reverse
 from django_tables2 import RequestConfig
 
 from .filters import ShowHiddenFilter
-from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, PlayersEquipmentTable, RentedEquipmentTable
+from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, PlayersEquipmentTable, RentedEquipmentTable, TeamStaffTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -532,7 +532,25 @@ def team_staff(request, team_id):
         players = season.player.all()
     else:
         players = []
-    return render(request,'clubs/team_staff.html',{'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team, 'season':season})
+
+    data = []
+    for p in players:
+        row_data = {
+            'name': p.name,
+            'surname': p.surname,
+            'date_of_birth': p.player_data.date_of_birth,
+            'id': p.id,
+        }
+        data.append(row_data)
+
+    table = TeamStaffTable(data)
+    RequestConfig(request,paginate={"per_page": 25}).configure(table)
+
+    if request.htmx:
+        template_name = "clubs/table_partial.html"
+    else:
+        template_name = "clubs/team_staff_table.html"
+    return render(request,template_name,{'table':table,'teams':teams,'usersClubs':usersClubs, 'players':players,'team':team, 'season':season})
 
 def add_player(request, team_id):
     if not request.user.is_authenticated:
