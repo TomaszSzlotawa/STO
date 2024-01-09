@@ -570,6 +570,8 @@ form .btn:focus {
     border: none;
 }
 
+
+
 @media(max-width: 767px){
     #side_nav {
         overflow-y: auto;

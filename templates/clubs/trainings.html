@@ -1,8 +1,127 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Treningi{% endblock %}
+{% block title %}Treningi {{team.name}}{% endblock %}
+{% block header %}Treningi {{team.name}}{% endblock %}
 
 {% block content %}
+
+
+<div class="container-fluid py-5 h-100 dashboard">
+  <div class="row d-flex justify-content-center align-items-top">
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder mb-3">Nadchodzące treningi</h6>
+            <div class="row">
+              <div class="col-6">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Temat</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Zaplanowany</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Godzina</h6>
+              </div>
+              <div class="col-1">
+              </div>
+            </div>
+            {% for training in schedueled_trainings %}
+            <div class="row mt-1">
+              <div class="col-6 ">
+                <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{training.topic}}</h6>
+              </div>
+
+              <div class="col-3 ">
+                <h6 class="h-100">{{ training.start_datatime|date:"d F Y" }}</h6>
+              </div>
+              <div class="col-2 ">
+                <h6 class="h-100">{{ training.start_datatime|time:"H:i" }}</h6>
+              </div>
+
+              <div class="col-1 ">
+                  <button class="btn dropdown-toggle py-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{%url 'training_details' training.id %}">Pokaż szczegóły</a></li>
+                    <li><a class="dropdown-item" href="{%url 'edit_training' training.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{%url 'delete_training' training.id %}">Usuń trening</a></li>
+                </ul>
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+      <div class="row">
+        <div class="col-12">
+          <a class="text-decoration-none" href="{% url 'add_training' team.id %}">
+            <div class="card  mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row justify-content-between" style="border-radius: 0.5rem;">
+                <i class="fa-solid fa-plus px-2"></i>
+                <h6 class="m-0 text-uppercase">dodaj nowy trening</h6>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="fw-bolder mb-3">Zakończone treningi</h6>
+            <div class="row">
+              <div class="col-6">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Temat</h6>
+              </div>
+              <div class="col-3">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Data</h6>
+              </div>
+              <div class="col-2">
+                <h6 class="fw-bolder h-100" style="border-bottom:2px solid #FF851B ;">Godzina</h6>
+              </div>
+              <div class="col-1">
+              </div>
+            </div>
+            {% for training in finished_trainings %}
+            <div class="row mt-1">
+              <div class="col-6 ">
+                <h6 class="h-100" style="border-bottom:1px solid #FF851B ;">{{training.topic}}</h6>
+              </div>
+
+              <div class="col-3 ">
+                <h6 class="h-100">{{ training.start_datatime|date:"d F Y" }}</h6>
+              </div>
+              <div class="col-2 ">
+                <h6 class="h-100">{{ training.start_datatime|time:"H:i" }}</h6>
+              </div>
+
+              <div class="col-1 ">
+                  <button class="btn dropdown-toggle py-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{%url 'training_details' training.id %}">Pokaż szczegóły</a></li>
+                    <li><a class="dropdown-item" href="{%url 'edit_training' training.id %}">Edytuj</a></li>
+                    <li><a class="dropdown-item" href="{%url 'training_attendance' training.id %}">Sprawdź obecność</a></li>
+                    <li><a class="dropdown-item" href="{%url 'training_attendance_report' training.id %}">Raport obecności</a></li>
+                    <li><a class="dropdown-item" href="{%url 'delete_training' training.id %}">Usuń trening</a></li>
+                </ul>
+              </div>
+            </div>
+            {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
 
 <a class="link" href="{% url 'add_training' team.id %}">Utwórz trening</a>
 <h3>Zaplanowane</h3>
