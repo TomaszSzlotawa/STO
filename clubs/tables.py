@@ -1,5 +1,3 @@
-# w twoim pliku tables.py
-
 import django_tables2 as tables
 from .models import Equipment, Rented_equipment
 
@@ -76,3 +74,20 @@ class PlayersEquipmentTable(tables.Table):
 
 
 
+# tables.py
+from .models import Player
+
+class AttendanceTable(tables.Table):
+    player = tables.Column(verbose_name='Player Name')
+
+    class Meta:
+        model = Player  # Assuming you have a Player model
+        fields = ['player']  # Add other fields as needed
+        attrs = {"class": "table table-striped"}  # Optional: add Bootstrap styling
+
+    def __init__(self, *args, **kwargs):
+        attendance_dates = kwargs.pop('attendance_dates', [])
+        for date in attendance_dates:
+            self.base_columns[date.strftime('%Y-%m-%d')] = tables.Column(verbose_name=date.strftime('%Y-%m-%d'))
+        self.base_columns['average'] = tables.Column(verbose_name='Average')
+        super(AttendanceTable, self).__init__(*args, **kwargs)

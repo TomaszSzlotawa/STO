@@ -49,12 +49,13 @@
     <div class="col-md-3 mb-3">
       <div class="card  mb-4">
         <div class="card-body text-center">
-          <p class="mb-0 f-w-600">Frekwencja na treningu[%]</p>
+          <p class="mb-0 f-w-600">Frekwencja na treningu</p>
+          <p class="mb-0 fw-bolder">{{avg_attendance}}[%]</p>
           <canvas id="pieChart" style="width: 100%; height: 100%;"></canvas>
                                                      
           <br>
           <script>
-              var ctxP = document.getElementById("pieChart{{ season.team.id }}").getContext('2d');
+              var ctxP = document.getElementById("pieChart").getContext('2d');
               var avg = JSON.parse('{{avg_attendance|safe}}');
               var abs = 100-avg
               console.log(avg)

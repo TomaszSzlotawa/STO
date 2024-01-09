@@ -540,6 +540,12 @@ form .btn:focus {
     margin-bottom: 0;
 }
 
+.attendance{
+    overflow-x: auto;
+    max-width: calc(91vw - 180px);
+}
+
+
 
 /* Dodatkowe stylowanie dla przewiniętego paska przewijania */
 .table-overwidth::-webkit-scrollbar {
@@ -586,5 +592,9 @@ form .btn:focus {
     .table-overwidth {
         overflow-x: auto;
         white-space: nowrap;
+    }
+    .attendance{
+        overflow-x: auto;
+        max-width: 94vw;
     }
 }

@@ -1,70 +1,143 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Raport Frekwencji dla drużyny{% endblock %}
+{% block title %}Raport frekwencji {{team.name}}{% endblock %}
+{% block header %}Raport frekwencji{% endblock %}
 
 {% block content %}
 
-<h3>{{team.name}} - Raport Frekwencji</h3>
-<h3>Średnia frekwencja wyniosła {{avg_attendance}}%</h3>
-{% if attendance_filter.errors %}
-  <ul class="errorlist">
-    {% for field_errors in attendance_filter.errors.values %}
-      {% for error in field_errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-    {% endfor %}
-  </ul>
-{% endif %}
-<form method="get" action="">
-    {{ attendance_filter.as_p }}
-    <button type="submit">Filtruj</button>
-</form>
-<table>
-    <thead>
-        <tr>
-            <th>Imię</th>
-            <th>Nazwisko</th>
-            {% for training in trainings %}
-            <th>{{training.start_datatime|date:"m-d"}}<br>{{training.start_datatime|date:"Y"}}</th>
-            {% endfor %}
-            <th>Średnio</th>
-        </tr>
-    </thead>
-  {% for player in players %}
-  <tbody>
-    <tr>
-        <td>
-            {{player.name}}
-        </td>
-        <td>
-            {{player.surname}}
-        </td>
-        {% for t in trainings %}
-            <td>
-            {% for att in attendances %}
-                {% if att.training.id == t.id %}
-                    {% if att.player.id == player.id %}
-                        {% if att.present %}
-                            &#x2705;
-                        {% elif att.present == False %}
-                            &#10060;
-                        {% else %}
-                            &#10068;
+
+
+<div class="container-fluid dashboard">
+    <div class="row br-4">
+        <div class="col-md-9 mb-3 h-100">
+            <h4 class="fw-bolder">Raport obecności {{team.name}} </i></h4>
+            <div class="card  mb-4">
+                <div class="card-body ">
+                    <h6 class="fw-bolder">Filtrowanie treningów</h6>
+                    <form method="get" action="">
+                        {% if attendance_filter.non_field_errors %}
+                        <div class="alert alert-danger my-custom-alert">
+                            {% for error in attendance_filter.non_field_errors %}
+                            {{ error|striptags }}
+                            {% endfor %}
+                        </div>
                         {% endif %}
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-            </td>
-        {% endfor %}
-        <td>
-            {{ players_avg|get_item:player.id }}%
-        </td>
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <label for="{{attendance_filter.start_date.id_for_label}}"
+                                    class="col-form-label">Początek</label>
+                                {{ attendance_filter.start_date }}
+                                {% for error in attendance_filter.start_date.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{attendance_filter.end_date.id_for_label}}"
+                                    class="col-form-label">Koniec</label>
+                                {{ attendance_filter.end_date }}
+                                {% for error in end_filter.start_date.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row my-2">
+                            <div class="col-12">
+                                <input name="club-submit" type="submit" class="btn " value="Filtruj">
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                        <div class="card  mb-4">
+                            <div class="card-body table-overwidth attendance">
+                                <table class="mb-3">
+                                    <thead>
+                                        <tr>
+                                            <th class=" px-1"><h6 class="fw-bolder h-100 " style="border-bottom:2px solid #FF851B ;">Nazwisko Imie</h6></th>
+                                            <th class=" px-1"><h6 class="fw-bolder h-100 " style="border-bottom:2px solid #FF851B ;">Średnio</h6></th>
+                                            {% for training in trainings %}
+                                                <th class="text-center px-1"><a href="{%url 'training_attendance' training.id %}" class="text-decoration-none">{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}}</a></th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    {% for player in players %}
+                                    <tbody>
+                                        <tr>
+                                            <td class=" px-1">
+                                                {{player.surname}} {{player.name}}                                    
+                                            </td>
         
-    </tr>
-  </tbody>
-  {% endfor %}
-  </table>
+                                            <td class="text-center px-1">
+                                                {{ players_avg|get_item:player.id }}%
+                                            </td>
+                                            {% for t in trainings %}
+                                            <td class="text-center px-1">
+                                                {% for att in attendances %}
+                                                {% if att.training.id == t.id %}
+                                                {% if att.player.id == player.id %}
+                                                {% if att.present %}
+                                                &#x2705;
+                                                {% elif att.present == False %}
+                                                &#10060;
+                                                {% else %}
+                                                &#10068;
+                                                {% endif %}
+                                                {% endif %}
+                                                {% endif %}
+                                                {% endfor %}
+                                            </td>
+                                            {% endfor %}
+            
+                                        </tr>
+                                    </tbody>
+                                    {% endfor %}
+                                </table>
+            
+                            </div>
+                    </div>
+                    
+                </div>
+        
+            </div>
+        </div>
 
+        <div class="col-md-3 mb-3">
+            <div class="card  mb-4">
+                <div class="card-body text-center">
+                    <p class="mb-0 f-w-600">Średnia frekwencja</p>
+                    <p class="mb-0 fw-bolder">{{avg_attendance}}[%]</p>
+                    <canvas id="pieChart" style="width: 100%; height: 100%;"></canvas>
 
+                    <br>
+                    <script>
+                        var ctxP = document.getElementById("pieChart").getContext('2d');
+                        var avg = JSON.parse('{{avg_attendance|safe}}');
+                        var abs = 100 - avg
+                        console.log(avg)
+                        var myPieChart = new Chart(ctxP, {
+                            type: 'pie',
+                            data: {
+                                labels: ["Obecnych", "Nieobecnych"],
+                                datasets: [{
+                                    data: [avg, abs],
+                                    backgroundColor: ["#2ecc71", "#e74c3c"],
+                                    hoverBackgroundColor: ["#2ecc71", "#e74c3c"]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
 
 {% endblock %}
