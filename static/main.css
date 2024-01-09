@@ -283,22 +283,22 @@ form input:-internal-autofill-selected {
 
 
 /*User panel*/
-/*
-.dashboard .my-trainings{
-    min-height: 40vh;
-    max-height: 40vh;
+
+.dashboard .club-players{
+    max-height: 70vh;
     overflow-y: auto; 
-}*/
-.dashboard .my-trainings::-webkit-scrollbar {
+    overflow-x: hidden;
+}
+.dashboard .club-players::-webkit-scrollbar {
     width: 7px; /* Szerokość paska przewijania */
 }
 
-.dashboard .my-trainings::-webkit-scrollbar-thumb {
+.dashboard .club-players::-webkit-scrollbar-thumb {
     background-color:#FF851B; 
     border-radius: 0.5rem; /* Zaokrąglenie paska przewijania */
 }
 
-.dashboard .my-trainings::-webkit-scrollbar-track {
+.dashboard .club-players::-webkit-scrollbar-track {
     border-radius: 0.5rem;
     background-color: #fff; 
 }

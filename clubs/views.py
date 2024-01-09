@@ -106,7 +106,6 @@ def club_panel(request, club_id):
     for s in seasons:
         trainings = Training.objects.filter(season=s,start_datatime__range=[s.date_of_start, date.today()])
         attendances = Attendance.objects.filter(training__in = trainings)
-        players = s.player.all()
         present = 0
         len_attendance=0
         for att in attendances:
@@ -558,7 +557,7 @@ def add_player(request, team_id):
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk=team_id)
-    players = Player.objects.filter(club=team.club)
+    players = Player.objects.filter(club=team.club,hidden=False)
     season = Season.objects.filter(team = team, active = True).first()    
     if season:
         players_in_team = season.player.all()
@@ -572,6 +571,8 @@ def add_player(request, team_id):
             for player_id in selected_players_ids:
                 player = get_object_or_404(Player, pk=player_id)
                 season.player.add(player)
+            return redirect(team_staff, team.id)
+
         if 'create-player' in request.POST:
             if player_form.is_valid():
                 player = player_form.save(commit=False)

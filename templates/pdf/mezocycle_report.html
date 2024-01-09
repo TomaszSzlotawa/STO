@@ -53,13 +53,13 @@
                 <td style="padding: 5px;">
                     {% for wt, training in trainings_list %}
                     {% if wt.0 == w and wt.1 == t %}
-                    <b>Data:</b>{{ training.start_datatime }} - {{ training.end_datatime }}<br>
-                    <b>Lokalizacja:</b>{{ training.place }}<br>
-                    <b>Temat:</b>{{ training.topic }}<br>
-                    <b>Cele:</b>{{ training.goals }}<br>
-                    <b>Zasady:</b>{{ training.rules }}<br>
-                    <b>Działania:</b> {{ training.actions }}<br>
-                    
+                    <b>Data:</b>&nbsp;{{ training.start_datatime|date:"d F Y" }} | {{ training.start_datatime|time:"H:i" }} <br>
+                    <b>Obiekt:</b>&nbsp;{{ training.place.name }}, {{ training.place.addres }}<br>
+                    <b>Temat:</b>&nbsp;{{ training.topic }}<br>
+                    <b>Cele gry:</b>&nbsp;{{ training.goals }}<br>
+                    <b>Zasady gry:</b>&nbsp;{{ training.rules }}<br>
+                    <b>Działania:</b>&nbsp;{{ training.actions }}<br>
+                    <b>Cel motoryczny:</b>&nbsp;{{ training.motoric_goals }}<br>
                     {% endif %}
                     {% endfor %}
                 </td>
@@ -68,6 +68,8 @@
             {% endfor %}
             </tbody>
         </table>
+
+        
     </div>
 
 </body>

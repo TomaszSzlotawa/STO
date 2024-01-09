@@ -1,52 +1,167 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Kadra{% endblock %}
+{% block title %}Dodaj zawodnika do {{team.name}}{% endblock %}
+{% block header %}Dodaj zawodnika do {{team.name}}{% endblock %}
 
 {% block content %}
-<h2>Stwórz zawodnika</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ player_form }}
-  {{ player_data_form }}
-  <input type="submit" name="create-player" value="Dodaj">
-</form>
-
-lub wybierz zawodnika z klubu
-<h3>Kadra klubu</h3>
-<form method="post" action="{% url 'add_player' team.id %}">
-    {% csrf_token %}
-    <table>
-        <thead>
-            <tr>
-                <th>Wybierz</th>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Data urodzin</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for player in players %}
-            <tr>
-                <td>
-                    <input type="checkbox" {% if player in players_in_team %} checked="True" disabled="True" {% endif %} name="selected_players" value="{{ player.id }} ">
-                </td>
-                <td>
-                    {{ player.name }}
-                </td>
-                <td>
-                    {{ player.surname }}
-                </td>
-                <td>
-                    {{ player.player_data.date_of_birth }}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <input type="submit" name="add-players" value="Zapisz">
-    <a href="{% url 'team_staff' team.id %}" >wróć</a>
-</form>
 
 
+<div class="container-fluid py-5 h-100 dashboard">
+    <div class="row d-flex justify-content-center align-items-top">
+        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bolder mb-3">Dodaj nowego zawodnika</h6>
+                        <form method="POST" class="user-profil data">
+                            {% csrf_token %}
+
+                            {% if player_data_form.non_field_errors %}
+                            <div class="alert alert-danger my-custom-alert">
+                                {% for error in player_data_form.non_field_errors %}
+                                {{ error|striptags }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            {% if player_form.non_field_errors %}
+                            <div class="alert alert-danger my-custom-alert">
+                                {% for error in player_form.non_field_errors %}
+                                {{ error|striptags }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="row ">
+                                <label for="{{player_form.name.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Imię</label>
+                                <div class="col-sm-7">
+                                    {{player_form.name}}
+                                    {% for error in player_form.name.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <label for="{{player_form.surname.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Nazwisko</label>
+                                <div class="col-sm-7">
+                                    {{player_form.surname}}
+                                    {% for error in player_form.category.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+
+                            <div class="row mt-2">
+                                <label for="{{player_data_form.date_of_birth.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Data urodzenia</label>
+                                <div class="col-sm-7">
+                                    {{player_data_form.date_of_birth}}
+                                    {% for error in player_data_form.date_of_birth.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <label for="{{player_data_form.place_of_birth.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Miejsce urodzenia</label>
+                                <div class="col-sm-7">
+                                    {{player_data_form.place_of_birth}}
+                                    {% for error in player_data_form.place_of_birth.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <label for="{{player_data_form.pesel.id_for_label}}"
+                                    class="col-sm-5 col-form-label">PESEL</label>
+                                <div class="col-sm-7">
+                                    {{player_data_form.pesel}}
+                                    {% for error in player_data_form.pesel.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <label for="{{player_data_form.extranet.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Numer w ekstranet</label>
+                                <div class="col-sm-7">
+                                    {{player_data_form.extranet}}
+                                    {% for error in player_data_form.extranet.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <label for="{{player_data_form.addres.id_for_label}}"
+                                    class="col-sm-5 col-form-label">Adres zamieszkania</label>
+                                <div class="col-sm-7">
+                                    {{player_data_form.addres}}
+                                    {% for error in player_data_form.addres.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    <input name="create-player" value="Dodaj" type="submit" class="btn ">
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="d-flex justify-content-end links">
+                  <a href="{% url 'team_staff' team.id %}" class="text-decoration-none mt-1 ">
+                    <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do widoku kadry
+                  </a>
+                </div>
+              </div>
+        </div>
+
+
+        <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bolder mb-3">Wybierz zawodnika z klubu</h6>
+                        <div class="col-12">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row mb-4">
+                                    <div class="col-sm-12 ">
+                                        <input name="add-players" value="Zapisz" type="submit" class="btn ">
+                                    </div>
+                                </div>
+                                <div class="club-players">
+                                    {% for player in players %}
+                                    <div class="row mt-2">
+                                        <div class="col-2">
+                                            <input type="checkbox" class="form-check-input mx-2" {% if player in players_in_team %} checked="True" disabled="True" {% endif %}
+                                                name="selected_players" id="selected_players{{ player.id }}"  value="{{ player.id }} ">
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="selected_players{{ player.id }}" class="form-check-label">{{ player.surname }} {{ player.name }}</label>
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="selected_players{{ player.id }}" class="form-check-label">{{ player.player_data.date_of_birth  }}</label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                
+    
+                            </form>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}

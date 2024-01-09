@@ -206,7 +206,7 @@
                                 <div class="row mt-1">
                                     <a class="text-decoration-none d-flex"
                                         href="{% url 'team_attendance_report' team.id %}">
-                                        <div class="col-sm-12 justify_content-center">
+                                        <div class="col-12 text-center justify_content-center">
                                             {% for season, avg_attendance, absent in seasons_att %}
                                             {% if season.team == team %}
                                             <p class="mb-0 f-w-600">Frekwencja w aktywnym sezonie[%]</p>
