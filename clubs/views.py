@@ -8,9 +8,10 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django_tables2 import RequestConfig
+from django.core.exceptions import ValidationError
 
 from .filters import ShowHiddenFilter
-from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, PlayersEquipmentTable, RentedEquipmentTable, TeamStaffTable
+from .tables import ClubEquipmentTable, CoachingStaffTable, PlayerDataTable, PlayersEquipmentTable, RentedEquipmentTable, TeamEquipmentTable, TeamStaffTable
 from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Place, Rented_equipment, TeamsCoaching_Staff, Training, Training_in_mezocycle, UsersClub, Club, Team, Profile, Season, Player, Player_data
 from .forms import AddCoachToTeam, AttendanceForm, AttendanceReportFilter, CreateEquipment, CreatePlayerDataForm, CreatePlayerForm, EditCoachInTeam, ImplementMezocycleForm, ImplementTrainingForm, MezocycleForm, PlaceForm, RentEquipmentForm, SignUpForm, ProfileForm, Training_in_mezocycleForm, TrainingForm, UserForm, ClubCreationForm, UsersClubForm, UserRoleAnswerForm, TeamCreateForm, SeasonCreateForm, SeasonChooseForm
 from django.contrib.auth import login, authenticate
@@ -240,20 +241,24 @@ def club_settings(request, club_id):
         seasons_att.append((s,avg_attendance,absent))
 
     allowed = False
+    can_edit = False
     for usersClub in usersClubs:
         if usersClub.club == club:
-            if usersClub.admin == True or usersClub.coach or usersClub.training_coordinator:
+            if usersClub.admin==True: 
+                allowed=True
+                can_edit=True
+            elif usersClub.training_coordinator:
                 allowed=True
 
     if allowed:
         users = UsersClub.objects.filter(club = club, accepted=True)
-        form = ClubCreationForm(request.POST or None, instance = club)
+        form = ClubCreationForm(can_edit, request.POST or None, instance = club)
         if request.method == 'POST':
             if form.is_valid():
                 club = form.save()
                 return redirect(club_settings, club.id)
             else:
-                messages.error(request, 'Błąd')
+                club = get_object_or_404(Club, pk=club_id)
         return render(request,'clubs/club_settings.html',{'clubs_teams':clubs_teams, 'seasons_att':seasons_att,'coaching_staff':coaching_staff,'form':form,'usersClubs':usersClubs,'teams':teams,'club':club,'users':users,'seasons':seasons})
     else:
         return render(request, 'clubs/lack_of_access.html',{'usersClubs':usersClubs,'teams':teams})
@@ -515,13 +520,12 @@ def create_player(request, club_id):
             print('dane')
             player = player_form.save(commit=False)
             player.club = club
-            player.save()
-        if player_data_form.is_valid():
-            print('profil')
-            player_data = player_data_form.save(commit=False)
-            player_data.player = player
-            player_data.save()
-        return redirect(club_staff, club.id)
+            if player_data_form.is_valid():
+                player.save()
+                player_data = player_data_form.save(commit=False)
+                player_data.player = player
+                player_data.save()
+                return redirect(club_staff, club.id)
     return render(request,'clubs/create_player.html',{'club':club,'teams':teams,'usersClubs':usersClubs, 'player_form':player_form,'player_data_form':player_data_form, 'edit':False})
 
 def team_staff(request, team_id):
@@ -582,18 +586,17 @@ def add_player(request, team_id):
             if player_form.is_valid():
                 player = player_form.save(commit=False)
                 player.club = team.club
-                player.save()
-                player_form = CreatePlayerForm(None)
-            if player_data_form.is_valid():
-                player_data = player_data_form.save(commit=False)
-                player_data.player = player
-                player_data.save()
-                player_data_form = CreatePlayerDataForm(None)
-            season.player.add(player)
-            for t in trainings:
-                Attendance(training = t, player = player, present = None).save()
-            return redirect(team_staff, team.id)
-            
+                if player_data_form.is_valid():
+                    player.save()
+                    player_data = player_data_form.save(commit=False)
+                    player_data.player = player
+                    player_data.save()
+                    player_data_form = CreatePlayerDataForm(None)
+                    season.player.add(player)
+                    for t in trainings:
+                        Attendance(training = t, player = player, present = None).save()
+                    return redirect(team_staff, team.id)
+                    
     return render(request,'clubs/add_player.html',{'club':team.club, 'players_in_team':players_in_team,'teams':teams,'usersClubs':usersClubs,'players':players, 'player_form':player_form,'player_data_form':player_data_form,'team':team})
 def delete_player_from_club(request, player_id):
     if not request.user.is_authenticated:
@@ -934,20 +937,17 @@ def teams_equipment(request, team_id):
         players = season.player.all()
     else:
         players = []
-    rented_equipments = Rented_equipment.objects.filter(player__in=players, date_of_return__isnull=True)
-    player_counts = defaultdict(int)
+    rented_equipments = Rented_equipment.objects.filter(player__in=players, date_of_return__isnull=True).order_by('player__surname')
 
-    for rent in rented_equipments:
-        player_counts[rent.player.id] += 1
-    for player in players:
-        if player_counts[player.id] == 0:
-            player_counts[player.id] += 1
+    table = TeamEquipmentTable(rented_equipments)
+    RequestConfig(request,paginate={"per_page": 20}).configure(table)
 
-    player_counts_dict = dict(player_counts)
+    if request.htmx:
+        template_name = "clubs/table_partial.html"
+    else:
+        template_name = "clubs/teams_equipment_table.html"
 
-
-
-    return render(request,'clubs/teams_equipment.html',{'team':team,'teams':teams,'usersClubs':usersClubs,'rented_equipments':rented_equipments,'players':players,'player_counts_dict':player_counts_dict})
+    return render(request,template_name,{'table':table,'team':team,'teams':teams,'usersClubs':usersClubs,})
 
 def places(request, club_id):
     if not request.user.is_authenticated:
@@ -1210,8 +1210,8 @@ def mezocycles(request,team_id):
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
     team = get_object_or_404(Team,pk = team_id)
-    mezocycles = Mezocycle.objects.filter(Q(team=team)).order_by('id')
-    implemented_mezocycles = ImplementedMezocycle.objects.filter(team=team ).order_by('id')
+    mezocycles = Mezocycle.objects.filter(Q(team=team)).order_by('-id')
+    implemented_mezocycles = ImplementedMezocycle.objects.filter(team=team ).order_by('-id')
     return render(request,'clubs/mezocycles.html',{'teams':teams,'usersClubs':usersClubs, 'team':team, 'mezocycles':mezocycles,'implemented_mezocycles':implemented_mezocycles})
 
 def create_mezocycle(request, team_id):

@@ -102,3 +102,15 @@ class TeamStaffTable(tables.Table):
     class Meta:
         template_name = 'tables/bootstrap_htmx.html'
         order_by = ('surname',)  
+
+
+class TeamEquipmentTable(tables.Table):
+    player = tables.Column(verbose_name='Nazwisko Imię')
+    equipment = tables.Column(accessor='equipment__name',verbose_name='Sprzęt')
+    quantity = tables.Column(verbose_name='Ilość')
+    date_of_rental = tables.Column(verbose_name='Data wypożyczenia')
+    description = tables.Column(verbose_name='Dodatkowe informacje')
+    class Meta:
+        model = Rented_equipment
+        template_name = 'tables/bootstrap_htmx.html'
+        exclude = ['id', 'date_of_return']

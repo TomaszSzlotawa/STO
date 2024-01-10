@@ -81,7 +81,10 @@ class ClubCreationForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
-    
+    def __init__(self, can_edit, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.can_edit = can_edit
+
     def clean_name(self):
         name = self.cleaned_data.get('name')
         existing_club = Club.objects.filter(name=name).first()
@@ -91,7 +94,13 @@ class ClubCreationForm(forms.ModelForm):
 
         return name
 
+    def clean(self):
+        cleaned_data = super().clean()
 
+        if not self.can_edit:
+            raise forms.ValidationError("Nie masz uprawnień do edycji danych klubu")
+
+        return cleaned_data
 
 class UsersClubForm(forms.ModelForm):
     email = forms.EmailField(

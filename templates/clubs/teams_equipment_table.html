@@ -1,0 +1,28 @@
+{% extends 'clubs/teams_equipment.html' %}
+
+{% load render_table from django_tables2 %}
+{% load i18n %}
+
+{% block table %}
+<div class="container-fluid h-100 dashboard">
+    <div class="row">
+        <div class="col-12">
+            <div class="card  mb-4 ">
+                <div class="card-body">
+                    <h4 class="fw-bolder text-uppercase">{{team.name}} Raport Sprzętu</h4>
+                    <div class="row">
+                        <div class="progress">
+                            <div class="indeterminate"></div>
+                        </div>
+                    </div>
+                    <div class="row table-overwidth">
+                        {# The actual table #}
+                        {% render_table table %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
