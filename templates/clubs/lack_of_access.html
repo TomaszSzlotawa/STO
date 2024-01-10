@@ -1,6 +1,7 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Brak dostępu{% endblock %}
+{% block header %}Brak dostępu{% endblock %}
 
 {% block content %}
 
@@ -10,7 +11,7 @@
         <div class="card">
           <div class="card-body p-4 text-center">
             <p>
-              Nie masz dostępu do tej funkcjonalności. 
+              Nie masz uprawnień. 
             </p>
             <div class="d-flex justify-content-end links">
                 <a href="{% url 'user_panel' %}" class="text-decoration-none mt-1 ">

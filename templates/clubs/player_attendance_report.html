@@ -58,7 +58,7 @@
                                     <thead>
                                         <tr>
                                             {% for training in trainings %}
-                                                <th class="text-center px-1"><a href="{%url 'training_attendance' training.id %}" class="text-decoration-none">{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}}</a></th>
+                                                <th class="text-center px-1">{% if training.start_datatime < now %}<a href="{%url 'training_attendance' training.id %}" class="text-decoration-none">{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}}</a>{% else %}{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}} {% endif %} </th>
                                             {% endfor %}
                                         </tr>
                                     </thead>
