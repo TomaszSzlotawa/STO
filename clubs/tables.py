@@ -32,8 +32,8 @@ class ClubEquipmentTable(tables.Table):
 
     name = tables.Column(verbose_name='Nazwa')
     producer = tables.Column(verbose_name='Producent')
-    all_quantity = tables.Column(verbose_name='Ogólnie[szt]')
-    available_quantity = tables.Column(accessor='available_quantity', verbose_name='Dostępne[szt]')
+    all_quantity = tables.Column(verbose_name='Ogólnie [szt]')
+    available_quantity = tables.Column(accessor='available_quantity', verbose_name='Dostępne [szt]')
     description = tables.Column(verbose_name='Dodatkowe informacje')
     actions = tables.TemplateColumn(template_name='clubs/equipment_actions_column.html', orderable=False, verbose_name='')
 
@@ -48,7 +48,7 @@ class ClubEquipmentTable(tables.Table):
 
 class RentedEquipmentTable(tables.Table):
     player = tables.Column(verbose_name='Nazwisko Imię')
-    quantity = tables.Column(verbose_name='Ilość')
+    quantity = tables.Column(verbose_name='Ilość [szt]')
     date_of_rental = tables.Column(verbose_name='Data wypożyczenia')
     description = tables.Column(verbose_name='Dodatkowe informacje')
 

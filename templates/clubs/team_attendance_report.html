@@ -57,10 +57,11 @@
                                 <table class="mb-3">
                                     <thead>
                                         <tr>
-                                            <th class=" px-1"><h6 class="fw-bolder h-100 " style="border-bottom:2px solid #FF851B ;">Nazwisko Imie</h6></th>
-                                            <th class=" px-1"><h6 class="fw-bolder h-100 " style="border-bottom:2px solid #FF851B ;">Średnio</h6></th>
+                                            <th class=" px-1 text-center"><h6 class="fw-bolder h-100 " style="border-bottom:2px solid #FF851B ;">Nazwisko Imie</h6></th>
+                                            <th class=" px-1 text-center"><h6 class="fw-bolder h-100 " style="border-bottom:2px solid #FF851B ;">Średnio [%]</h6></th>
+                                            <th class=" px-1 text-center"><h6 class="fw-bolder h-100 " >Miesiąc <br> Dzień</h6></th>
                                             {% for training in trainings %}
-                                                <th class="text-center px-1">{% if training.start_datatime < now %}<a href="{%url 'training_attendance' training.id %}" class="text-decoration-none">{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}}</a>{% else %}{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}} {% endif %}</th>
+                                                <th class="text-center px-1">{% if training.start_datatime < now %}<a href="{%url 'training_attendance' training.id %}" class="text-decoration-none"><h6 class="fw-bolder h-100 " >{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}}</h6></a>{% else %}<h6 class="fw-bolder h-100 " >{{training.start_datatime|date:"m"}}<br>{{training.start_datatime|date:"d"}}</h6>{% endif %}</th>
                                             {% endfor %}
                                         </tr>
                                     </thead>
@@ -73,6 +74,9 @@
         
                                             <td class="text-center px-1">
                                                 {{ players_avg|get_item:player.id }}%
+                                            </td>
+                                            <td>
+
                                             </td>
                                             {% for t in trainings %}
                                             <td class="text-center px-1">
@@ -109,7 +113,7 @@
             <div class="card  mb-4">
                 <div class="card-body text-center">
                     <p class="mb-0 f-w-600">Średnia frekwencja</p>
-                    <p class="mb-0 fw-bolder">{{avg_attendance}}[%]</p>
+                    <p class="mb-0 fw-bolder">{{avg_attendance}} [%]</p>
                     <canvas id="pieChart" style="width: 100%; height: 100%;"></canvas>
 
                     <br>

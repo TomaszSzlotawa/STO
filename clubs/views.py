@@ -198,7 +198,7 @@ def create_club(request):
         login = reverse('login')
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
-    form = ClubCreationForm(request.POST or None)
+    form = ClubCreationForm(True, request.POST or None)
     if form.is_valid():
         user = request.user
         club = form.save()
@@ -375,12 +375,14 @@ def user_role_delete(request, club_id):
         login = reverse('login')
         return redirect(login)
     club = get_object_or_404(Club, pk = club_id)
-    users = UsersClub.objects.filter(club = club)
-    for user in users: 
-        if user.admin == True and user.user != request.user:
-            if user.accepted==True:
-                usersclub = UsersClub.objects.filter(user = request.user, club=club)
-                usersclub.delete()
+    users = UsersClub.objects.filter(club = club,accepted=True)
+    logged_user = UsersClub.objects.filter(club=club, user = request.user).first()
+    if logged_user.admin == True:
+        users = UsersClub.objects.filter(club = club,accepted=True, admin=True).exclude(user = request.user)
+        if users:
+            logged_user.delete()
+    else:
+        logged_user.delete()
 
     return redirect(user_roles)
 def user_role_answer(request, club_id):
@@ -514,9 +516,9 @@ def club_staff(request, club_id):
             for s in seasons:
                 if p in s.player.all():
                     if not p_teams:
-                        p_teams += f"{s.team.name}[{s.name}]"
+                        p_teams += f"{s.team.name} [{s.name}]"
                     else:
-                        p_teams += f",\n{s.team.name}[{s.name}]"
+                        p_teams += f",\n{s.team.name} [{s.name}]"
             row_data = {
                 'name': p.name,
                 'surname': p.surname,
@@ -687,6 +689,7 @@ def hide_player_in_club(request, player_id):
         login = reverse('login')
         return redirect(login)
     usersClubs, teams = get_data_for_menu(request)
+    player = get_object_or_404(Player,pk = player_id)
     club = player.club
     allowed = False
     for usersClub in usersClubs:
@@ -694,7 +697,6 @@ def hide_player_in_club(request, player_id):
             if usersClub.admin or usersClub.training_coordinator or usersClub.coach:
                 allowed=True
     if allowed:
-        player = get_object_or_404(Player,pk = player_id)
         player.hidden = not player.hidden
         player.save()
         return redirect(club_staff, club.id)
@@ -746,9 +748,9 @@ def club_coaching_staff(request, club_id):
             for r in roles_in_teams:
                 if r.coach == c.user:
                     if not c_teams:
-                        c_teams += f"{r.team.name}[{r.team.active_season()}]"
+                        c_teams += f"{r.team.name} [{r.team.active_season()}]"
                     else:
-                        c_teams += f",\n{r.team.name}[{r.team.active_season()}]"
+                        c_teams += f",\n{r.team.name} [{r.team.active_season()}]"
             print(c)
             coach_profile_data = Profile.objects.filter(user=c.user).first()
             row_data = {
