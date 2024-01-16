@@ -8,7 +8,7 @@ from .models import Attendance, Equipment, ImplementedMezocycle, Mezocycle, Plac
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator, EmailValidator
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 
 
@@ -138,7 +138,7 @@ class UsersClubForm(forms.ModelForm):
         employee = cleaned_data.get('employee')
         training_coordinator = cleaned_data.get('training_coordinator')
 
-        if UsersClub.objects.filter(user=user, club=self.club).exists():
+        if UsersClub.objects.filter(user=user, club=self.club).filter(Q(accepted=None) | Q(accepted=True)).exists():
             raise forms.ValidationError('Użytkownik jest już przypisany do tego klubu.')
 
         if not any([admin, coach, employee, training_coordinator]):
@@ -510,7 +510,7 @@ class TrainingForm(forms.ModelForm):
                 print(len(trainings_in_db))
                 print(trainings_in_mezocycle)
                 if len(trainings_in_db)>=trainings_in_mezocycle:
-                    raise ValidationError("W tym mezocyklu zaplanowałeś już wszystkie treningi. Aby dodać trening do tego mezocyklu musisz usunąć lub edytować któryś z treningów w mezocyklu")
+                    raise ValidationError("W tym planie treningowym zaplanowałeś już wszystkie treningi. Aby dodać trening do tego planu musisz usunąć lub edytować któryś z treningów w wybranym planie treningowym.")
         if start_datatime and duration:
             end_datatime = start_datatime + timedelta(minutes=duration)
             season_start = datetime.combine(self.season.date_of_start, datetime.min.time())

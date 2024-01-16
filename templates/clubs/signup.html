@@ -1,7 +1,7 @@
 {% extends 'clubs/main.html' %}
 
 {% block title %}Rejestracja{% endblock %}
-{% block header %}Rejestracja{% endblock %}
+{% block header_not_auth %}Rejestracja{% endblock %}
 
 {% block signuup/login %}
  <!-- Section: Design Block -->
@@ -107,7 +107,7 @@
                 <input type="submit" class="btn btn-lg form-control" value="Zarejestruj się">
                 <div class="d-flex justify-content-end">
                   <a href="{% url 'login' %}" class="text-decoration-none mt-3" >
-                      <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do logowania
+                      <i class="fa-solid fa-arrow-right"></i> &nbsp; przejdź do logowania
                   </a>
               </div>
               

@@ -1,7 +1,7 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Usuń mezocykl{% endblock %}
-{% block header %}Usuń mezocykl{% endblock %}
+{% block title %}Usuń plan treningowy{% endblock %}
+{% block header %}Usuń plan treningowy{% endblock %}
 
 {% block content %}
 <div class="container dashboard">
@@ -10,7 +10,7 @@
         <div class="col-8 col-md-6 col-lg-5 col-xl-4">
           <div class="card">
             <div class="card-body p-4 text-center">
-                <h5 class="card-title">Czy na pewno chcesz usunąć mezocykl "{{mezocycle.name}}"?</h5>
+                <h5 class="card-title">Czy na pewno chcesz usunąć plan treningowy "{{mezocycle.name}}"?</h5>
                 <form method="post">
                 {% csrf_token %}
                 <input type="submit" class="btn form-control my-3 " value="Tak, usuń">

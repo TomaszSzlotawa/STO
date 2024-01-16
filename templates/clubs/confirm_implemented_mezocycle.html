@@ -1,7 +1,7 @@
 {% extends 'clubs/main.html' %}
 
-{% block title %}Usuń mezocykl{% endblock %}
-{% block header %}Usuń mezocykl{% endblock %}
+{% block title %}Usuń plan treningowy{% endblock %}
+{% block header %}Usuń plan treningowy{% endblock %}
 
 {% block content %}
 <div class="container dashboard">
@@ -10,11 +10,11 @@
         <div class="col-8 col-md-6 col-lg-5 col-xl-4">
           <div class="card">
             <div class="card-body p-4 text-center">
-                <h5 class="card-title">Czy na pewno chcesz usunąć mezocykl "{{mezocycle.name}}"?</h5>
+                <h5 class="card-title">Czy na pewno chcesz usunąć plan treningowy "{{mezocycle.name}}"?</h5>
                 <form method="post">
                 {% csrf_token %}
-                <input type="submit" class="btn form-control my-3 " name="mezocycle" value="Usuń mezocykl">
-                <input type="submit" class="second-option form-control my-3 " name="trainings" value="Usuń mezocykl wraz z treningami">
+                <input type="submit" class="btn form-control my-3 " name="mezocycle" value="Usuń plan treningowy">
+                <input type="submit" class="second-option form-control my-3 " name="trainings" value="Usuń plan treningowy wraz z treningami">
                 <div class="d-flex justify-content-end links">
                     <a href="{% url 'mezocycles' mezocycle.team.id %}" class="text-decoration-none mt-1 " >
                         <i class="fa-solid fa-arrow-left"></i> &nbsp; wróć do listy mezocykli

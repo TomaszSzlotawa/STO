@@ -5,7 +5,6 @@
 
 {% block content %}
 
-
 <div class="container-fluid py-5 h-100 dashboard">
   <div class="row d-flex justify-content-center align-items-top">
     <div class="col-12 col-md-12 col-lg-6 col-xl-6">
@@ -46,8 +45,8 @@
                   </button>
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'edit_mezocycle' item.id %}">Edytuj</a></li>
-                    <li><a class="dropdown-item" href="{% url 'implement_mezocycle' item.id %}">Wdróż mezocykl</a></li>
-                    <li><a class="dropdown-item" href="{% url 'delete_mezocycle' item.id %}">Usuń mezocykl</a></li>
+                    <li><a class="dropdown-item" href="{% url 'implement_mezocycle' item.id %}">Wdróż plan treningowy</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_mezocycle' item.id %}">Usuń plan treningowy</a></li>
                   </ul>
               </div>
             </div>
@@ -109,7 +108,7 @@
                   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="{% url 'review_implemented_mezocycle' item.id %}">Podgląd</a></li>
                     <li><a class="dropdown-item" href="{% url 'pdf_view' item.id %}">Wygeneruj PDF</a></li>
-                    <li><a class="dropdown-item" href="{% url 'delete_implemented_mezocycle' item.id %}">Usuń mezocykl</a></li>
+                    <li><a class="dropdown-item" href="{% url 'delete_implemented_mezocycle' item.id %}">Usuń plan treningowy</a></li>
                   </ul>
               </div>
             </div>
@@ -117,7 +116,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 

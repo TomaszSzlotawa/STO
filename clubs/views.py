@@ -1519,13 +1519,10 @@ def team_attendance_report(request,team_id):
         for att in attendances:
             if att.training.end_datatime < datetime.now():
                 len_attendance += 1
+                players_att[att.player.id]+=1
                 if att.present:
                     present += 1
-                for p in players:
-                    if p.id == att.player.id:
-                            players_att[p.id]+=1
-                            if att.present:
-                                players_presents[p.id]+=1
+                    players_presents[att.player.id]+=1
         players_avg = {p_id: round(players_presents[p_id] / players_att[p_id] * 100,2) if players_att[p_id] > 0 else 0 for p_id in players_att}
         
         if len_attendance==0:
@@ -1647,7 +1644,7 @@ def create_mezocycle(request, team_id):
                     for_t = range(1, trainings_per_week + 1)
                     for_wt = list(product(for_w, for_t))
                     for w,t in for_wt:
-                        form = Training_in_mezocycleForm(request.POST or None,initial={'topic':'ee','duration':3}, prefix=(str(w)+'_'+str(t)))
+                        form = Training_in_mezocycleForm(request.POST or None, prefix=(str(w)+'_'+str(t)))
                         wt = Training_in_week(w,t)
                         forms_list.append((wt,form))
                         
@@ -1660,7 +1657,7 @@ def create_mezocycle(request, team_id):
                     for_t = range(1, trainings_per_week + 1)
                     for_wt = list(product(for_w, for_t))
                     for w,t in for_wt:
-                        form = Training_in_mezocycleForm(request.POST or None,initial={'topic':'ee','duration':3}, prefix=(str(w)+'_'+str(t)))
+                        form = Training_in_mezocycleForm(request.POST or None, prefix=(str(w)+'_'+str(t)))
                         wt = Training_in_week(w,t)
                         forms_list.append((wt,form))
 
